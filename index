@@ -1,0 +1,2339 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#1e1e2e">
+<title>Crudo RPG</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { width:100%; height:100%; background:#15151f; overflow:hidden; font-family:monospace; touch-action:none; -webkit-user-select:none; user-select:none; }
+  #device { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:min(100vw,480px); height:min(100vh,900px);
+    background:linear-gradient(160deg,#b7c9e8 0%,#93a9d9 100%); border-radius:18px 18px 55px 18px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.5), inset 0 2px 4px rgba(255,255,255,0.4); display:flex; flex-direction:column; padding:3.5% 4% 4% 4%; }
+  #screen-frame { background:#3f4a5e; border-radius:10px 10px 30px 10px; padding:3% 3% 4% 3%; box-shadow:inset 0 2px 8px rgba(0,0,0,0.5); flex:0 0 auto; }
+  #brand { text-align:center; color:#5b6b8a; font-size:11px; font-weight:bold; letter-spacing:1px; margin-bottom:3px; font-style:italic; }
+  #power-row { display:flex; align-items:center; justify-content:center; gap:6px; margin-bottom:4px; }
+  #power-led { width:6px; height:6px; border-radius:50%; background:#5be07a; box-shadow:0 0 4px #6bff8b; }
+  #power-row span { color:#7a8aa8; font-size:8px; letter-spacing:1px; }
+  #screen-bezel { background:#25303a; border-radius:6px; padding:6px 5px; position:relative; }
+  canvas { display:block; width:100%; height:auto; image-rendering:pixelated; image-rendering:crisp-edges; border-radius:2px; background:#101820; }
+  #controls { flex:1 1 auto; position:relative; margin-top:4%; }
+  #dpad { position:absolute; left:7%; top:8%; width:140px; height:140px; }
+  .dbtn { position:absolute; background:#2c2c3a; border:none; box-shadow:0 3px 0 #16161e; display:flex; align-items:center; justify-content:center; color:#6b6b80; font-size:15px; }
+  .dbtn:active, .dbtn.pressed { background:#1c1c28; box-shadow:0 1px 0 #16161e; transform:translateY(2px); }
+  #d-up { left:47px; top:0; width:46px; height:49px; border-radius:6px 6px 0 0; }
+  #d-down { left:47px; top:91px; width:46px; height:49px; border-radius:0 0 6px 6px; }
+  #d-left { left:0; top:47px; width:49px; height:46px; border-radius:6px 0 0 6px; }
+  #d-right { left:91px; top:47px; width:49px; height:46px; border-radius:0 6px 6px 0; }
+  #d-center { left:47px; top:47px; width:46px; height:46px; background:#2c2c3a; }
+  #ab { position:absolute; right:5%; top:6%; width:170px; height:140px; transform:rotate(-20deg); }
+  .rbtn { position:absolute; width:74px; height:74px; border-radius:50%; background:#2c6f9b; border:none; box-shadow:0 4px 0 #1a445e; color:#d9eeff; font-size:25px; font-weight:bold; }
+  .rbtn:active, .rbtn.pressed { background:#22577a; box-shadow:0 1px 0 #1a445e; transform:translateY(3px); }
+  #btn-a { right:0; top:4px; } #btn-b { right:90px; top:62px; }
+  .rlabel { position:absolute; color:#5b6b8a; font-size:10px; font-weight:bold; }
+  #lbl-a { right:24px; top:66px; } #lbl-b { right:114px; top:124px; }
+  #startsel { position:absolute; left:50%; top:58%; transform:translateX(-50%); display:flex; gap:80px; z-index:5; }
+  .pill { width:70px; height:21px; border-radius:11px; background:#2c2c3a; border:none; box-shadow:0 2px 0 #16161e; touch-action:manipulation; }
+  .pill:active { transform:translateY(1px); box-shadow:0 1px 0 #16161e; }
+  .plabel { position:absolute; color:#5b6b8a; font-size:8px; top:16px; letter-spacing:1px; pointer-events:none; }
+  #startsel div { position:relative; text-align:center; }
+</style>
+</head>
+<body>
+<div id="device">
+  <div id="screen-frame">
+    <div id="brand">CRUDO RPG</div>
+    <div id="power-row"><div id="power-led"></div><span>POWER</span></div>
+    <div id="screen-bezel"><canvas id="game" width="192" height="168"></canvas></div>
+  </div>
+  <div id="controls">
+    <div id="dpad">
+      <button class="dbtn" id="d-up" data-key="up">&#9650;</button>
+      <button class="dbtn" id="d-left" data-key="left">&#9664;</button>
+      <button class="dbtn" id="d-center"></button>
+      <button class="dbtn" id="d-right" data-key="right">&#9654;</button>
+      <button class="dbtn" id="d-down" data-key="down">&#9660;</button>
+    </div>
+    <div id="ab">
+      <button class="rbtn" id="btn-a" data-key="a">A</button>
+      <button class="rbtn" id="btn-b" data-key="b">B</button>
+      <span class="rlabel" id="lbl-a">A</span>
+      <span class="rlabel" id="lbl-b">B</span>
+    </div>
+    <div id="startsel">
+      <div><button class="pill" data-key="select"></button><span class="plabel">SELECT</span></div>
+      <div><button class="pill" data-key="start"></button><span class="plabel">START</span></div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  const canvas = document.getElementById("game");
+  const ctx = canvas.getContext("2d");
+  ctx.imageSmoothingEnabled = false;
+  const W = 192, H = 168, TILE = 16;
+
+  // ================= INPUT =================
+  const keys = { up:false, down:false, left:false, right:false, a:false, b:false, start:false, select:false };
+  const pressedEdge = {}; const heldSince = {};
+  function setKey(k, val){ if(!(k in keys)) return;
+    if(val && !keys[k]){ pressedEdge[k]=true; heldSince[k]=performance.now(); SFX.unlock(); if(SFX[k]) SFX[k](); }
+    keys[k]=val; }
+  function consumePress(k){ if(pressedEdge[k]){ pressedEdge[k]=false; return true; } return false; }
+  const keyMap = { ArrowUp:"up",ArrowDown:"down",ArrowLeft:"left",ArrowRight:"right",
+    KeyW:"up",KeyS:"down",KeyA:"left",KeyD:"right", KeyZ:"a",KeyX:"b",KeyK:"a",KeyL:"b",
+    Enter:"start",ShiftRight:"select",ShiftLeft:"select" };
+  window.addEventListener("keydown", e=>{ const k=keyMap[e.code]; if(k){ setKey(k,true); e.preventDefault(); } });
+  window.addEventListener("keyup", e=>{ const k=keyMap[e.code]; if(k){ setKey(k,false); e.preventDefault(); } });
+  document.querySelectorAll("[data-key]").forEach(btn=>{
+    const k=btn.getAttribute("data-key");
+    const down=e=>{ e.preventDefault(); setKey(k,true); btn.classList.add("pressed"); };
+    const up=e=>{ e.preventDefault(); setKey(k,false); btn.classList.remove("pressed"); };
+    btn.addEventListener("touchstart",down,{passive:false}); btn.addEventListener("touchend",up,{passive:false});
+    btn.addEventListener("touchcancel",up,{passive:false}); btn.addEventListener("mousedown",down);
+    btn.addEventListener("mouseup",up); btn.addEventListener("mouseleave",up);
+  });
+
+  // ================= I18N (IT / EN) =================
+  let lang = "it";
+  const STR = {
+    it: {
+      title_sub:"La cittadina di mare",
+      continue:"CONTINUA", newgame:"NUOVA PARTITA", press_ab:"A / START",
+      season_spring:"PRIMAVERA", season_summer:"ESTATE", season_autumn:"AUTUNNO", season_winter:"INVERNO",
+      quest_label:"Missione:", q_none:"Parla in giro", q_find:"Trova Micio", q_return:"Riporta Micio", q_done:"Fatto!",
+      new_quest:"NUOVA MISSIONE!", quest_done:"MISSIONE COMPLETATA!", found_cat:"Hai trovato Micio!",
+      hint_lang:"START: Menu",
+      nonna:"Nonna Rosa", vito:"Vito", lena:"Lena", marinaio:"Marinaio", ciclista:"Ciclista", pino:"Pino",
+      shopkeeper:"Bottegaio", mayor:"Sindaco",
+      nonna0:["Oh, ciao piccolo!","Micio e' scappato","di nuovo... ama il mare.","Cercalo verso la","spiaggia, a sud!"],
+      nonna1:["Micio gira spesso","in spiaggia o sul","lungomare. Vai a sud!"],
+      nonna2:["Micio! Sei tornato!","Grazie di cuore,","piccolo mio!"],
+      nonna3:["Micio fa le fusa.","Passa quando vuoi!"],
+      vito:["Bella la nostra","cittadina di mare, eh?","Cambia con le stagioni...","(SELECT per provare)","(START apre il menu)"],
+      lena:["Il porto e' laggiu'","a sud-est. D'estate","il mare e' stupendo!"],
+      marinaio:["Le barche dormono","al molo. In inverno","il vento e' gelido!"],
+      ciclista:["Scusa, di corsa!","Giro tutta la","passeggiata in bici!"],
+      pino0:["Ehi! Ho perso la mia","conchiglia fortunata","sulla spiaggia.","La cerchi tu?"],
+      pino1:["La conchiglia e'","da qualche parte","sulla sabbia, a est!"],
+      pino2:["La mia conchiglia!","Grazie mille,","sei un mito!"],
+      pino3:["Con questa vinco","sempre a braccio","di ferro!"],
+      found_shell:"Hai trovato la conchiglia!",
+      in_nonna:["Benvenuto in casa mia!","Mettiti comodo,","c'e' il camino acceso."],
+      in_store:["Benvenuto all'emporio!","Presto potrai comprare","esche e provviste."],
+      in_mayor:["Sono il sindaco.","La nostra cittadina","cambia con le stagioni:","ne sono orgoglioso!"],
+      menu_title:"MENU", menu_map:"MAPPA", menu_lang:"LINGUA", menu_season:"STAGIONE", menu_close:"CHIUDI", menu_journal:"DIARIO",
+      area_town:"CRUDO", area_mountain:"MONTAGNA", area_forestNW:"BORGO DI MONTAGNA", area_forestNE:"FORESTA EST", area_holiday:"VILLAGGIO VACANZE", area_industrial:"ZONA INDUSTRIALE",
+      in_bungalow_t:"BUNGALOW", host:"Animatrice", in_bungalow:["Benvenuto al villaggio!","Rilassati e goditi","il sole e il mare."],
+      in_cabin_t:"CASA DI LEGNO", hermit:"Eremita", in_cabin:["Non ricevo spesso","visite quassu'...","cosa ti porta qui?"],
+      in_chalet_t:"CHALET", granny2:"Nonna Alpina", in_chalet:["Entra, fa freddo fuori!","Ti preparo una cioccolata","calda, piccolo."],
+      passerby:"Passante", passerby_l:["Buongiorno!"],
+      journal_title:"DIARIO", journal_main:"Principali:", journal_side:"Secondarie:", chapter:"Capitolo", chapter_done:"CAPITOLO COMPLETATO!",
+      q_room_t:"Sistemare la stanza", q_room_s0:"Torna a casa e sistema la tua stanza", q_room_s1:"Stanza sistemata!",
+      q_job_t:"Trovare un lavoro", q_job_s0:"Chiedi lavoro all'officina", q_job_s1:"Hai trovato un lavoro!",
+      q_fri_t:"Ritrovare i vecchi amici", q_fri_s0:"Parla con il tuo vecchio amico Teo", q_fri_s1:"Hai riconquistato la loro stima!",
+      q_bike_t:"Recuperare una bici", q_bike_s0:"Trova una bicicletta in citta'", q_bike_s1:"Hai una bici!",
+      q_cat_t:"Il gatto perduto", q_cat_s0:"Trova Micio e riportalo a Nonna Rosa", q_cat_s1:"Micio e' a casa!",
+      q_shell_t:"La conchiglia di Pino", q_shell_s0:"Trova la conchiglia sulla spiaggia", q_shell_s1:"Conchiglia consegnata!",
+      q_par_t:"Una consegna", q_par_s0:"Consegna il pacco dall'altra parte", q_par_s1:"Pacco consegnato!",
+      q_kids_t:"Il litigio nel parco", q_kids_s0:"Parla con i due bambini che litigano", q_kids_s1:"Trova la palla contesa", q_kids_s2:"Bambini rappacificati!",
+      q_of_t:"Un vecchio compagno", q_of_s0:"Ritrova il portachiavi d'infanzia di Nico", q_of_s1:"Ricordo restituito!",
+      q_ph_t:"Ricordi sbiaditi", q_ph_s0:"Trova le 3 vecchie foto in giro per la citta'", q_ph_s1:"Album completato!",
+      fornaio:"Fornaio", nico:"Nico",
+      fornaio0:["Ehi, tu che vai in giro!","Porti questo pacco","al molo per me?"],
+      fornaio1:["Grazie mille!","Passa quando vuoi","per una pagnotta."],
+      dest0:["Ah, il pacco del","fornaio! Grazie,","lo aspettavo."],
+      nico0:["Ma sei tornato!","Da bambini giocavamo","sempre qui... ho perso","il mio portachiavi.","Lo ritrovi per me?"],
+      nico1:["Il mio portachiavi!","Non e' cambiato niente,","vecchio mio."],
+      kid_a0:["E' colpa sua! Mi ha","preso la palla e l'ha","tirata via!"],
+      kid_b0:["Non e' vero! E'","volata da sola,","lo giuro..."],
+      kids_done:"Hai riportato la palla: i bambini fanno pace!",
+      kids_done_l0:["Hai trovato la palla?","Dammela, facciamo","la pace!"],
+      parcel_got:"Hai preso il pacco del fornaio.",
+      keyring_found:"Hai trovato il portachiavi di Nico!",
+      photo_found:"Hai trovato una vecchia foto!",
+      photos_msg:"Hai raccolto tutte e 3 le foto!",
+      ball_found:"Hai trovato la palla!",
+      teo:"Teo", capo:"Capo Officina", mamma:"Mamma",
+      teo0:["Ma... sei proprio tu?!","Quanto tempo!","Fatti valere e vedrai","che i ragazzi ti","riaccolgono."],
+      teo1:["Bentornato tra noi,","vecchio mio! Andiamo","a farci un giro."],
+      capo0:["Cerchi lavoro, eh?","Va bene, ti prendo","in prova all'officina.","Non deludermi!"],
+      capo1:["Bravo, lavori bene!","A domani in officina."],
+      mamma0:["Bentornato, tesoro!","La tua stanza e' un","disastro... dai una","sistemata, per favore."],
+      mamma1:["Che bello riaverti","a casa dopo 15 anni."],
+      room_msg:"Hai sistemato la tua vecchia stanza!",
+      bike_found:"Hai trovato una vecchia bici!",
+      bimbo:"Bambino", bimba:"Bambina",
+      bimbo_l:["Vuoi giocare a","nascondino con noi?"],
+      bimba_l:["Ho trovato una","conchiglia rosa!"],
+      map_title:"MAPPA CITTA'", map_hint:"B: indietro",
+      sea_spring:"Che fresca l'acqua!",
+      sea_summer:"Che bello rinfrescarsi in mare!",
+      sea_autumn:"Brrr, che freddo!",
+      sea_winter:"Non ci penso proprio a nuotare con questo freddo! Siamo in pieno inverno!",
+      sea_polluted:"Che schifo! Quest'acqua e' inquinatissima... meglio uscire!",
+      buoy_msg:"Non posso superare le boe: e' pericoloso!",
+      ship_msg:"La nave salpa verso un'altra citta'... (presto disponibile!)",
+      gina:"Gina", bruno:"Bruno",
+      gina_lines:["Che bella giornata","per due passi in","piazza, non trovi?"],
+      bruno_lines:["Devo comprare il pane","prima che chiuda","il forno!"],
+      pescatore:"Pescatore",
+      fisher_ask:["Bella giornata di pesca!","Il mare oggi e' pescoso...","ne vuoi sapere?"],
+      fisher_ask2:["Shhh, non spaventare","i pesci! Vuoi provare","anche tu?"],
+      fisher_join_q:"Ti va di pescare con noi?",
+      yes:"SI'", no:"NO",
+      fishing_msg:"Stai pescando dal molo...",
+      fishing_done:"Che pace, pescare in riva al mare!",
+      house_nonna:"CASA DI NONNA ROSA", store:"EMPORIO", townhall:"MUNICIPIO"
+    },
+    en: {
+      title_sub:"The seaside town",
+      continue:"CONTINUE", newgame:"NEW GAME", press_ab:"A / START",
+      season_spring:"SPRING", season_summer:"SUMMER", season_autumn:"AUTUMN", season_winter:"WINTER",
+      quest_label:"Quest:", q_none:"Talk around", q_find:"Find Micio", q_return:"Bring Micio back", q_done:"Done!",
+      new_quest:"NEW QUEST!", quest_done:"QUEST COMPLETE!", found_cat:"You found Micio!",
+      hint_lang:"START: Menu",
+      nonna:"Granny Rosa", vito:"Vito", lena:"Lena", marinaio:"Sailor", ciclista:"Cyclist", pino:"Pino",
+      shopkeeper:"Shopkeeper", mayor:"Mayor",
+      nonna0:["Oh, hello dear!","Micio ran off","again... he loves the sea.","Look for him near","the beach, to the south!"],
+      nonna1:["Micio often roams","the beach or the","promenade. Head south!"],
+      nonna2:["Micio! You're back!","Thank you so much,","little one!"],
+      nonna3:["Micio is purring.","Come by anytime!"],
+      vito:["Nice little","seaside town, huh?","It changes with seasons...","(SELECT to try it)","(START opens menu)"],
+      lena:["The port is down","to the south-east.","The summer sea is gorgeous!"],
+      marinaio:["The boats sleep","at the dock. In winter","the wind is freezing!"],
+      ciclista:["Sorry, in a hurry!","I ride the whole","promenade by bike!"],
+      pino0:["Hey! I lost my","lucky seashell","on the beach.","Would you find it?"],
+      pino1:["The shell is","somewhere on the","sand, to the east!"],
+      pino2:["My seashell!","Thank you so much,","you're the best!"],
+      pino3:["With this I always","win at arm","wrestling!"],
+      found_shell:"You found the seashell!",
+      in_nonna:["Welcome to my home!","Make yourself comfy,","the fire is lit."],
+      in_store:["Welcome to the store!","Soon you'll be able to buy","bait and supplies."],
+      in_mayor:["I'm the mayor.","Our little town","changes with the seasons:","I'm proud of it!"],
+      menu_title:"MENU", menu_map:"MAP", menu_lang:"LANGUAGE", menu_season:"SEASON", menu_close:"CLOSE", menu_journal:"JOURNAL",
+      area_town:"CRUDO", area_mountain:"MOUNTAIN", area_forestNW:"MOUNTAIN TOWN", area_forestNE:"EAST FOREST", area_holiday:"HOLIDAY VILLAGE", area_industrial:"INDUSTRIAL ZONE",
+      in_bungalow_t:"BUNGALOW", host:"Host", in_bungalow:["Welcome to the resort!","Relax and enjoy","the sun and the sea."],
+      in_cabin_t:"WOOD CABIN", hermit:"Hermit", in_cabin:["I don't get many","visitors up here...","what brings you?"],
+      in_chalet_t:"CHALET", granny2:"Alpine Granny", in_chalet:["Come in, it's cold out!","I'll make you some","hot cocoa, dear."],
+      passerby:"Passer-by", passerby_l:["Hello there!"],
+      journal_title:"JOURNAL", journal_main:"Main:", journal_side:"Side:", chapter:"Chapter", chapter_done:"CHAPTER COMPLETE!",
+      q_room_t:"Tidy your room", q_room_s0:"Go home and tidy your room", q_room_s1:"Room tidied!",
+      q_job_t:"Find a job", q_job_s0:"Ask for work at the workshop", q_job_s1:"You got a job!",
+      q_fri_t:"Reunite with old friends", q_fri_s0:"Talk to your old friend Teo", q_fri_s1:"You won back their trust!",
+      q_bike_t:"Get a bike", q_bike_s0:"Find a bicycle in town", q_bike_s1:"You have a bike!",
+      q_cat_t:"The lost cat", q_cat_s0:"Find Micio and bring him to Granny Rosa", q_cat_s1:"Micio is home!",
+      q_shell_t:"Pino's seashell", q_shell_s0:"Find the shell on the beach", q_shell_s1:"Shell delivered!",
+      q_par_t:"A delivery", q_par_s0:"Deliver the parcel across town", q_par_s1:"Parcel delivered!",
+      q_kids_t:"The park quarrel", q_kids_s0:"Talk to the two quarreling kids", q_kids_s1:"Find the disputed ball", q_kids_s2:"Kids made up!",
+      q_of_t:"An old buddy", q_of_s0:"Find Nico's childhood keyring", q_of_s1:"Memory returned!",
+      q_ph_t:"Faded memories", q_ph_s0:"Find the 3 old photos around town", q_ph_s1:"Album complete!",
+      fornaio:"Baker", nico:"Nico",
+      fornaio0:["Hey, you wandering around!","Take this parcel","to the pier for me?"],
+      fornaio1:["Thanks a lot!","Come by anytime","for a fresh loaf."],
+      dest0:["Ah, the baker's","parcel! Thanks,","I was waiting for it."],
+      nico0:["You're back!","As kids we always","played here... I lost","my keyring.","Would you find it?"],
+      nico1:["My keyring!","Nothing's changed,","old friend."],
+      kid_a0:["It's his fault! He took","my ball and threw","it away!"],
+      kid_b0:["Not true! It just","flew off on its own,","I swear..."],
+      kids_done:"You brought back the ball: the kids make up!",
+      kids_done_l0:["Did you find the ball?","Give it to me,","let's make up!"],
+      parcel_got:"You took the baker's parcel.",
+      keyring_found:"You found Nico's keyring!",
+      photo_found:"You found an old photo!",
+      photos_msg:"You collected all 3 photos!",
+      ball_found:"You found the ball!",
+      teo:"Teo", capo:"Workshop Boss", mamma:"Mom",
+      teo0:["Wait... is that really you?!","Long time!","Show us what you've got","and the crew will","take you back."],
+      teo1:["Welcome back, old friend!","Let's go for a ride."],
+      capo0:["Looking for work, huh?","Alright, I'll take you on","at the workshop.","Don't let me down!"],
+      capo1:["Good job, you work well!","See you tomorrow."],
+      mamma0:["Welcome home, dear!","Your room is a mess...","give it a tidy,","please."],
+      mamma1:["So good to have you","home after 15 years."],
+      room_msg:"You tidied your old room!",
+      bike_found:"You found an old bike!",
+      bimbo:"Boy", bimba:"Girl",
+      bimbo_l:["Wanna play","hide and seek with us?"],
+      bimba_l:["I found a","pink seashell!"],
+      map_title:"TOWN MAP", map_hint:"B: back",
+      sea_spring:"The water is chilly!",
+      sea_summer:"So refreshing to swim in the sea!",
+      sea_autumn:"Brrr, so cold!",
+      sea_winter:"No way I'm swimming in this cold! It's the middle of winter!",
+      sea_polluted:"Ugh, gross! This water is so polluted... better get out!",
+      buoy_msg:"I can't go past the buoys: it's dangerous!",
+      ship_msg:"The ship sails to another town... (coming soon!)",
+      gina:"Gina", bruno:"Bruno",
+      gina_lines:["What a lovely day","for a stroll in the","square, isn't it?"],
+      bruno_lines:["I need to buy bread","before the bakery","closes!"],
+      pescatore:"Fisherman",
+      fisher_ask:["Nice day for fishing!","The sea's full today...","want in?"],
+      fisher_ask2:["Shhh, don't scare","the fish! Want to","give it a try too?"],
+      fisher_join_q:"Fancy fishing with us?",
+      yes:"YES", no:"NO",
+      fishing_msg:"You're fishing off the pier...",
+      fishing_done:"So peaceful, fishing by the sea!",
+      house_nonna:"GRANNY ROSA'S HOUSE", store:"GENERAL STORE", townhall:"TOWN HALL"
+    }
+  };
+  function t(k){ return (STR[lang] && STR[lang][k]!==undefined) ? STR[lang][k] : (STR.it[k]||k); }
+  function toggleLang(){ lang = (lang==="it")?"en":"it"; SFX.confirm(); saveGame(); }
+
+  // ================= 8-BIT AUDIO =================
+  const SFX = (function(){
+    let ac=null;
+    function ctxAudio(){ if(!ac){ try{ ac=new (window.AudioContext||window.webkitAudioContext)(); }catch(e){ return null; } } if(ac&&ac.state==="suspended") ac.resume(); return ac; }
+    function blip(f,d,ty,v,when){ const a=ctxAudio(); if(!a) return; const t0=a.currentTime+(when||0); const o=a.createOscillator(),g=a.createGain();
+      o.type=ty||"square"; o.frequency.setValueAtTime(f,t0); g.gain.setValueAtTime(0.0001,t0); g.gain.exponentialRampToValueAtTime(v||0.15,t0+0.008); g.gain.exponentialRampToValueAtTime(0.0001,t0+d); o.connect(g);g.connect(a.destination);o.start(t0);o.stop(t0+d+0.02); }
+    function seq(notes,ty,v){ const a=ctxAudio(); if(!a) return; let t=a.currentTime; notes.forEach(([f,d])=>{ if(f){ const o=a.createOscillator(),g=a.createGain(); o.type=ty||"square"; o.frequency.setValueAtTime(f,t); g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(v||0.15,t+0.01); g.gain.exponentialRampToValueAtTime(0.0001,t+d); o.connect(g);g.connect(a.destination);o.start(t);o.stop(t+d+0.02);} t+=d; }); }
+    return {
+      unlock:ctxAudio,
+      up:()=>blip(523,0.04,"square",0.09), down:()=>blip(494,0.04,"square",0.09), left:()=>blip(466,0.04,"square",0.09), right:()=>blip(509,0.04,"square",0.09),
+      a:()=>blip(700,0.05,"square",0.11), b:()=>blip(300,0.06,"square",0.11), start:()=>blip(880,0.10,"triangle",0.12), select:()=>blip(440,0.10,"triangle",0.12),
+      confirm:()=>seq([[659,0.05],[988,0.09]],"square",0.12), cancel:()=>seq([[440,0.05],[294,0.08]],"square",0.11),
+      talk:()=>blip(600,0.03,"square",0.06), quest:()=>seq([[659,0.07],[784,0.07],[988,0.14]],"square",0.13),
+      questDone:()=>seq([[784,0.08],[988,0.08],[1319,0.08],[1047,0.16]],"square",0.14),
+      pickup:()=>seq([[988,0.05],[1319,0.10]],"square",0.12), meow:()=>seq([[880,0.08],[660,0.10],[990,0.06]],"sawtooth",0.10),
+      season:()=>seq([[523,0.06],[659,0.06],[784,0.06],[1047,0.12]],"triangle",0.12), door:()=>seq([[392,0.06],[262,0.10]],"square",0.12),
+      step:()=>blip(150,0.02,"square",0.03), vibrate:(p)=>{ try{ if(navigator.vibrate) navigator.vibrate(p);}catch(e){} },
+      _musicOn:false,_musicTimer:null,_track:"spring",_tempoScale:1.0,
+      musicPlaying:function(){return this._musicOn;}, setTempoScale:function(s){this._tempoScale=s;},
+      _tracks:(function(){ const N={C3:131,D3:147,E3:165,F3:175,G3:196,A3:220,B3:247,C4:262,D4:294,E4:330,F4:349,G4:392,A4:440,B4:494,C5:523,D5:587,E5:659,F5:698,G5:784,R:0};
+        return {
+          spring:{beat:0.17,vol:0.028,wave:"square",bassWave:"triangle",mel:[[N.G4,2],[N.C5,2],[N.B4,1],[N.A4,1],[N.G4,2],[N.E4,2],[N.G4,2],[N.A4,2],[N.G4,2],[N.F4,2],[N.A4,2],[N.C5,2],[N.B4,2],[N.C5,4],[N.R,2],[N.G4,2]],bass:[N.C3,N.G3,N.A3,N.F3]},
+          summer:{beat:0.19,vol:0.026,wave:"square",bassWave:"triangle",mel:[[N.E4,2],[N.G4,2],[N.A4,2],[N.C5,2],[N.B4,3],[N.A4,1],[N.G4,4],[N.A4,2],[N.C5,2],[N.D5,2],[N.C5,2],[N.G4,4],[N.E4,4]],bass:[N.A3,N.A3,N.E3,N.E3]},
+          autumn:{beat:0.21,vol:0.024,wave:"triangle",bassWave:"triangle",mel:[[N.A4,2],[N.G4,2],[N.E4,4],[N.F4,2],[N.E4,2],[N.D4,4],[N.E4,2],[N.G4,2],[N.A4,2],[N.G4,2],[N.E4,4],[N.D4,4]],bass:[N.A3,N.F3,N.C3,N.G3]},
+          winter:{beat:0.24,vol:0.022,wave:"triangle",bassWave:"triangle",mel:[[N.C5,3],[N.B4,1],[N.A4,4],[N.G4,3],[N.A4,1],[N.E4,4],[N.G4,2],[N.A4,2],[N.B4,2],[N.C5,2],[N.A4,4],[N.G4,4]],bass:[N.C3,N.C3,N.G3,N.E3]}
+        }; })(),
+      startMusic:function(track){ const a=ctxAudio(); if(!a) return; if(track&&track!==this._track){ this._track=track; this.stopMusic(); } if(this._musicOn) return; this._musicOn=true;
+        const T=this._tracks[this._track]; const self=this; let mi=0,bi=0;
+        function chunk(){ if(!self._musicOn) return; const beat=T.beat*self._tempoScale, vol=T.vol, now=a.currentTime; let t=now,sc=0;
+          while(sc<2.0){ const [f,beats]=T.mel[mi]; const dur=beats*beat;
+            if(f){ const o=a.createOscillator(),g=a.createGain(); o.type=T.wave; o.frequency.setValueAtTime(f/self._tempoScale,t); g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(vol,t+0.02); g.gain.exponentialRampToValueAtTime(0.0001,t+dur*0.9); o.connect(g);g.connect(a.destination);o.start(t);o.stop(t+dur); }
+            const bf=T.bass[bi%T.bass.length]; const ob=a.createOscillator(),gb=a.createGain(); ob.type=T.bassWave; ob.frequency.setValueAtTime(bf/2,t); gb.gain.setValueAtTime(0.0001,t); gb.gain.exponentialRampToValueAtTime(vol*0.7,t+0.02); gb.gain.exponentialRampToValueAtTime(0.0001,t+dur*0.8); ob.connect(gb);gb.connect(a.destination);ob.start(t);ob.stop(t+dur);
+            t+=dur; sc+=dur; mi=(mi+1)%T.mel.length; bi++; }
+          self._musicTimer=setTimeout(chunk,(t-now)*1000-120); }
+        chunk(); },
+      stopMusic:function(){ this._musicOn=false; if(this._musicTimer){ clearTimeout(this._musicTimer); this._musicTimer=null; } },
+      setTrack:function(track){ if(track===this._track&&this._musicOn) return; const w=this._musicOn; this.stopMusic(); this._track=track; if(w) this.startMusic(track); }
+    };
+  })();
+
+  // ================= SEASONS =================
+  const SEASONS=["spring","summer","autumn","winter"];
+  function seasonLabel(){ return t("season_"+season); }
+  const SEASON_PAL={
+    spring:{grass:"#6a9a4a",grassAlt:"#5e8e40",tree:"#3f7a2c",treeDk:"#2c5a1c",trunk:"#6a4a2a",path:"#c2a878",pathEdge:"#a88c5c",road:"#8a8e96",roadEdge:"#6c707a",water:"#3a8ad8",waterDk:"#2c6ab0",sand:"#e6d29a",sandDk:"#cbb37a",roof:"#c0504a",roofDk:"#902c28",wall:"#e0d0b0",wallDk:"#b09070",sky:"#8ac0e0",accent:"#e8d060",flower:"#f060a0"},
+    summer:{grass:"#7aae4a",grassAlt:"#6c9e3e",tree:"#357026",treeDk:"#245018",trunk:"#6a4a2a",path:"#d0b078",pathEdge:"#b8945c",road:"#94989e",roadEdge:"#74787e",water:"#2aa0e0",waterDk:"#1c78b8",sand:"#f0dCa0",sandDk:"#d8bE82",roof:"#c85040",roofDk:"#902820",wall:"#ece0c0",wallDk:"#b89878",sky:"#7ac8e8",accent:"#f0d840",flower:"#f04040"},
+    autumn:{grass:"#9a8a3a",grassAlt:"#8c7c32",tree:"#c07028",treeDk:"#8a4818",trunk:"#5a3a1a",path:"#b89860",pathEdge:"#987c48",road:"#7e828a",roadEdge:"#60646c",water:"#3a72a8",waterDk:"#2a568a",sand:"#d8c088",sandDk:"#bca470",roof:"#a84838",roofDk:"#742418",wall:"#d8c4a0",wallDk:"#a88458",sky:"#c0a878",accent:"#e08028",flower:"#e05028"},
+    winter:{grass:"#cad2da",grassAlt:"#bcc6d0",tree:"#5a6a5a",treeDk:"#3c4a3c",trunk:"#4a3a2a",path:"#aab2ba",pathEdge:"#8894a0",road:"#787e88",roadEdge:"#5a606a",water:"#6a9ec0",waterDk:"#4e7ea0",sand:"#d6dae0",sandDk:"#bcC2ca",roof:"#8a5048",roofDk:"#5a2c28",wall:"#dfe6ee",wallDk:"#a8b0bc",sky:"#b0c0d0",accent:"#eaf2fa",flower:"#c0d8e8"}
+  };
+  let season="spring", seasonPopup=0;
+
+  // ================= DAY / NIGHT =================
+  // clock in [0,1): 0=midnight, 0.25=6am, 0.5=noon, 0.75=6pm. One full day = DAY_LEN seconds.
+  let clock=0.35;                 // start mid-morning
+  const DAY_LEN=180;              // seconds for a full day/night cycle
+  // 0 = full day, 1 = deep night (used for tinting + lit windows)
+  function nightFactor(){
+    // dark between ~19:30 (0.81) and ~5:30 (0.23), smooth transitions
+    const h=clock;
+    if(h>0.27 && h<0.75) return 0;                 // daytime
+    if(h>=0.75 && h<0.83) return (h-0.75)/0.08;    // dusk
+    if(h>=0.83 || h<0.19) return 1;                // night
+    return 1-((h-0.19)/0.08);                      // dawn
+  }
+  function clockLabel(){ const mins=Math.floor(clock*24*60); const hh=String(Math.floor(mins/60)).padStart(2,"0"); const mm=String(mins%60).padStart(2,"0"); return hh+":"+mm; }
+  function pal(){ return SEASON_PAL[season]; }
+  function setSeason(s){ season=s; seasonPopup=2.0; SFX.season(); SFX.setTrack(s); if(!SFX.musicPlaying()) SFX.startMusic(s); resetWeather(); saveGame(); }
+  function cycleSeason(){ const i=SEASONS.indexOf(season); setSeason(SEASONS[(i+1)%SEASONS.length]); }
+
+  // ================= WEATHER (particles ~50% duty per season) =================
+  // spring=wind (drifting petals/breeze), autumn=rain, winter=snow. summer=clear.
+  const weather = { on:false, timer:0, phase:6, particles:[] };
+  function weatherKind(){ if(season==="winter") return "snow"; if(season==="autumn") return "rain"; if(season==="spring") return "wind"; return "none"; }
+  function resetWeather(){ weather.particles.length=0; weather.on=false; weather.timer=0; weather.phase=3+Math.random()*4; }
+  function spawnParticles(kind){
+    weather.particles.length=0;
+    const n = kind==="rain"?70 : kind==="snow"?55 : kind==="wind"?26 : 0;
+    for(let i=0;i<n;i++){
+      weather.particles.push({ x:Math.random()*(W+40)-20, y:Math.random()*H, s:Math.random()*0.6+0.7, o:Math.random()*Math.PI*2 });
+    }
+  }
+  function updateWeather(dt){
+    const kind=weatherKind();
+    if(kind==="none"){ weather.on=false; weather.particles.length=0; return; }
+    weather.timer+=dt;
+    if(weather.timer>=weather.phase){ // toggle on/off -> ~50% duty
+      weather.timer=0; weather.phase=4+Math.random()*4; weather.on=!weather.on;
+      if(weather.on) spawnParticles(kind); else weather.particles.length=0;
+    }
+    if(!weather.on) return;
+    for(const p of weather.particles){
+      if(kind==="rain"){ p.y+=dt*220*p.s; p.x+=dt*40; }
+      else if(kind==="snow"){ p.o+=dt*2; p.y+=dt*38*p.s; p.x+=Math.sin(p.o)*dt*22; }
+      else if(kind==="wind"){ p.o+=dt*3; p.x+=dt*70*p.s; p.y+=Math.sin(p.o)*dt*18; }
+      if(p.y>H+4){ p.y=-4; p.x=Math.random()*(W+40)-20; }
+      if(p.x>W+20){ p.x=-20; p.y=Math.random()*H; }
+    }
+  }
+  function drawWeather(){
+    if(!weather.on) return;
+    const kind=weatherKind();
+    if(kind==="rain"){
+      ctx.strokeStyle="rgba(180,210,240,0.6)"; ctx.lineWidth=1;
+      ctx.beginPath();
+      for(const p of weather.particles){ ctx.moveTo(p.x,p.y); ctx.lineTo(p.x-2,p.y+5); }
+      ctx.stroke();
+      ctx.fillStyle="rgba(40,60,90,0.10)"; ctx.fillRect(0,0,W,H);
+    } else if(kind==="snow"){
+      ctx.fillStyle="rgba(255,255,255,0.92)";
+      for(const p of weather.particles){ const s=p.s>1.1?2:1; ctx.fillRect(Math.round(p.x),Math.round(p.y),s,s); }
+    } else if(kind==="wind"){
+      // breeze streaks + a few drifting petals/leaves
+      ctx.strokeStyle="rgba(255,255,255,0.22)"; ctx.lineWidth=1; ctx.beginPath();
+      for(let i=0;i<weather.particles.length;i+=2){ const p=weather.particles[i]; ctx.moveTo(p.x,p.y); ctx.lineTo(p.x+8,p.y-1); }
+      ctx.stroke();
+      const petal = season==="spring" ? "#f6b8d6" : "#e0a030";
+      for(let i=1;i<weather.particles.length;i+=2){ const p=weather.particles[i]; ctx.fillStyle=petal; ctx.fillRect(Math.round(p.x),Math.round(p.y),2,2); }
+    }
+  }
+
+  // ================= TEXT / UI =================
+  function text(str,x,y,color){ ctx.fillStyle=color||"#f0f0e0"; ctx.font="8px monospace"; ctx.textBaseline="top"; ctx.fillText(str,x,y); }
+  function textOutlined(str,x,y,color,outline){ ctx.font="8px monospace"; ctx.textBaseline="top"; ctx.fillStyle=outline||"#000"; ctx.fillText(str,x+1,y);ctx.fillText(str,x-1,y);ctx.fillText(str,x,y+1);ctx.fillText(str,x,y-1); ctx.fillStyle=color||"#f0f0e0"; ctx.fillText(str,x,y); }
+  function textCenter(str,cx,y,color){ ctx.font="8px monospace"; ctx.textBaseline="top"; ctx.textAlign="center"; ctx.fillStyle=color||"#f0f0e0"; ctx.fillText(str,cx,y); ctx.textAlign="left"; }
+  function panelBox(x,y,w,h){ ctx.fillStyle="#1a1a2e"; ctx.fillRect(x,y,w,h); ctx.strokeStyle="#f0f0e0"; ctx.lineWidth=1; ctx.strokeRect(x+1.5,y+1.5,w-3,h-3); }
+
+  // ================= STATE =================
+  let screen="title", titleIndex=0;
+  const player={ tx:15, ty:12, px:15*TILE, py:12*TILE, dir:"down", moving:false, animT:0, swimming:false };
+  const MOVE_SPEED=62;
+  const cam={ x:0, y:0 };
+
+  // ================= TOWN MAP (44x40, sea to the south) =================
+  const TOWN = [
+    "T..........................................T",
+    "......'.....,.........'......b.......'..b...",
+    "..RCRR.=.RCRR.==.RCRR.==.RCRR.=.RCRR.=.RCR..",
+    "..HWHH.=.HWHH.==.HWHH.==.HWHH.=.HWHH.=.HWH..",
+    "..HH1H.=.HHDH.==.HHDH.==.HHDH.=.HH6H.=.HHD..",
+    "......==.....===.....==.....===.....==....'.",
+    "..===================================.====T.",
+    "..=..b..,....=.SSSSSS.=.....,..=.RCRR.==..b.",
+    "..=.RCRR.==T.=.SWWWWS.=.T....b.=.HWHH.=T....",
+    "..=.HWHH.==..=.HH2HH..=..'...L.=.HHDH.==....",
+    "..=.HHDH.==.,==........=....b..===.....=,...",
+    "..=.....===..=========.....===============..",
+    "..=.,..b..'...=xxxxxxxxxxx=..,..'...b...L.=.",
+    "..=========.=.xAAAAAAAAAx.=.=============.=.",
+    "..=.RCRR.=.=..xABVBVBVBAx..=.=.SSSSSS.==....",
+    "..=.HWHH.=.=.,xABBBBBBBAx.,=.=.SWWWWS.=.b...",
+    "..=.HH3H.=.=..xABBB4BBBAx..=.=.HH5HH.=.'....",
+    "..=.....=.==..xxxxxxxxxxx..==.=.....===.....",
+    "..=.b.'.,..==.x.Q...N..x.==.,....b..'..=,...",
+    "..==========.=.xxxxxxxxx.=.==============...",
+    ".....'..b...=.,..........,.=..'..b...,...'..",
+    "..====================================.===..",
+    "..=.RCRR.==.,..T..b..'...=..T..b.==.RCRR.=..",
+    "..=.HWHH.=.=..............=......=.=.HWHH.=.",
+    "..=.HHDH.=.=..GGGGGG.JJJJJ=..N...=.=.HHDH.=.",
+    "..=.....=.==..GccccG.GGGGG=......=.=.....==.",
+    "..=..,..'..==.GcNNcG.GcccG=..'.b.==....,....",
+    "..=========.==GGGGGG.GGGGG==============....",
+    ".....b...'.....=............=...'..b...'..b.",
+    ".mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm.",
+    ".ssssssssssssssssssmmmmmmssssssssssKmmmssss.",
+    ".sssssssssssssssssssmmmmssssssssssmmmmsssss.",
+    ".~~~~~~~~~~~~~~~~~~~~ww~~~~~~~~~~~~~ww~~~~~.",
+    ".~~~~~~~~~~~~~~~~~~~~ww~~~~~~~~~~~~~ww~~~~~.",
+    ".~~~~~~~~~~~~~o~~~~~~ww~~~~~~~~o~~~~ww~~~~~.",
+    ".~~~~~~~~~~~~~~~~~~~~ww~~~~~~~~~~~~~ww~~~~~.",
+    ".~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.",
+    ".~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.",
+    ".~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.",
+    "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+  ];
+  const AREA_mountain=[
+    "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
+    ".......I..............M....I.b.......I......",
+    "...^^^^^^^^^^^^^^^MMMM/MMMM^^^^^^^^^^^^^^...",
+    "...^^^^^^^^^^^^^^^^MMM/MMM^^^^^^^^^^^^^^^...",
+    "...^^^^^^^^^^^^^^^^^MM/MM^^^^^^^^^^^^^^^^...",
+    "..I^^^^^^^^^^^^^^^^^^M/M^^^^^^^^^^^^^^^^^...",
+    "...^^^^^^^^^^^^^^^^^^^/^^^^^^^^^^^^^^^^^^...",
+    "...^^^^^^^^^^^^^^^^^^^/^^^^^^^^^^^^^^^^^^I..",
+    "...^^^^^^^^^^^^^^^^^^^/^^^^^^^^^^^^^^^^^^...",
+    "...^^^^^^^^^^^^^^^^^^^/^^^^^^^^^^^^^^^^^^...",
+    ".I.^^^^^^^^^^^^^^^^^^^/^^^^^^^^^^^^^^^^^^.I.",
+    "...^^^^^^^^^^^^^^^^^^^/^^^^^^^^^^^^^^^^^^...",
+    "...^^^^^^^^^^^^^^^^^^^/^^^^^^^^^^^^^^^^^^...",
+    ".......I............../......IIb............",
+    "........I............./I.................I..",
+    ".b.....b...I........../b.b..................",
+    "........///////////////..I.I.I.I............",
+    "..................I.../...b.................",
+    ".............I.....II./...RRRRI.....I..I....",
+    "..I.........I........b/b..hhhh....I.....I...",
+    "......llllllb........./...h7hh..............",
+    ".II...llllll.....II.../....I................",
+    ".....Illllll........../..........b..........",
+    "......llllll.......b../.I...b..I......b.....",
+    "......llllll........I.////////////////......",
+    "...I................../.Ib.I.....b.bI.......",
+    "..b..I....I....I..I..I/............I........",
+    ".......b............../........I...I........",
+    "...b..........I......I/.......lllllll.......",
+    "..........I.....b...../.......lllllll.....b.",
+    "....../////////////////.b.....llllRRRR......",
+    "..b.................../I......llllhhhh......",
+    "..I.....I.......I...../.......llllhDhh......",
+    ".I............bI.I..../.......lllllll.......",
+    "..b.......RRRR......../.....................",
+    "..........hhhh......../.....................",
+    ".Ib......Ih8hh......../............I.I......",
+    "........I...I........./..............b...I..",
+    "..................b.b.....II............I...",
+    "T..........................................T"
+  ];
+  const AREA_forestNW=[
+    "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
+    "T.....................b........b.........I..",
+    "T.XXXX...XXXX...XXXX.bb..I...XXXX...XXXX....",
+    "T.ZZZZ.Y.ZZZZ.Y.ZZZZ.YI.....YZZZZ..YZZZZ....",
+    "T.ZZ7Z.Y.ZZDZ.Y.ZZDZ.Y......YZZDZ..YZZDZ....",
+    "T......Y.b....Y......Y.b....Y.I....Y........",
+    "TYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY.",
+    "T......Y....b.Y......Y......Y.....IY........",
+    "T.XXXX.YI.....Y......Y......YXXXX..YXXXX....",
+    "T.ZZZZ.Y......Yb.....Y......YZZZZ.IYZZZZ....",
+    "T.ZZ8Z.Y......Y......Y......YZZDZ..YZZZZI...",
+    "T......Y......Y......Yb....IY......YZZDZ..I.",
+    "TYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY.",
+    "T......Y......Y......Y....b.Y......Y........",
+    "T......Y......Y......Y......Y...I..Yb.I.....",
+    "T....I.YI.....Y..I...YI.....Y......Y.I......",
+    "T..I...Y..I...Y...YYYYYYYYY.Y......Y........",
+    "T......Y.I....Y...YYYYYYYYY.YI.....Y....b...",
+    "T......Y......Y...YYYYQYYYY.Y......Y........",
+    "T......Y......Y.I.YYYYYYYYY.Y......Y........",
+    "T.....bY.I....Y...YYYYYYYYY.Y......Y........",
+    "T......Y......Y......Y...I..Y....IIY....b...",
+    "TYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY.",
+    "T......Y......Y......Y......Y.b.b.IY....b...",
+    "T.XXXX.Y.XXXX.Y......Y......YXXXX..YXXXX....",
+    "T.ZZZZ.Y.ZZZZ.Y......Y...I..YZZZZ..YZZZZ....",
+    "T.ZZ9Z.Y.ZZDZ.Y......Y......YZZDZ..YZZDZ....",
+    "T......Y......Y......Y..I..bY......Y........",
+    "TYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY.",
+    "T......Y......Y......Yb.....Y......Y........",
+    "T.XXXX.Y......Y.XXXX.Y....b.Y..I...YXXXX....",
+    "T.ZZZZ.Y......Y.ZZZZ.Y......Y....I.YZZZZ....",
+    "TIZZDZ.Y......Y.ZZDZ.Y......Y......YZZDZ....",
+    "T......Y......Y......Y......Y......Y........",
+    "TYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY.",
+    "T......Y......Y......Y......Y......YI.......",
+    "T.....I....................I.....I..I.......",
+    "T..............I.......................I....",
+    "T................................I..........",
+    "T..........................................."
+  ];
+  const AREA_forestNE=[
+    "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
+    "..........I..b.........I.IT..b...b......b.TT",
+    "....I...T.I..I.I.......I......T....I...bI..T",
+    "..'.......b...I...............b............T",
+    ".T.......I'.....I.b......I.......IRRRR.....T",
+    ".......I.....I.............Tb.....hhhh.....T",
+    "....I..II.b..I....RRRR..........I.hDhh...I.T",
+    "..I.....I.........hhhh......I........I.....T",
+    "......lllllll.....h7hh..T..bI...I.I.I...I..T",
+    "...b..lllllll......I..........I....b..I....T",
+    "..II..lllllll.bI..'............I..II...b...T",
+    ".I..'blllllll..I....I...............T......T",
+    "..I...lllllll..............................T",
+    "......lllllll..I....b......TI........I....TT",
+    "..................I.........I.RRRR......'b.T",
+    ".I...........'..TIT..I......I.hhhh.........T",
+    ".b......I...I......I....II...'h8hh........IT",
+    "........II..............bI....I....TT......T",
+    "..T.....I...b..b.........I......I..........T",
+    ".......................T........ITI........T",
+    ".I........b................................T",
+    "......b.I............T...I.....I......T...'T",
+    "....'I..RRRR...................I..T.......IT",
+    ".......IhhhhT.......II......I..............T",
+    "....'...hDhh..............b.llllllll..T....T",
+    "...I...b..................T'llllllll...I...T",
+    ".....bI..Tb...I.........I...llllllll.......T",
+    "........I..b.........T..b...llllllll.II....T",
+    "..T.........b...............llllllll.b...IIT",
+    "..T..I.I.....I.'.......TTb..llllllll.b.T...T",
+    "....................TT..'..IllllllllT......T",
+    ".I.T.......T.....T........II.....bII.......T",
+    ".........I..........I...........b...I......T",
+    "................T......'...T..'.....T......T",
+    "...I...T......b.bI......Ib.....'..bI.I...I.T",
+    "...b..I...I.........T.......T.II.III.....I.T",
+    "......'...T.bT.....I.....ITT..I.T..........T",
+    "......b...I...............T.......I.b....I.T",
+    ".......T....T...I.I.I..........T...I..T....T",
+    "T..........................................T"
+  ];
+  const AREA_holiday=[
+    "T..........................................T",
+    "T.................................'....'....",
+    "T.......Y.......Y.......Yp...'..Y.......Y...",
+    "T.'RRR'.Y.pRRR..Y..RRR..Y.pRRR.pY..RRR..Y...",
+    "T..HHH'.Y..HHH..Y..HHH..Y..HHH..Y..HHH..Y...",
+    "T..H7H..Y..HDH..Y..HDH..Y..HDH..Y..HDH..Y...",
+    "TYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY.",
+    "Tp......Y.....p.Y.......Y.......Y.......Y...",
+    "T..p..ppYp......Y.....'.Y.......Y.......Y...",
+    "T...RRR.Y...RRR.Y...RRRpY...RRR.Y..'RRR.Y...",
+    "T...HHH.Yp..HHH.Y...HHH.Y...HHH.Y...HHH.Y...",
+    "T...H8H.Y...HDH.Y...HDH.Y...HDH.Y...HDH.Y...",
+    "TYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY.",
+    "T.......Y...pp..Y..'..p.Y.......Y.......Y.p.",
+    "T....'..Y.....p.Y...p...Y....p..Y.......Y...",
+    "T...RRR.Yp..RRR.Y...YYYYY...RRR.Y..pRRR.Y...",
+    "T...HHH.Y...HHH.Y...YOOYY...HHH.Y...HHHpY...",
+    "T.p.H9H.Y'..HDH.Y...YYYYY...HDH.Y...HDH.Y...",
+    "TYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY.",
+    "T.......Y....p.'Y.......Y.......Y.....'.Y...",
+    "T.......Y.'..p..Y..p...pY...p...Y.......Y...",
+    "T...RRR'Y.....p.Y...RRR.YYYY..RRR.......Y...",
+    "T...HHH.Y....pp.Yp.pHHH.YOOY..HHH'......Y...",
+    "T...HDH.Y.......Y...HDH.YYYY..HDH.p.....Y...",
+    "TYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY.",
+    "T.......Y.......Y.......Y....p..Y.......Y...",
+    "T.p....pY.......Y.......Y....p..Yp...p..Y...",
+    "Tssssssssssssssssssssssssssssssssssssssssss.",
+    "Tssssssssssssssssssssssssssssssssssssssssss.",
+    "Tdddddddddddddddddddddddddddddddddddddddddd.",
+    "Tssssssssssssssssssssssssssssssssssssssssss.",
+    "Tssssssssssssssssssssssssssssssssssssssssss.",
+    "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.",
+    "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.",
+    "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.",
+    "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.",
+    "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.",
+    "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.",
+    "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.",
+    "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+  ];
+  const AREA_industrial=[
+    "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTi",
+    "Y.......YYY.YYYYYYYYYYYYYYYYYYYYYYYYYYYYcYYi",
+    "Y.........Y.Y.YYYYYYYYYYYYcYYYYYYcYYYYYcYYYi",
+    "Y..T'....Y..Y.YYJkJkJkJYYJkJkJkJYYYJkJkJJYYi",
+    "Y.RRRR....YYY.YYFFFFFFFYYFFFFFFFYcYFFFFFFYYi",
+    "Y.HHHH.....YY.YYFFFFFFFYYFFFFFFFeYYFFFFFFYei",
+    "Y.HHDH......YYYYFFFFFFFYYFFFFFFFYYYFFFFFFYYi",
+    "Y.......TYeYYYYYcYYcYYYYYFFFFFFFYYYYYYYYYYYi",
+    "Y.......JJJYTYYYYYYYYYYYYYYYYeYYYYYYYYeYYYYi",
+    "Y.......zzzY.YYYYYYeYYYYYYYYeYcYYYYYYYYYYYYi",
+    "Y.......zzzYYcYYJkJkJkJYYJkJkJkJJYYYJkJkJYYi",
+    "Y..........Y.YYYFFFFFFFcYFFFFFFFFYYYFFFFFYYi",
+    "Y.RRRR...YYY.'YYFFFFFFFYYFFFFFFFFYYYFFFFFYYi",
+    "Y.HHHH...TY..YYYFFFFFFFYYFFFFFFFFYYYFFFFFYYi",
+    "Y.HHDH.....Y.YYYYYYYYYYcYYYYYYYYYYYYYYYecYYi",
+    "Y........YYT.YYYYYYYYYYYYYYYYYYYYYYeYYYYYYYi",
+    "YT...T.......'YYYYYYYYYYYYYYYYYYYYYYYYYYYYYi",
+    "Y.....T...Y.YceYJkJkJJYYJkJkJkJYYJkJkJJJJYYi",
+    "Y.........YY.YYYFFFFFFYYFFFFFFFYYFFFFFzzzYYi",
+    "Y........Y.YYYYYFFFFFFYYFFFFFFFYYFFFFFzzzYYi",
+    "Y.........YYYYcYFFFFFFYYFFFFFFFYYFFFFFFFFYYi",
+    "Y.........Y.YYYYeYYYYYYYYYYYYYYYYeYcYYYYYYYi",
+    "Y..RRRR......YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYi",
+    "Y..HHHHYYe..YTYYYeeYYYYYYYYYYYYYecYYYYYceYYi",
+    "Y..HHDH...Y...YYJkJkJkJYYJkJkJkJYYJkJkJkJYYi",
+    "Y........YTYY.YYFFFFFFFYYFFFFFFFYYFFFFFFFYYi",
+    "Y........YJJJ.YYFFFFFFFYYFFFFFFFYYFFFFFFFYYi",
+    "Y.........zzzYYYFFFFFFFYYFFFFFFFYYFFFFFFFYYi",
+    "Y........YzzzYYYYYYYYcYYYYYYYYYYeYYYYYYYYYYi",
+    "Y......'...YYYYYYYYYJJJYYYYYYYJJJYYYYYYYYYYi",
+    "Y.....'Y.TY.YYTYYYYYzzzYYYYYYYzzzYYYYYYYYYYi",
+    "YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYi",
+    "YqqqqqqqqqqqqqqqqqqqYYqqqqqqqqqqqqYYYYYYYYYi",
+    "YqqqqqqqqqqqqqqqqqqqYYqqqqqqqqqqqqYvYYYYvYYi",
+    "YqqqqqqqqqqqqqqqqqqqYYqqqqqqqqqqqqYYYYYcYYYi",
+    "YqqqqqqqqqqqqqqqqqqqYYqqqqqqqqqqqqYYYvYYYYYi",
+    "YqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqcYYYYYYvYi",
+    "YqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqYYvYYYYYYi",
+    "Yqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqi",
+    "qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq"
+  ];
+  const AREAS={ town:TOWN, mountain:AREA_mountain, forestNW:AREA_forestNW, forestNE:AREA_forestNE, holiday:AREA_holiday, industrial:AREA_industrial };
+  const AREA_GRID={"0,0": "forestNW", "1,0": "mountain", "2,0": "forestNE", "0,1": "holiday", "1,1": "town", "2,1": "industrial"};
+  const AREA_LABEL={ town:"CRUDO", mountain:"MONTAGNA", forestNW:"BORGO DI MONTAGNA", forestNE:"FORESTA EST", holiday:"VILLAGGIO VACANZE", industrial:"ZONA INDUSTRIALE" };
+  let areaKey="town";
+
+
+  // ================= INTERIORS =================
+  // 'k' = interior NPC standing marker (solid). Each interior has its own npc.
+  const INTERIORS = {
+    nonna:{ nameKey:"house_nonna", rows:["#########","#f..s..p#","#.......#","#..t.b..#","#..c.rr.#","#.......#","####e####"], spawn:{tx:4,ty:5},
+      npc:{ tx:6, ty:3, color:"#d060a0", colorDk:"#902c68", kind:"ow", hairCol:"#e8e8ec", pants:"#7a4a6a", nameKey:"nonna", lines:()=>t("in_nonna") } },
+    store:{ nameKey:"store", rows:["#########","#sssssss#","#.......#","#.t.t.t.#","#.......#","#..p.p..#","####e####"], spawn:{tx:4,ty:5},
+      npc:{ tx:2, ty:5, color:"#c07030", colorDk:"#8a4818", kind:"om", pants:"#4a4048", nameKey:"shopkeeper", lines:()=>t("in_store") } },
+    townhall:{ nameKey:"townhall", rows:["###########","#p.......p#","#.VVVVVVV.#","#.........#","#..t...t..#","#.c.....c.#","#....e....#","###########"], spawn:{tx:5,ty:6},
+      npc:{ tx:5, ty:4, color:"#7060c0", colorDk:"#443c8a", kind:"om", pants:"#3a3a4a", nameKey:"mayor", lines:()=>t("in_mayor") } },
+    bungalow:{ nameKey:"in_bungalow_t", rows:["#########","#s.....p#","#.......#","#.b...t.#","#..rr...#","#.......#","####e####"], spawn:{tx:4,ty:5},
+      npc:{ tx:6, ty:3, color:"#40b0a0", colorDk:"#2c7a70", kind:"yw", hairCol:"#e0c040", pants:"#2c7a70", nameKey:"host", lines:()=>t("in_bungalow") } },
+    cabin:{ nameKey:"in_cabin_t", rows:["#########","#f.....s#","#.......#","#..t.b..#","#..c....#","#.......#","####e####"], spawn:{tx:4,ty:5},
+      npc:{ tx:2, ty:3, color:"#6a8a40", colorDk:"#465e28", kind:"om", pants:"#3a4a2a", nameKey:"hermit", lines:()=>t("in_cabin") } },
+    chalet:{ nameKey:"in_chalet_t", rows:["#########","#f..b..p#","#.......#","#.t...t.#","#.c.rr..#","#.......#","####e####"], spawn:{tx:4,ty:5},
+      npc:{ tx:6, ty:3, color:"#c06040", colorDk:"#8a3c24", kind:"ow", hairCol:"#e8e8ec", pants:"#6a3a2a", nameKey:"granny2", lines:()=>t("in_chalet") } }
+  };
+  // town doors (fixed interiors); other areas use a per-area default interior for door chars 7/8/9
+  const DOORS = {
+    "1": { interior:"nonna", outX:4, outY:5 },
+    "2": { interior:"store", outX:17, outY:10 },
+    "4": { interior:"townhall", outX:19, outY:17 }
+  };
+  const AREA_INTERIOR={ holiday:"bungalow", forestNE:"cabin", forestNW:"chalet", mountain:"cabin" };
+  let insideKey=null, outsideReturn=null, returnArea="town";
+  const cur={ rows:TOWN, w:TOWN[0].length, h:TOWN.length };
+  function useMap(rows){ cur.rows=rows; cur.w=rows[0].length; cur.h=rows.length; }
+  // ---- multi-area (screen-transition) ----
+  function gridPosOf(key){ for(const k in AREA_GRID){ if(AREA_GRID[k]===key){ const p=k.split(","); return [parseInt(p[0]),parseInt(p[1])]; } } return [1,1]; }
+  function areaAt(col,row){ return AREA_GRID[col+","+row]||null; }
+  function neighborArea(dir){ const [c,r]=gridPosOf(areaKey);
+    if(dir==="N") return areaAt(c,r-1); if(dir==="S") return areaAt(c,r+1);
+    if(dir==="W") return areaAt(c-1,r); if(dir==="E") return areaAt(c+1,r); return null; }
+  function switchArea(key, entryX, entryY){
+    if(insideKey) return; areaKey=key; useMap(AREAS[key]);
+    player.tx=entryX; player.ty=entryY; player.px=entryX*TILE; player.py=entryY*TILE; player.moving=false; player.swimming=false;
+    banner(t("area_"+key)||AREA_LABEL[key]||key); SFX.door(); saveGame();
+  }
+  function inTown(){ return areaKey==="town"; }
+  function tileAt(tx,ty){ if(insideKey){ if(ty<0||ty>=cur.h||tx<0||tx>=cur.w) return "#"; return cur.rows[ty][tx]; }
+    if(ty>=cur.h) return "~";                 // below the map = open sea (no trees south of the sea)
+    if(ty<0||tx<0||tx>=cur.w) return "T";     // N/E/W borders = trees
+    return cur.rows[ty][tx]; }
+
+  // Walkable outside: . , ' = s(sand) m(promenade) x(plaza). Structural tiles solid.
+  const OUT_SOLID=new Set(["T","H","R","W","C","Q","~","L","N","D","A","B","V","S","K","w","o","G","J","c","P","^","l","q","F","k","e","z","p","u","v","i"]);
+  const INSIDE_SOLID=new Set(["#","s","t","b","f","p","V","k"]);
+  // The central pier is walkable (you can stroll onto it); the east pier stays decorative.
+  function isCentralPier(tx,ty){ return (tx===21||tx===22) && ty>=32 && ty<=35; }
+  function currentInteriorNpc(){ return insideKey ? INTERIORS[insideKey].npc : null; }
+  function isSolid(tx,ty){ const c=tileAt(tx,ty);
+    if(insideKey){ const inpc=currentInteriorNpc(); if(inpc && inpc.tx===tx && inpc.ty===ty) return true; return INSIDE_SOLID.has(c); }
+    if(!insideKey && isCentralPier(tx,ty)) return false;   // walkable central pier
+    if(c.match(/[1-9]/)||c==="D") return true;
+    return OUT_SOLID.has(c);
+  }
+
+  // ================= QUESTS & ITEMS =================
+  let questState=0;                         // cat quest: 0..3
+  const cat={ tx:10, ty:31, found:false, animT:0 };  // on the beach
+  let shellQuest=0;                         // 0 none,1 find shell,2 found,3 done
+  const shell={ tx:30, ty:30, found:false, animT:0 };  // half-buried in sand
+
+  // ================= STORY / CHAPTER / QUEST ENGINE =================
+  // Declarative quests: each has steps; the current step's label shows in the journal.
+  // A quest advances via qAdvance(id) (called by triggers) and completes at the last step.
+  // status: "locked" | "available" | "active" | "done"
+  let chapter=1;
+  const flags={};                                   // arbitrary story flags (met NPCs, found chicche...)
+  function setFlag(f){ if(!flags[f]){ flags[f]=true; saveGame(); } }
+  function hasFlag(f){ return !!flags[f]; }
+
+  // Chapter 1 quests. type main/side. steps: array of short journal labels (i18n keys).
+  const QUESTS = {
+    // ---- MAIN ----
+    room:   { chap:1, type:"main", nameK:"q_room_t",  steps:["q_room_s0","q_room_s1"], status:"available", step:0 },
+    job:    { chap:1, type:"main", nameK:"q_job_t",   steps:["q_job_s0","q_job_s1"],   status:"locked",    step:0, needs:"room" },
+    friends:{ chap:1, type:"main", nameK:"q_fri_t",   steps:["q_fri_s0","q_fri_s1"],   status:"locked",    step:0, needs:"job" },
+    bike:   { chap:1, type:"main", nameK:"q_bike_t",  steps:["q_bike_s0","q_bike_s1"], status:"locked",    step:0, needs:"friends" },
+    // ---- SIDE (open via encounters/chicche) ----
+    cat:    { chap:1, type:"side", nameK:"q_cat_t",   steps:["q_cat_s0","q_cat_s1"],   status:"available", step:0 },
+    shell:  { chap:1, type:"side", nameK:"q_shell_t", steps:["q_shell_s0","q_shell_s1"],status:"available",step:0 },
+    parcel: { chap:1, type:"side", nameK:"q_par_t",   steps:["q_par_s0","q_par_s1"],   status:"available", step:0 },
+    kids:   { chap:1, type:"side", nameK:"q_kids_t",  steps:["q_kids_s0","q_kids_s1","q_kids_s2"], status:"available", step:0 },
+    oldfriend:{ chap:1, type:"side", nameK:"q_of_t",  steps:["q_of_s0","q_of_s1"],     status:"available", step:0 },
+    photos: { chap:1, type:"side", nameK:"q_ph_t",    steps:["q_ph_s0","q_ph_s1"],     status:"available", step:0 }
+  };
+  const QORDER = ["room","job","friends","bike","cat","shell","parcel","kids","oldfriend","photos"];
+  let questPop="", questPopT=0;
+  function questPopup(msg){ questPop=msg; questPopT=2.6; }
+
+  function qStatus(id){ return QUESTS[id] ? QUESTS[id].status : "locked"; }
+  function qStart(id){ const q=QUESTS[id]; if(!q||q.status==="done"||q.status==="active") return;
+    q.status="active"; q.step=0; SFX.quest(); questPopup(t("new_quest")+" "+t(q.nameK)); saveGame(); }
+  function qAdvance(id){ const q=QUESTS[id]; if(!q||q.status!=="active") return;
+    q.step++;
+    if(q.step>=q.steps.length-1){ /* on last step */ }
+    saveGame();
+  }
+  function qComplete(id){ const q=QUESTS[id]; if(!q||q.status==="done") return;
+    q.status="done"; q.step=q.steps.length-1; SFX.questDone(); questPopup(t("quest_done")+" "+t(q.nameK));
+    // unlock next main quest that needs this one
+    QORDER.forEach(k=>{ const nq=QUESTS[k]; if(nq && nq.needs===id && nq.status==="locked"){ nq.status="available"; } });
+    checkChapterComplete(); saveGame();
+  }
+  function checkChapterComplete(){
+    const mains=QORDER.filter(k=>QUESTS[k].chap===chapter && QUESTS[k].type==="main");
+    if(mains.every(k=>QUESTS[k].status==="done")){ questPopup(t("chapter_done")); }
+  }
+  // Does talking to this NPC currently start or complete a quest? (drives the "!" marker)
+  function npcHasQuest(n){
+    if(!n||!n.id) return false;
+    const av=(id)=>QUESTS[id]&&QUESTS[id].status==="available";
+    const act=(id)=>QUESTS[id]&&QUESTS[id].status==="active";
+    switch(n.id){
+      case "nonna":   return questState===0 || questState===2;         // cat: give / hand back
+      case "pino":    return shellQuest===0 || shellQuest===2;         // shell
+      case "mamma":   return av("room")||act("room");
+      case "capo":    return av("job")||act("job");
+      case "teo":     return av("friends")||act("friends");
+      case "fornaio": return av("parcel");                             // gives the parcel
+      case "marinaio":return act("parcel")&&hasFlag("hasParcel");      // receives it
+      case "nico":    return av("oldfriend")||(act("oldfriend")&&hasFlag("keyring"));
+      case "boy":     return av("kids");                               // starts the quarrel quest
+      case "girl":    return act("kids")&&QUESTS.kids.step>=2;         // make up (after ball)
+      default: return false;
+    }
+  }
+  // serialize/restore quest engine for saves
+  function serializeQuests(){ const o={}; QORDER.forEach(k=>o[k]=[QUESTS[k].status,QUESTS[k].step]); return o; }
+  function restoreQuests(o){ if(!o) return; QORDER.forEach(k=>{ if(o[k]&&QUESTS[k]){ QUESTS[k].status=o[k][0]; QUESTS[k].step=o[k][1]; } }); }
+  function resetQuests(){ QORDER.forEach(k=>{ const q=QUESTS[k]; q.step=0; q.status = (k==="room"||k==="cat"||k==="shell"||k==="parcel"||k==="kids"||k==="oldfriend"||k==="photos")?"available":"locked"; });
+    for(const f in flags) delete flags[f]; chapter=1; }
+
+  // ================= NPCs =================
+  const npcs = [
+    { id:"nonna", tx:2, ty:5, dir:"down", color:"#d060a0", colorDk:"#902c68", kind:"ow", hairCol:"#e8e8ec", pants:"#7a4a6a", nameKey:"nonna",
+      lines:()=>{ if(questState===0) return t("nonna0"); if(questState===1) return t("nonna1"); if(questState===2) return t("nonna2"); return t("nonna3"); },
+      onTalk:()=>{ if(questState===0){questState=1;qStart("cat");saveGame();} else if(questState===2){questState=3;qComplete("cat");saveGame();} } },
+    { id:"vito", tx:35, ty:19, dir:"down", color:"#5088d0", colorDk:"#2c5490", kind:"om", pants:"#5a5040", nameKey:"vito", lines:()=>t("vito"), onTalk:()=>{} },
+    { id:"pino", tx:28, ty:24, dir:"down", color:"#40a0a0", colorDk:"#2c7070", kind:"ym", hairCol:"#6a4a2a", pants:"#3a4a6a", nameKey:"pino",
+      lines:()=>{ if(shellQuest===0) return t("pino0"); if(shellQuest===1) return t("pino1"); if(shellQuest===2) return t("pino2"); return t("pino3"); },
+      onTalk:()=>{ if(shellQuest===0){shellQuest=1;qStart("shell");saveGame();} else if(shellQuest===2){shellQuest=3;qComplete("shell");saveGame();} } },
+    { id:"lena", tx:8, ty:19, dir:"down", color:"#50b070", colorDk:"#2c7048", kind:"yw", hairCol:"#e0c040", pants:"#3a6a48", nameKey:"lena", lines:()=>t("lena"), onTalk:()=>{}, speed:24,
+      home:[2,20], routine:[ {h:[7,9],go:[17,10]}, {h:[9,13],go:[30,8]}, {h:[13,15],go:[9,23]}, {h:[15,19],go:[8,29]}, {h:[19,24],go:[2,20]}, {h:[0,7],go:[2,20]} ] },
+    { id:"marinaio", tx:28, ty:29, dir:"down", color:"#4060a0", colorDk:"#243c68", kind:"om", pants:"#2a3a4a", nameKey:"marinaio",
+      lines:()=>{ return (QUESTS.parcel.status==="active" && hasFlag("hasParcel")) ? t("dest0") : t("marinaio"); },
+      onTalk:()=>{ if(QUESTS.parcel.status==="active" && hasFlag("hasParcel")){ setFlag("parcelDone"); qComplete("parcel"); } }, speed:20,
+      home:[38,19], routine:[ {h:[6,17],go:[28,29]}, {h:[17,20],go:[8,29]}, {h:[20,24],go:[38,19]}, {h:[0,6],go:[38,19]} ] },
+    { id:"ciclista", tx:2, ty:20, dir:"right", color:"#e0a030", colorDk:"#a86818", kind:"ym", hairCol:"#3a2a1a", pants:"#5a4a2a", nameKey:"ciclista", lines:()=>t("ciclista"), onTalk:()=>{}, bike:true, speed:60,
+      home:[2,20], routine:[ {h:[8,12],go:[41,20]}, {h:[12,14],go:[9,23]}, {h:[14,19],go:[41,20]}, {h:[19,24],go:[2,20]}, {h:[0,8],go:[2,20]} ] },
+    { id:"gina", tx:16, ty:20, dir:"down", color:"#c85088", colorDk:"#8a2c5a", kind:"yw", hairCol:"#6a4a2a", pants:"#8a2c5a", nameKey:"gina", lines:()=>t("gina_lines"), onTalk:()=>{}, speed:22,
+      home:[16,20], routine:[ {h:[8,12],go:[18,18]}, {h:[12,16],go:[30,20]}, {h:[16,20],go:[9,23]}, {h:[20,24],go:[16,20]}, {h:[0,8],go:[16,20]} ] },
+    { id:"bruno", tx:6, ty:7, dir:"right", color:"#6a8a40", colorDk:"#465e28", kind:"ym", hairCol:"#6a4a2a", pants:"#2a4a3a", nameKey:"bruno", lines:()=>t("bruno_lines"), onTalk:()=>{}, speed:20,
+      home:[6,7], routine:[ {h:[7,9],go:[17,10]}, {h:[9,13],go:[6,7]}, {h:[13,18],go:[30,8]}, {h:[18,21],go:[18,18]}, {h:[21,24],go:[6,7]}, {h:[0,7],go:[6,7]} ] },
+    { id:"pesc1", tx:21, ty:34, dir:"left", color:"#c88030", colorDk:"#8a5518", kind:"om", pants:"#4a3a2a", nameKey:"pescatore", fishing:true, lines:()=>t("fisher_ask"),
+      onTalk:(n)=>{ askYesNo(t("fisher_join_q"), ()=>startFishing()); } },
+    { id:"pesc2", tx:22, ty:35, dir:"down", color:"#3a7a9a", colorDk:"#245468", kind:"ym", hairCol:"#3a2a1a", pants:"#4a4038", nameKey:"pescatore", fishing:true, lines:()=>t("fisher_ask2"),
+      onTalk:(n)=>{ askYesNo(t("fisher_join_q"), ()=>startFishing()); } },
+    // ---- Children ----
+    { id:"boy", tx:9, ty:18, dir:"right", color:"#e05030", colorDk:"#a02c18", kind:"boy", pants:"#2a4a7a", nameKey:"bimbo",
+      lines:()=>{ if(QUESTS.kids.status==="done") return t("bimbo_l"); return t("kid_a0"); },
+      onTalk:()=>{ const q=QUESTS.kids; if(q.status==="available"){ qStart("kids"); q.step=1; } }, speed:30,
+      home:[9,18], routine:[ {h:[0,6],go:[9,18]},{h:[6,12],go:[13,18]},{h:[12,18],go:[9,18]},{h:[18,24],go:[13,18]} ] },
+    { id:"girl", tx:24, ty:20, dir:"down", color:"#e0a0c0", colorDk:"#a05888", kind:"girl", hairCol:"#6a4a2a", pants:"#c04888", nameKey:"bimba",
+      lines:()=>{ if(QUESTS.kids.status==="done") return t("bimba_l"); if(QUESTS.kids.step>=2) return t("kids_done_l0"); return t("kid_b0"); },
+      onTalk:()=>{ const q=QUESTS.kids; if(q.status==="active" && q.step>=2){ qComplete("kids"); banner(t("kids_done")); } }, speed:28,
+      home:[24,20], routine:[ {h:[0,6],go:[24,20]},{h:[6,12],go:[24,23]},{h:[12,18],go:[24,20]},{h:[18,24],go:[24,23]} ] },
+    // ---- side-quest NPCs ----
+    { id:"fornaio", tx:30, ty:7, dir:"down", color:"#e0c080", colorDk:"#a88848", kind:"om", nameKey:"fornaio",
+      lines:()=>{ return hasFlag("parcelDone")? t("fornaio1") : t("fornaio0"); },
+      onTalk:()=>{ const q=QUESTS.parcel; if(q.status==="available"){ qStart("parcel"); setFlag("hasParcel"); banner(t("parcel_got")); } } },
+    { id:"nico", tx:12, ty:25, dir:"down", color:"#40b0a0", colorDk:"#2c7a70", kind:"ym", hairCol:"#3a2a1a", pants:"#3a4a5a", nameKey:"nico",
+      lines:()=>{ return QUESTS.oldfriend.status==="done"? t("nico1") : t("nico0"); },
+      onTalk:()=>{ const q=QUESTS.oldfriend; if(q.status==="available"){ qStart("oldfriend"); } else if(q.status==="active" && hasFlag("keyring")){ qComplete("oldfriend"); } } },
+    // ---- Chapter 1 story NPCs ----
+    { id:"mamma", tx:6, ty:12, dir:"down", color:"#c060a0", colorDk:"#8a2c6a", kind:"ow", hairCol:"#e8e8ec", pants:"#7a3a6a", nameKey:"mamma",
+      lines:()=>{ return QUESTS.room.status==="done" ? t("mamma1") : t("mamma0"); },
+      onTalk:()=>{ const q=QUESTS.room; if(q.status==="available"){ qStart("room"); } else if(q.status==="active"){ qComplete("room"); banner(t("room_msg")); } } },
+    { id:"capo", tx:20, ty:24, dir:"down", color:"#5a7a3a", colorDk:"#3a5424", kind:"om", pants:"#3a3a2a", nameKey:"capo",
+      lines:()=>{ return QUESTS.job.status==="done" ? t("capo1") : t("capo0"); },
+      onTalk:()=>{ const q=QUESTS.job; if(q.status==="available"){ qStart("job"); } else if(q.status==="active"){ qComplete("job"); } } },
+    { id:"teo", tx:17, ty:17, dir:"down", color:"#3a6ac0", colorDk:"#24448a", kind:"ym", hairCol:"#3a2a1a", pants:"#3a3a5a", nameKey:"teo",
+      lines:()=>{ return QUESTS.friends.status==="done" ? t("teo1") : t("teo0"); },
+      onTalk:()=>{ const q=QUESTS.friends; if(q.status==="available"){ qStart("friends"); } else if(q.status==="active"){ qComplete("friends"); } } }
+  ];
+  npcs.forEach(n=>{ n.px=n.tx*TILE; n.py=n.ty*TILE; });
+  // bike object for the 'bike' quest
+  const bike={ tx:37, ty:25, taken:false, animT:0 };
+  const AREA_NPCS={};
+  AREA_NPCS.holiday=[
+    { id:"holiday_npc0", tx:26, ty:19, dir:"down", color:"#5088d0", colorDk:"#2c5490", kind:"ym", hairCol:"#3a2a1a", pants:"#2c5490", outfitBase:"vacation", nameKey:"passerby", lines:()=>t("passerby_l"), onTalk:()=>{}, speed:22, home:[26,19], routine:[{h:[0,6],go:[26,19]},{h:[6,12],go:[31,19]},{h:[12,18],go:[26,19]},{h:[18,24],go:[31,19]}] },
+    { id:"holiday_npc1", tx:14, ty:24, dir:"down", color:"#50b070", colorDk:"#2c7048", kind:"yw", hairCol:"#e0c040", pants:"#2c7048", outfitBase:"vacation", nameKey:"passerby", lines:()=>t("passerby_l"), onTalk:()=>{}, speed:26, home:[14,24], routine:[{h:[0,6],go:[14,24]},{h:[6,12],go:[17,24]},{h:[12,18],go:[14,24]},{h:[18,24],go:[17,24]}] },
+    { id:"holiday_npc2", tx:37, ty:0, dir:"down", color:"#c85088", colorDk:"#8a2c5a", kind:"om", hairCol:"#8a2c5a", pants:"#8a2c5a", outfitBase:"vacation", nameKey:"passerby", lines:()=>t("passerby_l"), onTalk:()=>{}, speed:30, home:[37,0], routine:[{h:[0,6],go:[37,0]},{h:[6,12],go:[40,0]},{h:[12,18],go:[37,0]},{h:[18,24],go:[40,0]}] },
+    { id:"holiday_npc3", tx:7, ty:23, dir:"down", color:"#e0a030", colorDk:"#a86818", kind:"ow", hairCol:"#a86818", pants:"#a86818", outfitBase:"vacation", nameKey:"passerby", lines:()=>t("passerby_l"), onTalk:()=>{}, speed:22, home:[7,23], routine:[{h:[0,6],go:[7,23]},{h:[6,12],go:[11,23]},{h:[12,18],go:[7,23]},{h:[18,24],go:[11,23]}] },
+    { id:"holiday_npc4", tx:20, ty:31, dir:"down", color:"#6a8a40", colorDk:"#465e28", kind:"boy", hairCol:"#1a1a1a", pants:"#465e28", outfitBase:"vacation", nameKey:"passerby", lines:()=>t("passerby_l"), onTalk:()=>{}, speed:26, home:[20,31], routine:[{h:[0,6],go:[20,31]},{h:[6,12],go:[24,31]},{h:[12,18],go:[20,31]},{h:[18,24],go:[24,31]}] },
+    { id:"holiday_npc5", tx:38, ty:29, dir:"down", color:"#c06040", colorDk:"#8a3c24", kind:"girl", hairCol:"#6a4a2a", pants:"#8a3c24", outfitBase:"vacation", nameKey:"passerby", lines:()=>t("passerby_l"), onTalk:()=>{}, speed:30, home:[38,29], routine:[{h:[0,6],go:[38,29]},{h:[6,12],go:[43,29]},{h:[12,18],go:[38,29]},{h:[18,24],go:[43,29]}] },
+    { id:"holiday_npc6", tx:17, ty:16, dir:"down", color:"#40a0a0", colorDk:"#2c7070", kind:"ym", hairCol:"#3a2a1a", pants:"#2c7070", outfitBase:"vacation", nameKey:"passerby", lines:()=>t("passerby_l"), onTalk:()=>{}, speed:22, home:[17,16], routine:[{h:[0,6],go:[17,16]},{h:[6,12],go:[22,16]},{h:[12,18],go:[17,16]},{h:[18,24],go:[22,16]}] },
+    { id:"holiday_npc7", tx:39, ty:20, dir:"down", color:"#8a6ac0", colorDk:"#5a4488", kind:"yw", hairCol:"#e0c040", pants:"#5a4488", outfitBase:"vacation", nameKey:"passerby", lines:()=>t("passerby_l"), onTalk:()=>{}, speed:26, home:[39,20], routine:[{h:[0,6],go:[39,20]},{h:[6,12],go:[42,20]},{h:[12,18],go:[39,20]},{h:[18,24],go:[42,20]}] },
+    { id:"holiday_npc8", tx:29, ty:6, dir:"down", color:"#c0a040", colorDk:"#8a7020", kind:"om", hairCol:"#8a7020", pants:"#8a7020", outfitBase:"vacation", nameKey:"passerby", lines:()=>t("passerby_l"), onTalk:()=>{}, speed:30, home:[29,6], routine:[{h:[0,6],go:[29,6]},{h:[6,12],go:[33,6]},{h:[12,18],go:[29,6]},{h:[18,24],go:[33,6]}] },
+    { id:"holiday_npc9", tx:32, ty:18, dir:"down", color:"#5088d0", colorDk:"#2c5490", kind:"ow", hairCol:"#2c5490", pants:"#2c5490", outfitBase:"vacation", nameKey:"passerby", lines:()=>t("passerby_l"), onTalk:()=>{}, speed:22, home:[32,18], routine:[{h:[0,6],go:[32,18]},{h:[6,12],go:[37,18]},{h:[12,18],go:[32,18]},{h:[18,24],go:[37,18]}] },
+    { id:"holiday_npc10", tx:30, ty:8, dir:"down", color:"#50b070", colorDk:"#2c7048", kind:"boy", hairCol:"#1a1a1a", pants:"#2c7048", outfitBase:"vacation", nameKey:"passerby", lines:()=>t("passerby_l"), onTalk:()=>{}, speed:26, home:[30,8], routine:[{h:[0,6],go:[30,8]},{h:[6,12],go:[33,8]},{h:[12,18],go:[30,8]},{h:[18,24],go:[33,8]}] },
+    { id:"holiday_npc11", tx:6, ty:5, dir:"down", color:"#c85088", colorDk:"#8a2c5a", kind:"girl", hairCol:"#6a4a2a", pants:"#8a2c5a", outfitBase:"vacation", nameKey:"passerby", lines:()=>t("passerby_l"), onTalk:()=>{}, speed:30, home:[6,5], routine:[{h:[0,6],go:[6,5]},{h:[6,12],go:[10,5]},{h:[12,18],go:[6,5]},{h:[18,24],go:[10,5]}] }
+  ];
+  AREA_NPCS.industrial=[
+    { id:"industrial_npc0", tx:7, ty:5, dir:"down", color:"#5088d0", colorDk:"#2c5490", kind:"ym", hairCol:"#3a2a1a", pants:"#2c5490", outfitBase:"worker", nameKey:"passerby", lines:()=>t("passerby_l"), onTalk:()=>{}, speed:22, home:[7,5], routine:[{h:[0,6],go:[7,5]},{h:[6,12],go:[12,5]},{h:[12,18],go:[7,5]},{h:[18,24],go:[12,5]}] },
+    { id:"industrial_npc1", tx:2, ty:30, dir:"down", color:"#50b070", colorDk:"#2c7048", kind:"yw", hairCol:"#e0c040", pants:"#2c7048", outfitBase:"worker", nameKey:"passerby", lines:()=>t("passerby_l"), onTalk:()=>{}, speed:26, home:[2,30], routine:[{h:[0,6],go:[2,30]},{h:[6,12],go:[6,30]},{h:[12,18],go:[2,30]},{h:[18,24],go:[6,30]}] },
+    { id:"industrial_npc2", tx:31, ty:1, dir:"down", color:"#c85088", colorDk:"#8a2c5a", kind:"om", hairCol:"#8a2c5a", pants:"#8a2c5a", outfitBase:"worker", nameKey:"passerby", lines:()=>t("passerby_l"), onTalk:()=>{}, speed:30, home:[31,1], routine:[{h:[0,6],go:[31,1]},{h:[6,12],go:[36,1]},{h:[12,18],go:[31,1]},{h:[18,24],go:[36,1]}] },
+    { id:"industrial_npc3", tx:19, ty:31, dir:"down", color:"#e0a030", colorDk:"#a86818", kind:"ow", hairCol:"#a86818", pants:"#a86818", outfitBase:"worker", nameKey:"passerby", lines:()=>t("passerby_l"), onTalk:()=>{}, speed:22, home:[19,31], routine:[{h:[0,6],go:[19,31]},{h:[6,12],go:[23,31]},{h:[12,18],go:[19,31]},{h:[18,24],go:[23,31]}] },
+    { id:"industrial_npc4", tx:8, ty:22, dir:"down", color:"#6a8a40", colorDk:"#465e28", kind:"boy", hairCol:"#1a1a1a", pants:"#465e28", outfitBase:"worker", nameKey:"passerby", lines:()=>t("passerby_l"), onTalk:()=>{}, speed:26, home:[8,22], routine:[{h:[0,6],go:[8,22]},{h:[6,12],go:[11,22]},{h:[12,18],go:[8,22]},{h:[18,24],go:[11,22]}] },
+    { id:"industrial_npc5", tx:18, ty:21, dir:"down", color:"#c06040", colorDk:"#8a3c24", kind:"girl", hairCol:"#6a4a2a", pants:"#8a3c24", outfitBase:"worker", nameKey:"passerby", lines:()=>t("passerby_l"), onTalk:()=>{}, speed:30, home:[18,21], routine:[{h:[0,6],go:[18,21]},{h:[6,12],go:[21,21]},{h:[12,18],go:[18,21]},{h:[18,24],go:[21,21]}] },
+    { id:"industrial_npc6", tx:11, ty:13, dir:"down", color:"#40a0a0", colorDk:"#2c7070", kind:"ym", hairCol:"#3a2a1a", pants:"#2c7070", outfitBase:"worker", nameKey:"passerby", lines:()=>t("passerby_l"), onTalk:()=>{}, speed:22, home:[11,13], routine:[{h:[0,6],go:[11,13]},{h:[6,12],go:[14,13]},{h:[12,18],go:[11,13]},{h:[18,24],go:[14,13]}] },
+    { id:"industrial_npc7", tx:35, ty:36, dir:"down", color:"#8a6ac0", colorDk:"#5a4488", kind:"yw", hairCol:"#e0c040", pants:"#5a4488", outfitBase:"worker", nameKey:"passerby", lines:()=>t("passerby_l"), onTalk:()=>{}, speed:26, home:[35,36], routine:[{h:[0,6],go:[35,36]},{h:[6,12],go:[38,36]},{h:[12,18],go:[35,36]},{h:[18,24],go:[38,36]}] },
+    { id:"industrial_npc8", tx:7, ty:6, dir:"down", color:"#c0a040", colorDk:"#8a7020", kind:"om", hairCol:"#8a7020", pants:"#8a7020", outfitBase:"worker", nameKey:"passerby", lines:()=>t("passerby_l"), onTalk:()=>{}, speed:30, home:[7,6], routine:[{h:[0,6],go:[7,6]},{h:[6,12],go:[10,6]},{h:[12,18],go:[7,6]},{h:[18,24],go:[10,6]}] }
+  ];
+  AREA_NPCS.forestNW=[
+    { id:"forestNW_npc0", tx:23, ty:4, dir:"down", color:"#5088d0", colorDk:"#2c5490", kind:"ym", hairCol:"#3a2a1a", pants:"#2c5490", outfitBase:"tirolese", nameKey:"passerby", lines:()=>t("passerby_l"), onTalk:()=>{}, speed:22, home:[23,4], routine:[{h:[0,6],go:[23,4]},{h:[6,12],go:[27,4]},{h:[12,18],go:[23,4]},{h:[18,24],go:[27,4]}] },
+    { id:"forestNW_npc1", tx:30, ty:23, dir:"down", color:"#50b070", colorDk:"#2c7048", kind:"yw", hairCol:"#e0c040", pants:"#2c7048", outfitBase:"tirolese", nameKey:"passerby", lines:()=>t("passerby_l"), onTalk:()=>{}, speed:26, home:[30,23], routine:[{h:[0,6],go:[30,23]},{h:[6,12],go:[35,23]},{h:[12,18],go:[30,23]},{h:[18,24],go:[35,23]}] },
+    { id:"forestNW_npc2", tx:25, ty:9, dir:"down", color:"#c85088", colorDk:"#8a2c5a", kind:"om", hairCol:"#8a2c5a", pants:"#8a2c5a", outfitBase:"tirolese", nameKey:"passerby", lines:()=>t("passerby_l"), onTalk:()=>{}, speed:30, home:[25,9], routine:[{h:[0,6],go:[25,9]},{h:[6,12],go:[30,9]},{h:[12,18],go:[25,9]},{h:[18,24],go:[30,9]}] },
+    { id:"forestNW_npc3", tx:31, ty:34, dir:"down", color:"#e0a030", colorDk:"#a86818", kind:"ow", hairCol:"#a86818", pants:"#a86818", outfitBase:"tirolese", nameKey:"passerby", lines:()=>t("passerby_l"), onTalk:()=>{}, speed:22, home:[31,34], routine:[{h:[0,6],go:[31,34]},{h:[6,12],go:[35,34]},{h:[12,18],go:[31,34]},{h:[18,24],go:[35,34]}] },
+    { id:"forestNW_npc4", tx:13, ty:13, dir:"down", color:"#6a8a40", colorDk:"#465e28", kind:"boy", hairCol:"#1a1a1a", pants:"#465e28", outfitBase:"tirolese", nameKey:"passerby", lines:()=>t("passerby_l"), onTalk:()=>{}, speed:26, home:[13,13], routine:[{h:[0,6],go:[13,13]},{h:[6,12],go:[16,13]},{h:[12,18],go:[13,13]},{h:[18,24],go:[16,13]}] },
+    { id:"forestNW_npc5", tx:13, ty:23, dir:"down", color:"#c06040", colorDk:"#8a3c24", kind:"girl", hairCol:"#6a4a2a", pants:"#8a3c24", outfitBase:"tirolese", nameKey:"passerby", lines:()=>t("passerby_l"), onTalk:()=>{}, speed:30, home:[13,23], routine:[{h:[0,6],go:[13,23]},{h:[6,12],go:[18,23]},{h:[12,18],go:[13,23]},{h:[18,24],go:[18,23]}] },
+    { id:"forestNW_npc6", tx:9, ty:15, dir:"down", color:"#40a0a0", colorDk:"#2c7070", kind:"ym", hairCol:"#3a2a1a", pants:"#2c7070", outfitBase:"tirolese", nameKey:"passerby", lines:()=>t("passerby_l"), onTalk:()=>{}, speed:22, home:[9,15], routine:[{h:[0,6],go:[9,15]},{h:[6,12],go:[14,15]},{h:[12,18],go:[9,15]},{h:[18,24],go:[14,15]}] },
+    { id:"forestNW_npc7", tx:30, ty:8, dir:"down", color:"#8a6ac0", colorDk:"#5a4488", kind:"yw", hairCol:"#e0c040", pants:"#5a4488", outfitBase:"tirolese", nameKey:"passerby", lines:()=>t("passerby_l"), onTalk:()=>{}, speed:26, home:[30,8], routine:[{h:[0,6],go:[30,8]},{h:[6,12],go:[35,8]},{h:[12,18],go:[30,8]},{h:[18,24],go:[35,8]}] },
+    { id:"forestNW_npc8", tx:5, ty:27, dir:"down", color:"#c0a040", colorDk:"#8a7020", kind:"om", hairCol:"#8a7020", pants:"#8a7020", outfitBase:"tirolese", nameKey:"passerby", lines:()=>t("passerby_l"), onTalk:()=>{}, speed:30, home:[5,27], routine:[{h:[0,6],go:[5,27]},{h:[6,12],go:[9,27]},{h:[12,18],go:[5,27]},{h:[18,24],go:[9,27]}] }
+  ];
+  AREA_NPCS.forestNE=[
+    { id:"forestNE_npc0", tx:7, ty:32, dir:"down", color:"#5088d0", colorDk:"#2c5490", kind:"ym", hairCol:"#3a2a1a", pants:"#2c5490", outfitBase:"hiker", nameKey:"passerby", lines:()=>t("passerby_l"), onTalk:()=>{}, speed:22, home:[7,32], routine:[{h:[0,6],go:[7,32]},{h:[6,12],go:[11,32]},{h:[12,18],go:[7,32]},{h:[18,24],go:[11,32]}] },
+    { id:"forestNE_npc1", tx:33, ty:35, dir:"down", color:"#50b070", colorDk:"#2c7048", kind:"yw", hairCol:"#e0c040", pants:"#2c7048", outfitBase:"lumberjack", nameKey:"passerby", lines:()=>t("passerby_l"), onTalk:()=>{}, speed:26, home:[33,35], routine:[{h:[0,6],go:[33,35]},{h:[6,12],go:[36,35]},{h:[12,18],go:[33,35]},{h:[18,24],go:[36,35]}] },
+    { id:"forestNE_npc2", tx:13, ty:21, dir:"down", color:"#c85088", colorDk:"#8a2c5a", kind:"om", hairCol:"#8a2c5a", pants:"#8a2c5a", outfitBase:"hiker", nameKey:"passerby", lines:()=>t("passerby_l"), onTalk:()=>{}, speed:30, home:[13,21], routine:[{h:[0,6],go:[13,21]},{h:[6,12],go:[18,21]},{h:[12,18],go:[13,21]},{h:[18,24],go:[18,21]}] },
+    { id:"forestNE_npc3", tx:37, ty:26, dir:"down", color:"#e0a030", colorDk:"#a86818", kind:"ow", hairCol:"#a86818", pants:"#a86818", outfitBase:"lumberjack", nameKey:"passerby", lines:()=>t("passerby_l"), onTalk:()=>{}, speed:22, home:[37,26], routine:[{h:[0,6],go:[37,26]},{h:[6,12],go:[42,26]},{h:[12,18],go:[37,26]},{h:[18,24],go:[42,26]}] },
+    { id:"forestNE_npc4", tx:26, ty:31, dir:"down", color:"#6a8a40", colorDk:"#465e28", kind:"boy", hairCol:"#1a1a1a", pants:"#465e28", outfitBase:"hiker", nameKey:"passerby", lines:()=>t("passerby_l"), onTalk:()=>{}, speed:26, home:[26,31], routine:[{h:[0,6],go:[26,31]},{h:[6,12],go:[29,31]},{h:[12,18],go:[26,31]},{h:[18,24],go:[29,31]}] },
+    { id:"forestNE_npc5", tx:25, ty:18, dir:"down", color:"#c06040", colorDk:"#8a3c24", kind:"girl", hairCol:"#6a4a2a", pants:"#8a3c24", outfitBase:"lumberjack", nameKey:"passerby", lines:()=>t("passerby_l"), onTalk:()=>{}, speed:30, home:[25,18], routine:[{h:[0,6],go:[25,18]},{h:[6,12],go:[30,18]},{h:[12,18],go:[25,18]},{h:[18,24],go:[30,18]}] }
+  ];
+  AREA_NPCS.mountain=[
+    { id:"mountain_npc0", tx:38, ty:13, dir:"down", color:"#5088d0", colorDk:"#2c5490", kind:"ym", hairCol:"#3a2a1a", pants:"#2c5490", outfitBase:"hiker", nameKey:"passerby", lines:()=>t("passerby_l"), onTalk:()=>{}, speed:22, home:[38,13], routine:[{h:[0,6],go:[38,13]},{h:[6,12],go:[41,13]},{h:[12,18],go:[38,13]},{h:[18,24],go:[41,13]}] },
+    { id:"mountain_npc1", tx:3, ty:33, dir:"down", color:"#50b070", colorDk:"#2c7048", kind:"yw", hairCol:"#e0c040", pants:"#2c7048", outfitBase:"lumberjack", nameKey:"passerby", lines:()=>t("passerby_l"), onTalk:()=>{}, speed:26, home:[3,33], routine:[{h:[0,6],go:[3,33]},{h:[6,12],go:[7,33]},{h:[12,18],go:[3,33]},{h:[18,24],go:[7,33]}] },
+    { id:"mountain_npc2", tx:32, ty:34, dir:"down", color:"#c85088", colorDk:"#8a2c5a", kind:"om", hairCol:"#8a2c5a", pants:"#8a2c5a", outfitBase:"hiker", nameKey:"passerby", lines:()=>t("passerby_l"), onTalk:()=>{}, speed:30, home:[32,34], routine:[{h:[0,6],go:[32,34]},{h:[6,12],go:[37,34]},{h:[12,18],go:[32,34]},{h:[18,24],go:[37,34]}] },
+    { id:"mountain_npc3", tx:20, ty:17, dir:"down", color:"#e0a030", colorDk:"#a86818", kind:"ow", hairCol:"#a86818", pants:"#a86818", outfitBase:"lumberjack", nameKey:"passerby", lines:()=>t("passerby_l"), onTalk:()=>{}, speed:22, home:[20,17], routine:[{h:[0,6],go:[20,17]},{h:[6,12],go:[23,17]},{h:[12,18],go:[20,17]},{h:[18,24],go:[23,17]}] },
+    { id:"mountain_npc4", tx:38, ty:33, dir:"down", color:"#6a8a40", colorDk:"#465e28", kind:"boy", hairCol:"#1a1a1a", pants:"#465e28", outfitBase:"hiker", nameKey:"passerby", lines:()=>t("passerby_l"), onTalk:()=>{}, speed:26, home:[38,33], routine:[{h:[0,6],go:[38,33]},{h:[6,12],go:[43,33]},{h:[12,18],go:[38,33]},{h:[18,24],go:[43,33]}] },
+    { id:"mountain_npc5", tx:1, ty:31, dir:"down", color:"#c06040", colorDk:"#8a3c24", kind:"girl", hairCol:"#6a4a2a", pants:"#8a3c24", outfitBase:"lumberjack", nameKey:"passerby", lines:()=>t("passerby_l"), onTalk:()=>{}, speed:30, home:[1,31], routine:[{h:[0,6],go:[1,31]},{h:[6,12],go:[5,31]},{h:[12,18],go:[1,31]},{h:[18,24],go:[5,31]}] }
+  ];
+  Object.values(AREA_NPCS).forEach(list=>list.forEach(n=>{ n.px=n.tx*TILE; n.py=n.ty*TILE; }));
+  function currentNpcs(){ return areaKey==="town" ? npcs : (AREA_NPCS[areaKey]||[]); }
+
+  // side-quest collectibles
+  const ball={ tx:11, ty:22, taken:false };
+  const keyring={ tx:8, ty:23, taken:false };
+  const photos=[ {tx:2,ty:1,taken:false}, {tx:38,ty:3,taken:false}, {tx:6,ty:29,taken:false} ];
+  function photosFound(){ return photos.filter(p=>p.taken).length; }
+
+  // ================= SEA / SWIMMING / BEACH =================
+  // Beach sand rows 30-31, sea rows 32+. Swimmable band = rows SWIM_TOP..SWIM_BOTTOM
+  // where the tile is open sea '~'. Buoys sit on row BUOY_ROW (far from shore).
+  const SWIM_TOP=32, SWIM_BOTTOM=36, BUOY_ROW=37;
+  function isSeaTile(tx,ty){ return tileAt(tx,ty)==="~"; }
+  function inSwimZone(tx,ty){ return !insideKey && ty>=SWIM_TOP && ty<=SWIM_BOTTOM && isSeaTile(tx,ty); }
+  const buoys=[];
+  (function initBuoys(){ for(let x=2;x<cur.w-1;x+=3){ if(tileAt(x,BUOY_ROW)==="~") buoys.push({tx:x,ty:BUOY_ROW,animT:Math.random()*6}); } })();
+
+  // Moored departure ship at the SE pier; board from the promenade above it.
+  const ship={ tx:36, ty:33, boardX:37, boardY:31 };
+
+
+
+  // Summer-only beach props + swimmers.
+  const beachProps=[
+    {type:"umbrella", tx:6, ty:36, c:"#e04040"}, {type:"towel", tx:8, ty:36, c:"#f0c040"},
+    {type:"umbrella", tx:16, ty:36, c:"#4090e0"}, {type:"towel", tx:18, ty:36, c:"#40c080"},
+    {type:"umbrella", tx:26, ty:36, c:"#e08030"}, {type:"towel", tx:24, ty:36, c:"#e060a0"},
+    {type:"sunbather", tx:11, ty:36, c:"#f0c890"}, {type:"sunbather", tx:34, ty:36, c:"#f0c890"}
+  ];
+  const swimmers=[ {x:6*TILE, y:33*TILE, dir:1, x0:3*TILE, x1:16*TILE, sp:14, animT:0},
+                   {x:25*TILE, y:34*TILE, dir:-1, x0:24*TILE, x1:30*TILE, sp:12, animT:1.5},
+                   {x:39*TILE, y:33*TILE, dir:1, x0:38*TILE, x1:42*TILE, sp:13, animT:3} ];
+
+  // Winter skiers on the mountain's central slope (only shown in mountain area in winter).
+  const skiers=[ {x:20*TILE,y:3*TILE,vx:-8,vy:30,sway:0}, {x:24*TILE,y:2*TILE,vx:10,vy:34,sway:2}, {x:22*TILE,y:5*TILE,vx:-4,vy:28,sway:4} ];
+  function resetSkier(s){ s.x=(18+Math.floor(Math.random()*8))*TILE; s.y=2*TILE; s.vx=(Math.random()*20-10); s.vy=26+Math.random()*12; }
+  function updateSkiers(dt){
+    for(const s of skiers){ s.sway+=dt*4; s.x+=(s.vx+Math.sin(s.sway)*10)*dt; s.y+=s.vy*dt;
+      if(s.y> 15*TILE || s.x<2*TILE || s.x>42*TILE) resetSkier(s); }
+  }
+  function drawSkier(s){
+    const x=Math.round(s.x-cam.x), y=Math.round(s.y-cam.y);
+    // simple downhill skier: body + skis angled
+    ctx.fillStyle="rgba(0,0,0,0.2)"; ctx.fillRect(x+4,y+15,8,2);
+    drawHuman(x,y, s.vx>0?"right":"left", false, 0, {skin:"#f0c890",hair:"#3a2a1a",shirt:"#e05040",shirtDk:"#a02c20",pants:"#203040",kind:"ym",outfit:"skier"});
+    // motion spray
+    ctx.fillStyle="rgba(255,255,255,0.7)"; ctx.fillRect(x+(s.vx>0?2:12), y+15, 2,1);
+  }
+
+  // Wandering animals (dog + cat).
+  const animals=[
+    { kind:"dog", px:18*TILE, py:22*TILE, dir:"right", animT:0, wander:{ pts:[[18,22],[24,22],[24,20],[18,20]], i:0, speed:30 } },
+    { kind:"cat", px:2*TILE, py:7*TILE, dir:"down", animT:0, wander:{ pts:[[2,7],[2,12],[8,12],[8,7]], i:0, speed:22 } }
+  ];
+
+  // Decorative props (non-solid) scattered on empty grass to make the town feel crowded/lively.
+  const decor=[
+    {t:"planter",tx:1,ty:1},{t:"barrel",tx:28,ty:1},{t:"crate",tx:38,ty:2},{t:"woodpile",tx:24,ty:4},{t:"potted",tx:23,ty:5},{t:"stall",tx:9,ty:7,c:"#d84040"},{t:"planter",tx:12,ty:8},{t:"barrel",tx:20,ty:9},{t:"crate",tx:18,ty:10},{t:"woodpile",tx:4,ty:11},{t:"potted",tx:13,ty:12},{t:"stall",tx:8,ty:14,c:"#d84040"},{t:"planter",tx:37,ty:15},{t:"barrel",tx:3,ty:17},{t:"crate",tx:1,ty:18},{t:"woodpile",tx:35,ty:18},{t:"potted",tx:11,ty:20},{t:"stall",tx:39,ty:20,c:"#d84040"},{t:"planter",tx:27,ty:22},{t:"barrel",tx:21,ty:23},{t:"crate",tx:20,ty:24},{t:"woodpile",tx:29,ty:25},{t:"potted",tx:28,ty:26},{t:"stall",tx:6,ty:28,c:"#d84040"}
+  ];
+  const streetLamps=[[6,4],[13,4],[21,4],[29,4],[36,4],[3,7],[23,7],[32,7],[40,7],[14,9],[8,10],[30,10],[38,10],[26,11],[3,12],[41,12],[11,13],[28,14],[37,14],[8,16],[12,17],[26,17],[39,17],[3,18],[28,20],[8,22],[24,22],[32,22],[40,22],[12,25],[34,25],[3,26],[27,26]];
+
+  let bannerMsg="", bannerT=0;
+  function banner(m){ bannerMsg=m; bannerT=2.8; }
+
+  // ================= DIALOGUE =================
+  const dialog={ active:false, lines:[], idx:0, reveal:0, npc:null };
+  function openDialog(npc){ dialog.active=true; dialog.lines=npc.lines(); dialog.idx=0; dialog.reveal=0; dialog.npc=npc; SFX.talk(); }
+  function advanceDialog(){ const full=dialog.lines[dialog.idx]; if(dialog.reveal<full.length){ dialog.reveal=full.length; return; }
+    dialog.idx++; dialog.reveal=0; if(dialog.idx>=dialog.lines.length){ dialog.active=false; const cb=dialog.npc&&dialog.npc.onTalk; const n=dialog.npc; dialog.npc=null; if(cb) cb(n); } else SFX.talk(); }
+
+  // ---- yes/no prompt ----
+  const prompt2={ active:false, text:"", yes:null, sel:0 };
+  function askYesNo(text, onYes){ prompt2.active=true; prompt2.text=text; prompt2.yes=onYes; prompt2.sel=0; SFX.talk(); }
+
+  // ---- fishing mini-activity (5s rod animation) ----
+  const fishing={ active:false, t:0 };
+  function startFishing(){ fishing.active=true; fishing.t=0; player.dir="down"; SFX.confirm(); }
+
+  // ================= SAVE / LOAD =================
+  const SAVE_KEY="crudoRPG.save.v1";
+  function saveGame(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify({tx:player.tx,ty:player.ty,dir:player.dir,season,questState,catFound:cat.found,shellQuest,shellFound:shell.found,bikeTaken:bike.taken,ballTaken:ball.taken,keyringTaken:keyring.taken,photos:photos.map(p=>p.taken),lang,chapter,flags,quests:serializeQuests()})); return true;}catch(e){return false;} }
+  function saveGame(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify({areaKey,tx:player.tx,ty:player.ty,dir:player.dir,season,questState,catFound:cat.found,shellQuest,shellFound:shell.found,bikeTaken:bike.taken,ballTaken:ball.taken,keyringTaken:keyring.taken,photos:photos.map(p=>p.taken),lang,chapter,flags,quests:serializeQuests()})); return true;}catch(e){return false;} }
+  function hasSave(){ try{ return !!localStorage.getItem(SAVE_KEY);}catch(e){return false;} }
+  function loadGame(){ try{ const d=JSON.parse(localStorage.getItem(SAVE_KEY)||"null"); if(!d) return false;
+    areaKey=d.areaKey&&AREAS[d.areaKey]?d.areaKey:"town"; useMap(AREAS[areaKey]);
+    player.tx=d.tx!=null?d.tx:15; player.ty=d.ty!=null?d.ty:12; player.px=player.tx*TILE; player.py=player.ty*TILE; player.dir=d.dir||"down";
+    season=d.season||"spring"; questState=d.questState||0; cat.found=!!d.catFound; shellQuest=d.shellQuest||0; shell.found=!!d.shellFound; bike.taken=!!d.bikeTaken; if(d.lang) lang=d.lang;
+    ball.taken=!!d.ballTaken; keyring.taken=!!d.keyringTaken; if(d.photos) photos.forEach((p,i)=>p.taken=!!d.photos[i]);
+    chapter=d.chapter||1; for(const f in flags) delete flags[f]; if(d.flags) Object.assign(flags,d.flags); restoreQuests(d.quests);
+    player.swimming=false; resetWeather(); return true;}catch(e){return false;} }
+  function resetProgress(){ areaKey="town"; useMap(TOWN); player.tx=15; player.ty=12; player.px=15*TILE; player.py=12*TILE; player.dir="down"; player.moving=false;
+    season="spring"; questState=0; cat.found=false; shellQuest=0; shell.found=false; bike.taken=false; ball.taken=false; keyring.taken=false; photos.forEach(p=>p.taken=false); insideKey=null; resetQuests(); resetWeather(); saveGame(); }
+
+  // ================= MENU =================
+  const menu = { open:false, index:0, showMap:false, showJournal:false };
+  const MENU_KEYS = ["menu_journal","menu_map","menu_lang","menu_season","menu_close"];
+  function openMenu(){ menu.open=true; menu.index=0; menu.showMap=false; menu.showJournal=false; SFX.confirm(); }
+  function closeMenu(){ menu.open=false; menu.showMap=false; menu.showJournal=false; SFX.cancel(); }
+  function updateMenu(dt){
+    if(menu.showMap){ if(consumePress("b")||consumePress("start")){ menu.showMap=false; SFX.cancel(); } return; }
+    if(menu.showJournal){ if(consumePress("b")||consumePress("start")){ menu.showJournal=false; SFX.cancel(); } return; }
+    if(consumePress("up")) { menu.index=(menu.index-1+MENU_KEYS.length)%MENU_KEYS.length; SFX.up&&SFX.up(); }
+    if(consumePress("down")) { menu.index=(menu.index+1)%MENU_KEYS.length; SFX.down&&SFX.down(); }
+    if(consumePress("b")||consumePress("start")){ closeMenu(); return; }
+    if(consumePress("a")){
+      const k=MENU_KEYS[menu.index];
+      if(k==="menu_journal"){ menu.showJournal=true; SFX.confirm(); }
+      else if(k==="menu_map"){ menu.showMap=true; SFX.confirm(); }
+      else if(k==="menu_lang"){ toggleLang(); }
+      else if(k==="menu_season"){ cycleSeason(); }
+      else { closeMenu(); }
+    }
+  }
+
+  // ================= UPDATE =================
+  function update(dt){
+    if(screen==="title") updateTitle(dt);
+    else if(screen==="overworld"){ if(menu.open) updateMenu(dt); else updateWorld(dt); }
+    if(seasonPopup>0) seasonPopup-=dt;
+    if(bannerT>0) bannerT-=dt;
+    if(questPopT>0) questPopT-=dt;
+    if(screen==="overworld" && !insideKey && !menu.open){ updateWeather(dt); clock=(clock+dt/DAY_LEN)%1; }
+  }
+  function updateTitle(dt){
+    const options=hasSave()?2:1;
+    if(consumePress("up")) titleIndex=(titleIndex-1+options)%options;
+    if(consumePress("down")) titleIndex=(titleIndex+1)%options;
+    if(consumePress("select")) toggleLang();
+    if(consumePress("a")){ SFX.confirm(); if(hasSave()&&titleIndex===0) loadGame(); else resetProgress(); if(!SFX.musicPlaying()) SFX.startMusic(season); screen="overworld"; }
+    else if(consumePress("start")){ toggleLang(); }
+  }
+  function facingTile(){ let fx=player.tx,fy=player.ty; if(player.dir==="up")fy--; else if(player.dir==="down")fy++; else if(player.dir==="left")fx--; else if(player.dir==="right")fx++; return {fx,fy}; }
+  function npcAt(tx,ty){
+    if(insideKey){ const inpc=currentInteriorNpc(); if(inpc && inpc.tx===tx && inpc.ty===ty) return inpc; return null; }
+    return currentNpcs().find(n=>Math.round(n.px/TILE)===tx && Math.round(n.py/TILE)===ty);
+  }
+  function opposite(d){ return {up:"down",down:"up",left:"right",right:"left"}[d]; }
+
+  function enterInterior(key,outX,outY){ returnArea=areaKey; insideKey=key; outsideReturn={tx:outX,ty:outY};
+    useMap(INTERIORS[key].rows); const sp=INTERIORS[key].spawn; player.tx=sp.tx; player.ty=sp.ty; player.px=sp.tx*TILE; player.py=sp.ty*TILE; player.dir="up"; player.moving=false; SFX.door(); }
+  function exitInterior(){ insideKey=null; areaKey=returnArea||"town"; useMap(AREAS[areaKey]); player.tx=outsideReturn.tx; player.ty=outsideReturn.ty; player.px=player.tx*TILE; player.py=player.ty*TILE; player.dir="down"; player.moving=false; outsideReturn=null; SFX.door(); saveGame(); }
+
+  function updateWorld(dt){
+    player.animT+=dt; cat.animT+=dt; shell.animT+=dt;
+    if(!insideKey){ updateNpcs(dt);
+      if(inTown()){ updateAnimals(dt);
+        for(const s of swimmers){ s.animT+=dt; s.x+=s.dir*s.sp*dt; if(s.x<=s.x0){ s.x=s.x0; s.dir=1; } else if(s.x>=s.x1){ s.x=s.x1; s.dir=-1; } }
+        for(const b of buoys) b.animT+=dt; }
+      if(areaKey==="mountain" && season==="winter") updateSkiers(dt);
+    }
+
+    // fishing activity: 5-second rod animation, no input except waiting
+    if(fishing.active){ fishing.t+=dt; if(fishing.t>=5){ fishing.active=false; banner(t("fishing_done")); SFX.pickup(); } return; }
+    // yes/no prompt
+    if(prompt2.active){
+      if(consumePress("left")||consumePress("right")||consumePress("up")||consumePress("down")) prompt2.sel=prompt2.sel?0:1;
+      if(consumePress("a")){ const y=prompt2.sel===0; prompt2.active=false; SFX.confirm(); if(y && prompt2.yes) prompt2.yes(); }
+      else if(consumePress("b")){ prompt2.active=false; SFX.cancel(); }
+      return;
+    }
+
+    if(dialog.active){ dialog.reveal+=dt*48; if(consumePress("a")||consumePress("start")||consumePress("b")) advanceDialog(); return; }
+    if(consumePress("start")){ openMenu(); return; }     // START opens menu
+    if(consumePress("select")) cycleSeason();            // SELECT quick season cheat
+
+    if(consumePress("a")){
+      const {fx,fy}=facingTile();
+      const n=npcAt(fx,fy);
+      if(n){ if(n.dir!==undefined) n.dir=opposite(player.dir); openDialog(n); return; }
+      const fc=tileAt(fx,fy);
+      // board the ship: standing on the promenade above the SE pier, facing the pier/ship
+      if(inTown() && !insideKey && !player.swimming && (fc==="~"||fc==="s") && Math.abs(fx-ship.tx)<=2 && fy>=SWIM_TOP-1){ banner(t("ship_msg")); SFX.confirm(); return; }
+      if(!insideKey && inTown() && DOORS[fc]){ enterInterior(DOORS[fc].interior, DOORS[fc].outX, DOORS[fc].outY); return; }
+      if(!insideKey && !inTown() && (/[1-9]/.test(fc)) && AREA_INTERIOR[areaKey]){ enterInterior(AREA_INTERIOR[areaKey], player.tx, player.ty); return; }
+      if(insideKey && fc==="e"){ exitInterior(); return; }
+      if(!insideKey && !cat.found && questState>=1 && fx===cat.tx && fy===cat.ty){ cat.found=true; questState=2; SFX.meow(); SFX.pickup(); banner(t("found_cat")); saveGame(); return; }
+      if(!insideKey && !shell.found && shellQuest>=1 && fx===shell.tx && fy===shell.ty){ shell.found=true; shellQuest=2; SFX.pickup(); banner(t("found_shell")); saveGame(); return; }
+      if(!insideKey && !bike.taken && QUESTS.bike.status==="active" && fx===bike.tx && fy===bike.ty){ bike.taken=true; SFX.pickup(); qComplete("bike"); banner(t("bike_found")); saveGame(); return; }
+      if(!insideKey && !ball.taken && QUESTS.kids.status==="active" && QUESTS.kids.step>=1 && fx===ball.tx && fy===ball.ty){ ball.taken=true; SFX.pickup(); QUESTS.kids.step=2; banner(t("ball_found")); saveGame(); return; }
+      if(!insideKey && !keyring.taken && QUESTS.oldfriend.status==="active" && fx===keyring.tx && fy===keyring.ty){ keyring.taken=true; setFlag("keyring"); SFX.pickup(); banner(t("keyring_found")); saveGame(); return; }
+      if(!insideKey && (QUESTS.photos.status==="active"||QUESTS.photos.status==="available")){ for(const ph of photos){ if(!ph.taken && fx===ph.tx && fy===ph.ty){ ph.taken=true; SFX.pickup(); if(QUESTS.photos.status==="available") qStart("photos"); banner(t("photo_found")); if(photosFound()>=3){ qComplete("photos"); banner(t("photos_msg")); } saveGame(); return; } } }
+    }
+
+    if(!player.moving){
+      let ntx=player.tx,nty=player.ty,nd=player.dir,want=false;
+      if(keys.up){nty--;nd="up";want=true;} else if(keys.down){nty++;nd="down";want=true;}
+      else if(keys.left){ntx--;nd="left";want=true;} else if(keys.right){ntx++;nd="right";want=true;}
+      if(want){ player.dir=nd;
+        // edge crossing to a neighbor area (screen transition)
+        if(!insideKey && (ntx<0||ntx>=cur.w||nty<0||nty>=cur.h)){
+          let dir=null; if(nty<0) dir="N"; else if(nty>=cur.h) dir="S"; else if(ntx<0) dir="W"; else if(ntx>=cur.w) dir="E";
+          const nb=neighborArea(dir);
+          if(nb){
+            let ex=player.tx, ey=player.ty;
+            if(dir==="N") ey=cur.h-1; else if(dir==="S") ey=0; else if(dir==="W") ex=cur.w-1; else if(dir==="E") ex=0;
+            // clamp entry into walkable range near the edge
+            switchArea(nb, ex, ey);
+          }
+          return; // don't fall through to tryMove
+        }
+        if(tryMove(ntx,nty)) { player.moving=true; }
+      }
+    } else {
+      const tX=player.tx*TILE,tY=player.ty*TILE,st=(player.swimming?MOVE_SPEED*0.62:MOVE_SPEED)*dt;
+      if(player.px<tX)player.px=Math.min(tX,player.px+st); if(player.px>tX)player.px=Math.max(tX,player.px-st);
+      if(player.py<tY)player.py=Math.min(tY,player.py+st); if(player.py>tY)player.py=Math.max(tY,player.py-st);
+      if(player.px===tX&&player.py===tY){ player.moving=false; if(insideKey && tileAt(player.tx,player.ty)==="e"){ exitInterior(); return; } if(!insideKey && !player.swimming) saveGame(); }
+    }
+    updateCamera();
+  }
+
+  // Handle a step attempt; returns true if the move starts. Manages swimming + buoys + messages.
+  function tryMove(ntx,nty){
+    const target=tileAt(ntx,nty);
+    const blockedByCat=(!insideKey && !cat.found && ntx===cat.tx && nty===cat.ty);
+    const blockedByShell=(!insideKey && !shell.found && shellQuest>=1 && ntx===shell.tx && nty===shell.ty);
+    if(npcAt(ntx,nty)||blockedByCat||blockedByShell) return false;
+
+    if(inTown() && !insideKey && target==="~"){
+      // trying to enter / stay in the sea
+      if(season==="winter"){ banner(t("sea_winter")); return false; }   // no swimming in winter
+      if(nty>SWIM_BOTTOM){ banner(t("buoy_msg")); return false; }        // past the buoy line
+      if(!inSwimZone(ntx,nty)){ banner(t("buoy_msg")); return false; }    // outside allowed area
+      // enter water: seasonal message on first entry
+      if(!player.swimming){ player.swimming=true; banner(t("sea_"+season)); }
+      player.tx=ntx; player.ty=nty; SFX.step(); return true;
+    }
+    // Industrial polluted sea: swimmable (not in winter), with a disgust message.
+    if(areaKey==="industrial" && !insideKey && target==="q"){
+      if(season==="winter"){ banner(t("sea_winter")); return false; }
+      if(!player.swimming){ player.swimming=true; banner(t("sea_polluted")); }
+      player.tx=ntx; player.ty=nty; SFX.step(); return true;
+    }
+    // moving onto land
+    if(isSolid(ntx,nty)) return false;
+    if(player.swimming){ player.swimming=false; }   // climb out of the water
+    player.tx=ntx; player.ty=nty; SFX.step(); return true;
+  }
+
+  function updateAnimals(dt){
+    for(const a of animals){
+      const wd=a.wander; const target=wd.pts[(wd.i+1)%wd.pts.length];
+      const tX=target[0]*TILE, tY=target[1]*TILE, sp=wd.speed*dt;
+      let dx=tX-a.px, dy=tY-a.py;
+      if(Math.abs(dx)<=sp && Math.abs(dy)<=sp){ a.px=tX; a.py=tY; wd.i=(wd.i+1)%wd.pts.length; }
+      else {
+        let nx=Math.round(a.px/TILE), ny=Math.round(a.py/TILE);
+        if(Math.abs(dx)>Math.abs(dy)){ nx+=Math.sign(dx); a.dir=dx>0?"right":"left"; }
+        else { ny+=Math.sign(dy); a.dir=dy>0?"down":"up"; }
+        if(isSolid(nx,ny)){ a.px=Math.round(a.px/TILE)*TILE; a.py=Math.round(a.py/TILE)*TILE; wd.i=(wd.i+1)%wd.pts.length; }
+        else if(Math.abs(dx)>Math.abs(dy)) a.px+=Math.sign(dx)*sp;
+        else a.py+=Math.sign(dy)*sp;
+      }
+      a.animT+=dt;
+    }
+  }
+
+  function routineDest(n){
+    const h=clock*24;
+    if(n.routine){ for(const seg of n.routine){ if(h>=seg.h[0] && h<seg.h[1]) return seg.go; } }
+    return n.home || [Math.round(n.px/TILE),Math.round(n.py/TILE)];
+  }
+  function npcTileFree(n,tx,ty){
+    if(isSolid(tx,ty)) return false;
+    // NPCs may pass through each other (soft) to avoid deadlocks; only avoid standing on the player.
+    if(Math.round(player.px/TILE)===tx && Math.round(player.py/TILE)===ty) return false;
+    return true;
+  }
+  // BFS path from (sx,sy) to (dx,dy) over walkable tiles (ignores dynamic NPC blocking for the plan;
+  // dynamic avoidance happens per-step). Returns array of [tx,ty] steps or null.
+  function bfsPath(sx,sy,dx,dy){
+    if(sx===dx&&sy===dy) return [];
+    const key=(x,y)=>x+","+y;
+    const prev={}; const seen=new Set([key(sx,sy)]); const q=[[sx,sy]];
+    let head=0, found=false;
+    while(head<q.length){
+      const [x,y]=q[head++];
+      for(const [ox,oy] of [[1,0],[-1,0],[0,1],[0,-1]]){
+        const nx=x+ox, ny=y+oy, k=key(nx,ny);
+        if(seen.has(k)) continue;
+        if(isSolid(nx,ny)) continue;
+        seen.add(k); prev[k]=[x,y];
+        if(nx===dx&&ny===dy){ found=true; q.length=0; break; }
+        q.push([nx,ny]);
+      }
+      if(found) break;
+    }
+    if(!found) return null;
+    const path=[]; let cur=[dx,dy];
+    while(!(cur[0]===sx&&cur[1]===sy)){ path.push(cur); const p=prev[key(cur[0],cur[1])]; if(!p) return null; cur=p; }
+    path.reverse(); return path;
+  }
+  function updateNpcs(dt){
+    for(const n of currentNpcs()){
+      if(n.fishing){ n.animT=(n.animT||0)+dt; continue; }
+      if(!n.routine && !n.home) continue;
+      const sp=(n.speed||22)*dt;
+      const cx=Math.round(n.px/TILE), cy=Math.round(n.py/TILE);
+      const dest=routineDest(n);
+      const atTile=(Math.abs(n.px-cx*TILE)<0.6 && Math.abs(n.py-cy*TILE)<0.6);
+
+      // If we still have a pixel target we haven't reached, keep gliding toward it.
+      if(n.tgt && !(Math.abs(n.px-n.tgt[0]*TILE)<0.6 && Math.abs(n.py-n.tgt[1]*TILE)<0.6)){
+        const tX=n.tgt[0]*TILE, tY=n.tgt[1]*TILE;
+        if(n.px<tX) n.px=Math.min(tX,n.px+sp); else if(n.px>tX) n.px=Math.max(tX,n.px-sp);
+        if(n.py<tY) n.py=Math.min(tY,n.py+sp); else if(n.py>tY) n.py=Math.max(tY,n.py-sp);
+        n.moving=true; n.animT=(n.animT||0)+dt;
+        continue;   // don't re-decide mid-tile -> no jitter
+      }
+
+      // Aligned on a tile: snap and decide the next step.
+      n.px=cx*TILE; n.py=cy*TILE; n.tgt=null;
+      n.replan=(n.replan||0)-dt;
+      if(cx===dest[0] && cy===dest[1]){ n.moving=false; n.path=null; continue; }   // arrived: idle (frozen)
+      if(!n.path || n.path.length===0 || n.destKey!==dest[0]+","+dest[1] || n.replan<=0){
+        n.path=bfsPath(cx,cy,dest[0],dest[1]); n.destKey=dest[0]+","+dest[1]; n.replan=2.0;
+      }
+      if(n.path && n.path.length){
+        const [nx,ny]=n.path[0];
+        if(npcTileFree(n,nx,ny)){ n.tgt=[nx,ny]; n.path.shift(); n.moving=true;
+          n.dir=(nx>cx)?"right":(nx<cx)?"left":(ny>cy?"down":"up");
+          const tX=n.tgt[0]*TILE, tY=n.tgt[1]*TILE;
+          if(n.px<tX) n.px=Math.min(tX,n.px+sp); else if(n.px>tX) n.px=Math.max(tX,n.px-sp);
+          if(n.py<tY) n.py=Math.min(tY,n.py+sp); else if(n.py>tY) n.py=Math.max(tY,n.py-sp);
+          n.animT=(n.animT||0)+dt;
+        } else { n.moving=false; n.replan=0.5; }   // blocked (usually the player): wait, no jitter
+      } else { n.moving=false; }
+    }
+  }
+
+  function updateCamera(){
+    const worldW=cur.w*TILE, worldH=cur.h*TILE;
+    cam.x=Math.round(player.px+TILE/2-W/2); cam.y=Math.round(player.py+TILE/2-H/2);
+    if(worldW<=W) cam.x=Math.round((worldW-W)/2); else cam.x=Math.max(0,Math.min(worldW-W,cam.x));
+    if(worldH<=H) cam.y=Math.round((worldH-H)/2); else cam.y=Math.max(0,Math.min(worldH-H,cam.y));
+  }
+
+  // ================= DRAW =================
+  function draw(){
+    if(screen==="title"){ drawTitle(); return; }
+    if(insideKey) drawInterior(); else drawWorld();
+    if(screen==="overworld" && !insideKey && !menu.open) drawWeather();
+    if(!insideKey){ const nf=nightFactor(); if(nf>0){ ctx.fillStyle="rgba(20,26,60,"+(0.55*nf).toFixed(3)+")"; ctx.fillRect(0,0,W,H); drawNightLights(nf); } }
+    drawHUD();
+    if(dialog.active) drawDialog();
+    if(seasonPopup>0) drawSeasonPopup();
+    if(bannerT>0) drawBanner(bannerMsg, (questState>=3||shellQuest>=3)?"#7ae06a":pal().accent);
+    else if(questPopT>0) drawBanner(questPop, "#f0d840");
+    if(menu.open){ if(menu.showMap) drawMinimap(); else if(menu.showJournal) drawJournal(); else drawMenu(); }
+    if(prompt2.active) drawPrompt();
+    if(fishing.active){ panelBox(W/2-72,H-20,144,16); textCenter(t("fishing_msg"),W/2,H-16,pal().accent); }
+  }
+  function drawPrompt(){
+    const bx=6,by=H-40,bw=W-12,bh=34; panelBox(bx,by,bw,bh);
+    text(prompt2.text,bx+6,by+5,"#f0f0e0");
+    const yes=t("yes"), no=t("no");
+    text((prompt2.sel===0?"> ":"  ")+yes, bx+20, by+20, prompt2.sel===0?pal().accent:"#a8a8b8");
+    text((prompt2.sel===1?"> ":"  ")+no, bx+70, by+20, prompt2.sel===1?pal().accent:"#a8a8b8");
+  }
+  function drawBanner(msg, color){
+    ctx.font="8px monospace";
+    const words=String(msg).split(" "); const maxW=168; let lines=[], line="";
+    words.forEach(w=>{ const test=line?line+" "+w:w; if(ctx.measureText(test).width>maxW){ lines.push(line); line=w; } else line=test; });
+    if(line) lines.push(line);
+    const bh=10+lines.length*10; const by=36;
+    panelBox(W/2-88,by,176,bh);
+    lines.forEach((l,i)=> textCenter(l, W/2, by+6+i*10, color));
+  }
+
+  function drawTitle(){
+    const p=SEASON_PAL.spring;
+    const g=ctx.createLinearGradient(0,0,0,H); g.addColorStop(0,p.sky); g.addColorStop(0.7,p.grass); g.addColorStop(0.7,p.water); g.addColorStop(1,p.waterDk);
+    ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+    // sea band + a boat
+    ctx.fillStyle=p.water; ctx.fillRect(0,118,W,H-118);
+    ctx.fillStyle=p.sand; ctx.fillRect(0,112,W,6);
+    drawBoat(120,120);
+    drawHouseRoof(24,84,p); drawHouseWall(24,100,p,true); drawHouseWall(40,100,p,false);
+    drawTree(150,84,p); drawPlayer(W/2-8,92,"down",0);
+    ctx.font="bold 20px monospace"; ctx.textAlign="center"; ctx.fillStyle="#000"; ctx.fillText("CRUDO RPG",W/2+1,25); ctx.fillStyle="#f0d840"; ctx.fillText("CRUDO RPG",W/2,24);
+    ctx.textAlign="left"; textCenter(t("title_sub"),W/2,48,"#20303a");
+    const opts=hasSave()?[t("continue"),t("newgame")]:[t("newgame")];
+    opts.forEach((o,i)=>{ const y=126+i*12; if(i===titleIndex) textCenter("> "+o+" <",W/2,y,"#fff"); else textCenter(o,W/2,y,"#20303a"); });
+    textCenter(t("hint_lang"),W/2,H-22,"#20303a");
+    if(Math.floor(performance.now()/500)%2===0) textCenter(t("press_ab")+"  ["+lang.toUpperCase()+"]",W/2,H-12,"#20303a");
+  }
+
+  // ---- WORLD RENDER ----
+  function drawWorld(){
+    const p=pal();
+    ctx.fillStyle=p.grass; ctx.fillRect(0,0,W,H);
+    const t0x=Math.floor(cam.x/TILE)-2, t0y=Math.floor(cam.y/TILE)-3;
+    const t1x=Math.ceil((cam.x+W)/TILE)+2, t1y=Math.ceil((cam.y+H)/TILE)+2;
+    // ground + shadow passes (always under everything)
+    for(let ty=t0y;ty<=t1y;ty++) for(let tx=t0x;tx<=t1x;tx++) drawGround(tileAt(tx,ty),tx*TILE-cam.x,ty*TILE-cam.y,tx,ty,p);
+    for(let ty=t0y;ty<=t1y;ty++) for(let tx=t0x;tx<=t1x;tx++) drawTileShadow(tileAt(tx,ty),tx*TILE-cam.x,ty*TILE-cam.y);
+
+    // Collect movable entities with their tile-row for depth sorting.
+    const ents=[];
+    const push=(ty,fn)=> ents.push({ty,fn});
+    if(inTown()){
+      if(questState>=1 && !cat.found) push(cat.ty, ()=>drawCat(cat.tx*TILE-cam.x, cat.ty*TILE-cam.y, cat.animT));
+      if(shellQuest>=1 && !shell.found) push(shell.ty, ()=>drawShell(shell.tx*TILE-cam.x, shell.ty*TILE-cam.y, shell.animT));
+      if(QUESTS.bike.status==="active" && !bike.taken) push(bike.ty, ()=>drawBikeObj(bike.tx*TILE-cam.x, bike.ty*TILE-cam.y));
+      if(QUESTS.kids.status==="active" && QUESTS.kids.step>=1 && !ball.taken) push(ball.ty, ()=>drawBall(ball.tx*TILE-cam.x, ball.ty*TILE-cam.y));
+      if(QUESTS.oldfriend.status==="active" && !keyring.taken) push(keyring.ty, ()=>drawKeyring(keyring.tx*TILE-cam.x, keyring.ty*TILE-cam.y));
+      photos.forEach(ph=>{ if(!ph.taken && (QUESTS.photos.status==="active"||QUESTS.photos.status==="available")) push(ph.ty, ()=>drawPhoto(ph.tx*TILE-cam.x, ph.ty*TILE-cam.y)); });
+      animals.forEach(a=> push(Math.round(a.py/TILE), ()=>drawAnimal(a, a.px-cam.x, a.py-cam.y)));
+    }
+    currentNpcs().forEach(n=> push(Math.round(n.py/TILE), ()=>drawNpc(n, n.px-cam.x, n.py-cam.y)));
+    if(areaKey==="mountain" && season==="winter") skiers.forEach(s=> push(Math.round(s.y/TILE), ()=>drawSkier(s)));
+    push(Math.round(player.py/TILE), ()=>drawPlayer(player.px-cam.x, player.py-cam.y, player.dir, player.animT));
+    // Bucket entities by row for interlacing with object rows.
+    const byRow={}; ents.forEach(e=>{ (byRow[e.ty]=byRow[e.ty]||[]).push(e.fn); });
+
+    // Interlaced pass: for each row (top->bottom) draw that row's object tiles, then the entities standing on that row.
+    for(let ty=t0y;ty<=t1y;ty++){
+      for(let tx=t0x;tx<=t1x;tx++) drawObject(tileAt(tx,ty),tx*TILE-cam.x,ty*TILE-cam.y,tx,ty,p);
+      if(byRow[ty]) byRow[ty].forEach(fn=>fn());
+    }
+
+    if(inTown()){
+      decor.forEach(d=> drawDecor(d, d.tx*TILE-cam.x, d.ty*TILE-cam.y));
+      streetLamps.forEach(L=> drawLamp(L[0]*TILE-cam.x, L[1]*TILE-cam.y));
+      drawShip(ship.tx*TILE-cam.x, ship.ty*TILE-cam.y);
+      buoys.forEach(b=> drawBuoy(b.tx*TILE-cam.x, b.ty*TILE-cam.y, b.animT));
+      if(season==="summer"){
+        beachProps.forEach(bp=> drawBeachProp(bp, bp.tx*TILE-cam.x, bp.ty*TILE-cam.y));
+        swimmers.forEach(s=> drawSwimmer(s.x-cam.x, s.y-cam.y, s.animT, s.dir));
+      }
+    }
+    drawInteractHint();
+  }
+  function drawInteractHint(){
+    if(dialog.active) return;
+    const {fx,fy}=facingTile(); const n=npcAt(fx,fy); const fc=tileAt(fx,fy);
+    const onCat=(!insideKey && questState>=1 && !cat.found && fx===cat.tx && fy===cat.ty);
+    const onShell=(!insideKey && shellQuest>=1 && !shell.found && fx===shell.tx && fy===shell.ty);
+    const onBike=(!insideKey && QUESTS.bike.status==="active" && !bike.taken && fx===bike.tx && fy===bike.ty);
+    const onBall=(!insideKey && QUESTS.kids.status==="active" && QUESTS.kids.step>=1 && !ball.taken && fx===ball.tx && fy===ball.ty);
+    const onKey=(!insideKey && QUESTS.oldfriend.status==="active" && !keyring.taken && fx===keyring.tx && fy===keyring.ty);
+    const onPhoto=(!insideKey && (QUESTS.photos.status==="active"||QUESTS.photos.status==="available") && photos.some(ph=>!ph.taken && fx===ph.tx && fy===ph.ty));
+    const onShip=(!insideKey && !player.swimming && (fc==="~"||fc==="s") && Math.abs(fx-ship.tx)<=2 && fy>=SWIM_TOP-1);
+    const onDoor=(!insideKey && ((inTown() && !!DOORS[fc]) || (!inTown() && /[1-9]/.test(fc) && AREA_INTERIOR[areaKey]))) || (insideKey && fc==="e");
+    if(n||onCat||onShell||onBike||onBall||onKey||onPhoto||onShip||onDoor){ const bx=player.px-cam.x, by=player.py-cam.y; textOutlined("A",bx+6,by-8,"#fff","#000"); }
+  }
+
+  function drawGround(c,x,y,tx,ty,p){
+    // base
+    if(c==="~"||c==="w"||c==="o"){ // sea
+      ctx.fillStyle=p.water; ctx.fillRect(x,y,TILE,TILE);
+      ctx.fillStyle=p.waterDk; const w=(Math.floor(performance.now()/350)%2)*2;
+      ctx.fillRect(x+2+w,y+5,6,1); ctx.fillRect(x+8-w,y+11,5,1);
+      ctx.fillStyle="#ffffff28"; ctx.fillRect(x+3,y+3,3,1);
+      return;
+    }
+    if(c==="s"){ // beach sand
+      ctx.fillStyle=p.sand; ctx.fillRect(x,y,TILE,TILE);
+      ctx.fillStyle=p.sandDk; ctx.fillRect(x+3,y+6,2,1); ctx.fillRect(x+10,y+10,2,1); ctx.fillRect(x+7,y+3,1,1);
+      return;
+    }
+    if(c==="m"){ // promenade (paved)
+      ctx.fillStyle=p.pathEdge; ctx.fillRect(x,y,TILE,TILE);
+      ctx.fillStyle=p.path; ctx.fillRect(x+1,y+1,TILE-2,TILE-2);
+      ctx.fillStyle="#00000018"; ctx.fillRect(x,y,TILE,1); ctx.fillRect(x+8,y,1,TILE);
+      return;
+    }
+    if(c==="x"){ // plaza paving (light stone tiles)
+      ctx.fillStyle="#c8c4b8"; ctx.fillRect(x,y,TILE,TILE);
+      ctx.fillStyle="#b4b0a4"; ctx.fillRect(x,y,TILE,1); ctx.fillRect(x,y,1,TILE); ctx.fillRect(x+8,y,1,TILE); ctx.fillRect(x,y+8,TILE,1);
+      if(season==="winter"){ ctx.fillStyle="#dbe2ea"; ctx.fillRect(x,y,TILE,TILE); ctx.fillStyle="#c2ccd6"; ctx.fillRect(x,y+8,TILE,1); }
+      return; }
+    if(c==="="){ ctx.fillStyle=p.road; ctx.fillRect(x,y,TILE,TILE);
+      ctx.fillStyle=p.roadEdge; for(let i=0;i<2;i++)for(let j=0;j<2;j++){ ctx.fillRect(x+2+i*7+((j)%2?1:0),y+2+j*7,5,5); }
+      ctx.fillStyle="rgba(255,255,255,0.10)"; ctx.fillRect(x,y+7,TILE,1);   // faint centre line
+      ctx.fillStyle="#00000022"; ctx.fillRect(x,y,TILE,1); ctx.fillRect(x,y,1,TILE); return; }
+    if(c==="g"){ ctx.fillStyle="#4c8a3a"; ctx.fillRect(x,y,TILE,TILE); ctx.fillStyle="#5a9a44"; ctx.fillRect(x+3,y+3,3,2); ctx.fillRect(x+9,y+8,3,2);
+      if(season==="autumn"){ctx.fillStyle="#9a8a3a";ctx.fillRect(x,y,TILE,TILE);} if(season==="winter"){ctx.fillStyle="#cad2da";ctx.fillRect(x,y,TILE,TILE);}
+      return; }
+    if(c==="P"){ // football pitch: green with mowing stripes + white lines
+      ctx.fillStyle=(tx%2===0)?"#3f8a34":"#489a3c"; ctx.fillRect(x,y,TILE,TILE);
+      if(season==="autumn"){ctx.fillStyle=(tx%2===0)?"#8a8a34":"#9a9a3c";ctx.fillRect(x,y,TILE,TILE);}
+      if(season==="winter"){ctx.fillStyle="#d4dce4";ctx.fillRect(x,y,TILE,TILE);}
+      ctx.fillStyle="#ffffff40"; ctx.fillRect(x,y,TILE,1);
+      return; }
+    if(c==="|"){ ctx.fillStyle="#3f8a34"; ctx.fillRect(x,y,TILE,TILE); ctx.fillStyle="#f0f0f0"; ctx.fillRect(x+6,y+2,1,12); ctx.fillRect(x+6,y+2,4,1); return; }
+    if(c==="^"){ // mountain rock / peak (solid)
+      ctx.fillStyle="#8a8a92"; ctx.fillRect(x,y,TILE,TILE); ctx.fillStyle="#9aa0a8"; ctx.fillRect(x,y,TILE,4);
+      ctx.fillStyle="#6a6a74"; ctx.fillRect(x+2,y+8,4,3); ctx.fillRect(x+9,y+5,3,4);
+      if(season==="winter"){ ctx.fillStyle="#eef4fa"; ctx.fillRect(x,y,TILE,5); ctx.fillRect(x+2,y+6,3,2); } // snow cap
+      return; }
+    if(c==="/"){ // mountain trail (walkable)
+      ctx.fillStyle=(season==="winter")?"#c8cdd4":"#b39a6a"; ctx.fillRect(x,y,TILE,TILE);
+      ctx.fillStyle=(season==="winter")?"#b4bcc6":"#997e50"; ctx.fillRect(x+3,y+5,3,2); ctx.fillRect(x+9,y+9,3,2);
+      return; }
+    if(c==="l"){ // fresh lake (solid)
+      ctx.fillStyle="#3f78c0"; ctx.fillRect(x,y,TILE,TILE); ctx.fillStyle="#356aad"; const w=(Math.floor(performance.now()/400)%2)*2;
+      ctx.fillRect(x+2+w,y+5,6,1); ctx.fillRect(x+8-w,y+11,5,1); ctx.fillStyle="#ffffff30"; ctx.fillRect(x+3,y+3,3,1);
+      if(season==="winter"){ ctx.fillStyle="#d6e4ee"; ctx.fillRect(x,y,TILE,TILE); ctx.fillStyle="#bcd0de"; ctx.fillRect(x+3,y+6,6,1); }
+      return; }
+    if(c==="q"){ // polluted sea (industrial): dark blue + grey scum patches
+      ctx.fillStyle="#243a52"; ctx.fillRect(x,y,TILE,TILE);                 // dark blue base
+      ctx.fillStyle="#1c3044"; const w=(Math.floor(performance.now()/400)%2)*2;
+      ctx.fillRect(x+2+w,y+5,6,1); ctx.fillRect(x+8-w,y+11,5,1);            // dark ripples
+      // greasy grey scum blotches (deterministic per tile so they don't flicker)
+      const h=((x*31+y*17)>>>0);
+      ctx.fillStyle="#6a6e70"; if(h%3===0) ctx.fillRect(x+3,y+3,4,2); if(h%4===0) ctx.fillRect(x+9,y+8,3,2);
+      ctx.fillStyle="#8a8e88"; if(h%5===0) ctx.fillRect(x+5,y+10,2,1);
+      return; }
+    if(c==="Y"){ // concrete pavement
+      ctx.fillStyle="#9a9a9e"; ctx.fillRect(x,y,TILE,TILE); ctx.fillStyle="#8a8a8e"; ctx.fillRect(x,y+7,TILE,1); ctx.fillRect(x+7,y,1,TILE);
+      ctx.fillStyle="#00000010"; ctx.fillRect(x,y,TILE,1); return; }
+    if(c==="d"){ // wooden boardwalk/deck
+      ctx.fillStyle="#b98a52"; ctx.fillRect(x,y,TILE,TILE); ctx.fillStyle="#9a6f3e"; for(let i=0;i<TILE;i+=4) ctx.fillRect(x,y+i,TILE,1); return; }
+    if(c==="M"){ // recognizable mountain PEAK (rock + snow cap)
+      ctx.fillStyle="#7a7a84"; ctx.fillRect(x,y,TILE,TILE);
+      ctx.fillStyle="#9aa0a8"; ctx.fillRect(x+2,y+4,12,10);
+      ctx.fillStyle="#eef4fa"; ctx.fillRect(x+5,y+2,6,5); ctx.fillRect(x+4,y+6,3,2); ctx.fillRect(x+9,y+6,3,2); // snow cap
+      ctx.fillStyle="#6a6a74"; ctx.fillRect(x+3,y+11,3,3); ctx.fillRect(x+9,y+10,3,4); return; }
+    // grass base + more tonal variation (patches) for contrast
+    ctx.fillStyle=((tx+ty)%2===0)?p.grass:p.grassAlt; ctx.fillRect(x,y,TILE,TILE);
+    const v=vary(tx,ty);
+    if(v>0){ ctx.fillStyle=tint(p.grass,14); ctx.fillRect(x,y,TILE,TILE); }
+    else if(v<0){ ctx.fillStyle=tint(p.grassAlt,-14); ctx.fillRect(x,y,TILE,TILE); }
+    if(season==="winter"){ ctx.fillStyle="#eef4fa"; ctx.fillRect(x+2,y+3,2,2); ctx.fillRect(x+10,y+8,2,2); ctx.fillStyle="#dfe8f2"; ctx.fillRect(x+6,y+11,2,1); }
+    else { ctx.fillStyle=tint(p.grassAlt,-10); ctx.fillRect(x+4,y+11,3,1); ctx.fillRect(x+11,y+6,2,1); ctx.fillStyle=tint(p.grass,20); ctx.fillRect(x+7,y+4,2,1); }
+  }
+
+  // Building themes for the generic renderer: roof + facade colors + a short label.
+  const BLD={
+    A:{roof:"#8a8f9a",roofDk:"#5a606c",wall:"#d6d8e2",wallDk:"#a8aab6",label:"MUNI",lab:"#e0c040"},   // town hall
+    B:{roof:"#7a3020",roofDk:"#4a1c12",wall:"#c8783a",wallDk:"#96551f",label:"BAR",lab:"#f0d040"},     // historic bar
+    M:{roof:"#2c6a9a",roofDk:"#1a4468",wall:"#e2e6ea",wallDk:"#aeb4bc",label:"SUPER",lab:"#e04040"},    // supermarket
+    Y:{roof:"#5a5f6e",roofDk:"#3a3e4a",wall:"#c2c6ce",wallDk:"#969aa4",label:"",lab:"#fff"},            // downtown block
+    O:{roof:"#6a6050",roofDk:"#443c30",wall:"#d0c6b4",wallDk:"#a49a86",label:"",lab:"#fff"},            // condo
+    Z:{roof:"#4a3a2a",roofDk:"#2c2016",wall:"#b09a78",wallDk:"#7e6a4c",label:"STAZ",lab:"#e0c040"},     // station
+    E:{roof:"#b0562c",roofDk:"#7c381a",wall:"#e8d8b0",wallDk:"#b8a480",label:"SCUOLA",lab:"#7a3018"},   // school
+    "+":{roof:"#d8dde4",roofDk:"#aab0ba",wall:"#f2f4f6",wallDk:"#c4c8d0",label:"+",lab:"#e04040"},      // hospital
+    U:{roof:"#7a7068",roofDk:"#4e463e",wall:"#b4a89a",wallDk:"#8a7e70",label:"",lab:"#fff"},            // public housing
+    F:{roof:"#4a4640",roofDk:"#2a2822",wall:"#6a655c",wallDk:"#443f38",label:"",lab:"#fff"},            // abandoned factory
+    K:{roof:"#3a4652",roofDk:"#232c34",wall:"#8a6a3a",wallDk:"#5e4724",label:"OFF",lab:"#e0c040"}       // workshop/officina
+  };
+  const BLD_LETTERS=new Set(["A","B","M","Y","O","Z","E","+","U","F","K"]);
+  function sameBld(c){ return c; }
+  function drawBuilding(c,x,y,tx,ty){
+    const th=BLD[c]; if(!th) return;
+    const above=tileAt(tx,ty-1);
+    const isTop = (above!==c);            // topmost row of this building column -> draw roof
+    if(isTop){
+      // tall roof rising above the tile
+      const top=y-8;
+      ctx.fillStyle=tint(th.roof,26); ctx.fillRect(x-1,top,TILE+2,6);
+      ctx.fillStyle=tint(th.roof,52); ctx.fillRect(x-1,top,TILE+2,1);
+      ctx.fillStyle=th.roof;   ctx.fillRect(x-1,top+6,TILE+2,6);
+      ctx.fillStyle=th.roofDk; ctx.fillRect(x-1,top+12,TILE+2,4);
+      ctx.fillStyle="rgba(0,0,0,0.10)"; for(let i=2;i<TILE;i+=4) ctx.fillRect(x+i,top+2,1,14);
+      ctx.fillStyle=tint(th.roofDk,-20); ctx.fillRect(x-2,y+13,TILE+4,3);
+      ctx.fillStyle="rgba(0,0,0,0.30)"; ctx.fillRect(x-1,y+16,TILE+2,1);
+      // label on the roof band (only near the horizontal center of the building)
+      const leftSame=tileAt(tx-1,ty)===c, rightSame=tileAt(tx+1,ty)===c;
+      if(th.label && !leftSame && rightSame){ ctx.font="6px monospace"; ctx.fillStyle=th.lab; ctx.fillText(th.label, x+2, top+4); }
+      if(season==="winter"){ ctx.fillStyle="#eef4fa"; ctx.fillRect(x-1,top,TILE+2,3); }
+    } else {
+      // facade
+      const wall=th.wall, wallDk=th.wallDk;
+      ctx.fillStyle=tint(wall,16); ctx.fillRect(x,y,TILE,5);
+      ctx.fillStyle=wall;          ctx.fillRect(x,y+5,TILE,6);
+      ctx.fillStyle=tint(wall,-14);ctx.fillRect(x,y+11,TILE,5);
+      ctx.fillStyle="rgba(0,0,0,0.22)"; ctx.fillRect(x,y+14,TILE,2);
+      ctx.fillStyle=tint(wall,24); ctx.fillRect(x,y,1,TILE-2);
+      ctx.fillStyle="rgba(0,0,0,0.18)"; ctx.fillRect(x+TILE-2,y,2,TILE-1);
+      // windows (rows of lit panes; skip for abandoned factory which has broken ones)
+      if(c==="F"){ ctx.fillStyle="#2a2822"; ctx.fillRect(x+3,y+4,4,4); ctx.fillRect(x+9,y+5,3,3); ctx.fillStyle="#15140f"; ctx.fillRect(x+4,y+5,1,2); }
+      else { const lit = nightFactor()>0.4; ctx.fillStyle= lit?"#ffde7a":"#3a6a90"; ctx.fillRect(x+3,y+5,4,4); ctx.fillRect(x+9,y+5,4,4);
+        ctx.fillStyle= lit?"#fff2c0":"#cfeaff"; ctx.fillRect(x+3,y+5,2,2); ctx.fillRect(x+9,y+5,2,2); }
+    }
+  }
+
+  function drawObject(c,x,y,tx,ty,p){
+    switch(c){
+      case "T": drawTree(x,y,p); break;
+      case "b": drawBush(x,y,p); break;
+      case "'": drawFlower(x,y,p); break;
+      case ",": ctx.fillStyle=p.grassAlt; ctx.fillRect(x+6,y+9,2,4); ctx.fillRect(x+9,y+7,2,5); break;
+      case "R": drawHouseRoof(x,y,p); break;
+      case "C": drawHouseRoof(x,y,p);
+                ctx.fillStyle="#7a3a2a"; ctx.fillRect(x+9,y-13,4,9);
+                ctx.fillStyle="#5a2820"; ctx.fillRect(x+12,y-13,1,9);
+                ctx.fillStyle="#9a4a36"; ctx.fillRect(x+9,y-13,1,9);
+                ctx.fillStyle="#3a1c16"; ctx.fillRect(x+9,y-11,4,1); ctx.fillRect(x+9,y-8,4,1);
+                ctx.fillStyle="#c8c8d0"; ctx.fillRect(x+8,y-14,6,2);
+                if(!insideKey && Math.floor(performance.now()/400)%2===0){ ctx.fillStyle="#cfcfcf"; ctx.fillRect(x+10,y-18,2,3); ctx.fillRect(x+11,y-21,2,2); }
+                break;
+      case "H": drawHouseWall(x,y,p,false); break;
+      case "W": drawHouseWall(x,y,p,true); break;
+      case "S": drawShopRoof(x,y,p); break;
+      case "A": drawCivicRoof(x,y,p); break;
+      case "B": drawCivicWall(x,y,p,false); break;
+      case "V": drawCivicWall(x,y,p,true); break;
+      case "D": drawHouseWall(x,y,p,false); drawDoor(x,y,false); break;
+      case "1": case "2": case "3": case "4": case "5": case "6": case "7": case "8": case "9":
+                (c==="4")?drawCivicWall(x,y,p,false):drawHouseWall(x,y,p,false); drawDoor(x,y, !!DOORS[c] || !inTown()); break;
+      case "L": drawLamp(x,y); break;
+      case "N": drawBench(x,y); break;
+      case "P": drawSign(x,y); break;
+      case "Q": drawWell(x,y,p); break;
+      case "K": drawCrane(x,y); break;
+      case "w": drawPier(x,y); break;
+      case "o": drawBoatTile(x,y,p); break;
+      case "G": drawWarehouseWall(x,y); break;
+      case "J": drawWarehouseRoof(x,y); break;
+      case "c": drawCrate(x,y); break;
+      case "F": ctx.fillStyle="#6a6560"; ctx.fillRect(x,y,TILE,TILE); ctx.fillStyle="#7a756e"; ctx.fillRect(x,y,TILE,3);
+                ctx.fillStyle="#00000022"; ctx.fillRect(x,y+TILE-2,TILE,2); ctx.fillStyle="#4a4640"; ctx.fillRect(x+3,y+5,3,4); ctx.fillRect(x+9,y+6,3,3); break; // factory wall
+      case "k": // smokestack rising above the roof, DENSE smoke
+                ctx.fillStyle="#5a504a"; ctx.fillRect(x+9,y-14,4,16); ctx.fillStyle="#3a332e"; ctx.fillRect(x+12,y-14,1,16);
+                ctx.fillStyle="#c04030"; ctx.fillRect(x+9,y-6,4,2);
+                if(!insideKey){ const ph=(performance.now()/220|0)%3;
+                  ctx.fillStyle="rgba(70,70,76,0.85)"; ctx.fillRect(x+9,y-18,4,4);
+                  ctx.fillStyle="rgba(90,90,96,0.7)"; ctx.fillRect(x+8-ph,y-23,6,5);
+                  ctx.fillStyle="rgba(110,110,118,0.5)"; ctx.fillRect(x+6+ph,y-29,8,6);
+                  ctx.fillStyle="rgba(130,130,140,0.32)"; ctx.fillRect(x+4,y-35,12,7); } break;
+      case "e": // power pole
+                ctx.fillStyle="#5a4a38"; ctx.fillRect(x+7,y+2,2,13); ctx.fillStyle="#3a2e20"; ctx.fillRect(x+3,y+3,10,1); ctx.fillRect(x+3,y+6,10,1);
+                ctx.fillStyle="#222"; ctx.fillRect(x+3,y+3,1,4); ctx.fillRect(x+12,y+3,1,4); break;
+      case "z": // fatiscent building
+                ctx.fillStyle="#8a8078"; ctx.fillRect(x,y,TILE,TILE); ctx.fillStyle="#6a625a"; ctx.fillRect(x,y+TILE-3,TILE,3);
+                ctx.fillStyle="#3a352f"; ctx.fillRect(x+4,y+4,4,5); ctx.fillRect(x+9,y+7,3,4); ctx.fillStyle="#2a2622"; ctx.fillRect(x+5,y+9,2,3); break; // broken windows
+      case "p": // palm tree
+                ctx.fillStyle=p.trunk||"#8a5a2a"; ctx.fillRect(x+7,y+7,2,8);
+                ctx.fillStyle="#2c7a3c"; ctx.fillRect(x+3,y+3,10,2); ctx.fillRect(x+5,y+1,6,2); ctx.fillRect(x+2,y+5,4,2); ctx.fillRect(x+10,y+5,4,2);
+                ctx.fillStyle="#3f9a4c"; ctx.fillRect(x+6,y+2,4,2); if(season==="winter"){ctx.fillStyle="#dfeaf4";ctx.fillRect(x+5,y+1,4,1);} break;
+      case "u": // beach umbrella
+                ctx.fillStyle="#7a5a2a"; ctx.fillRect(x+7,y+7,1,8); ctx.fillStyle="#e04040"; ctx.fillRect(x+2,y+3,12,3);
+                ctx.fillStyle="#f0f0f0"; ctx.fillRect(x+2,y+3,3,3); ctx.fillRect(x+8,y+3,3,3); break;
+      case "v": // bubbling chemical tank/canister
+                ctx.fillStyle="#0a0a12"; ctx.fillRect(x+3,y+3,10,12);
+                ctx.fillStyle="#5a6a4a"; ctx.fillRect(x+4,y+4,8,10); ctx.fillStyle="#48583a"; ctx.fillRect(x+4,y+4,8,2);
+                ctx.fillStyle="#c8d000"; ctx.fillRect(x+5,y+6,6,2);  // hazard band
+                { const b=(performance.now()/200|0)%3; ctx.fillStyle="#9ad04a"; ctx.fillRect(x+6,y+3-b,2,2); ctx.fillStyle="#c8f070"; ctx.fillRect(x+8,y+2-((b+1)%3),1,1); } // bubbles
+                break;
+      case "i": // metal chain-link fence
+                ctx.fillStyle="#8a8e94"; ctx.fillRect(x+1,y,1,TILE); ctx.fillRect(x+13,y,1,TILE);  // posts
+                ctx.strokeStyle="#a8acb2"; ctx.lineWidth=1;
+                ctx.beginPath(); for(let i=2;i<14;i+=3){ ctx.moveTo(x+i,y+1); ctx.lineTo(x+i+3,y+TILE-1); ctx.moveTo(x+i+3,y+1); ctx.lineTo(x+i,y+TILE-1);} ctx.stroke();
+                ctx.fillStyle="#6a6e74"; ctx.fillRect(x,y+2,TILE,1); ctx.fillRect(x,y+TILE-3,TILE,1); break;
+      case "I": drawBigTree(x,y,p); break;
+      case "O": // luxury pool water
+                ctx.fillStyle="#40b0d8"; ctx.fillRect(x,y,TILE,TILE); ctx.fillStyle="#5ac0e8"; ctx.fillRect(x+1,y+1,TILE-2,TILE-2);
+                ctx.fillStyle="#bfeaf8"; ctx.fillRect(x+2,y+2,4,1); ctx.fillRect(x+8,y+9,4,1); ctx.fillStyle="#2a8ab0"; ctx.fillRect(x,y,TILE,1); break;
+      case "Z": drawChaletWall(x,y); break;
+      case "X": drawChaletRoof(x,y); break;
+      case "h": // rustic wood cabin wall
+                ctx.fillStyle="#6a4a2a"; ctx.fillRect(x,y,TILE,TILE); ctx.fillStyle="#7a5836"; for(let i=0;i<TILE;i+=3) ctx.fillRect(x,y+i,TILE,1);
+                ctx.fillStyle="#2a1c10"; ctx.fillRect(x+4,y+4,4,5); ctx.fillStyle="#3a2a1a"; ctx.fillRect(x,y+TILE-2,TILE,2); break;
+    }
+  }
+
+  // ---- tile sprites ----
+  function drawTree(x,y,p){
+    // trunk
+    ctx.fillStyle=p.trunk; ctx.fillRect(x+6,y+11,4,5); ctx.fillStyle="#3a2a18"; ctx.fillRect(x+9,y+11,1,5);
+    ctx.fillStyle=tint(p.trunk,20); ctx.fillRect(x+6,y+11,1,5);
+    // BIG rounded canopy rising above the tile (top at y-6)
+    const top=y-6;
+    ctx.fillStyle=p.treeDk;
+    ctx.fillRect(x+3,top+2,10,12); ctx.fillRect(x+1,top+5,14,7); ctx.fillRect(x+5,top,6,3); ctx.fillRect(x+2,top+3,12,2);
+    ctx.fillStyle=p.tree;
+    ctx.fillRect(x+3,top+3,9,9); ctx.fillRect(x+4,top+1,7,3); ctx.fillRect(x+2,top+6,11,4);
+    // volume: bright upper-left + shaded lower-right
+    ctx.fillStyle=tint(p.tree,30); ctx.fillRect(x+3,top+2,5,4); ctx.fillRect(x+4,top+1,3,2);
+    ctx.fillStyle=tint(p.treeDk,-14); ctx.fillRect(x+9,top+8,5,5);
+    // leaf clumps by season
+    if(season==="autumn"){ ctx.fillStyle="#e0a030"; ctx.fillRect(x+5,top+3,2,2); ctx.fillStyle="#f0c040"; ctx.fillRect(x+9,top+6,2,2); }
+    else if(season==="winter"){ ctx.fillStyle="#eef4fa"; ctx.fillRect(x+3,top+1,6,2); ctx.fillRect(x+9,top+3,3,2); }
+    else { ctx.fillStyle=tint(p.tree,44); ctx.fillRect(x+5,top+3,2,2); }
+  }
+  // BIG tall tree (pine-ish) for forests/mountain — rises high above the tile
+  function drawBigTree(x,y,p){
+    ctx.fillStyle=p.trunk||"#6a4a2a"; ctx.fillRect(x+7,y+9,2,7);
+    const dk=p.treeDk||"#2c5a1c", md=p.tree||"#3f7a2c";
+    // tall conical foliage stacked upward (top ~ y-16)
+    ctx.fillStyle=dk;
+    ctx.fillRect(x+2,y+2,12,9); ctx.fillRect(x+3,y-4,10,8); ctx.fillRect(x+5,y-10,6,8); ctx.fillRect(x+6,y-16,4,8);
+    ctx.fillStyle=md;
+    ctx.fillRect(x+3,y+2,9,7); ctx.fillRect(x+4,y-4,7,6); ctx.fillRect(x+6,y-10,3,6); ctx.fillRect(x+7,y-16,2,6);
+    ctx.fillStyle=tint(md,30); ctx.fillRect(x+4,y-3,3,3); ctx.fillRect(x+6,y-9,2,3);   // NW highlight
+    if(season==="winter"){ ctx.fillStyle="#eef4fa"; ctx.fillRect(x+6,y-16,3,2); ctx.fillRect(x+4,y-4,3,2); ctx.fillRect(x+3,y+2,4,2); }
+    else if(season==="autumn"){ ctx.fillStyle="#c88028"; ctx.fillRect(x+8,y-6,2,2); ctx.fillRect(x+5,y+4,2,2); }
+  }
+  function drawChaletWall(x,y){ // dark timber alpine wall
+    ctx.fillStyle="#6a4630"; ctx.fillRect(x,y,TILE,TILE); ctx.fillStyle="#7a5638"; for(let i=0;i<TILE;i+=3) ctx.fillRect(x,y+i,TILE,1);
+    ctx.fillStyle="#00000028"; ctx.fillRect(x,y+TILE-2,TILE,2);
+    ctx.fillStyle="#2a3a4a"; ctx.fillRect(x+4,y+4,8,6); ctx.fillStyle="#9ac0e0"; ctx.fillRect(x+5,y+5,6,4); ctx.fillStyle="#cfeaff"; ctx.fillRect(x+5,y+5,3,2); }
+  function drawChaletRoof(x,y){ // steep snowy alpine roof rising above tile
+    const top=y-8;
+    ctx.fillStyle="#4a3428"; ctx.fillRect(x-1,top,TILE+2,7);
+    ctx.fillStyle="#5a4030"; ctx.fillRect(x-1,top+7,TILE+2,7);
+    ctx.fillStyle="#eef4fa"; ctx.fillRect(x-1,top,TILE+2,3); ctx.fillStyle="#dfe8f2"; ctx.fillRect(x-1,top+3,TILE+2,1); // snow
+    ctx.fillStyle="#00000030"; ctx.fillRect(x-2,y+13,TILE+4,3); }
+  function drawBush(x,y,p){ ctx.fillStyle="#00000030"; ctx.fillRect(x+2,y+6,12,9); ctx.fillStyle=p.treeDk; ctx.fillRect(x+3,y+6,10,8); ctx.fillStyle=p.tree; ctx.fillRect(x+4,y+6,8,5);
+    const berry=season==="autumn"?"#e05028":(season==="winter"?"#dfeaf4":"#f050a0"); ctx.fillStyle=berry; ctx.fillRect(x+5,y+8,2,2); ctx.fillRect(x+9,y+9,2,2); }
+  function drawFlower(x,y,p){ ctx.fillStyle="#3f7a2c"; ctx.fillRect(x+7,y+9,1,4); if(season==="winter"){ ctx.fillStyle="#dfeaf4"; ctx.fillRect(x+6,y+7,3,3); return; }
+    ctx.fillStyle=p.flower; ctx.fillRect(x+6,y+6,3,3); ctx.fillRect(x+5,y+7,1,1); ctx.fillRect(x+9,y+7,1,1); ctx.fillStyle="#f5e050"; ctx.fillRect(x+7,y+7,1,1); }
+  function drawHouseRoof(x,y,p){
+    const tx=Math.round((x+cam.x)/TILE), ty=Math.round((y+cam.y)/TILE); const v=vary(tx,ty)*14;
+    const roof=tint(p.roof,v), roofDk=tint(p.roofDk,v);
+    // TALL pitched roof: rises ~8px ABOVE the tile, steep slopes, big overhang.
+    const top=y-8;
+    // back/upper slope (bright, catching NW light)
+    ctx.fillStyle=tint(roof,34); ctx.fillRect(x-1, top, TILE+2, 8);
+    // ridge highlight
+    ctx.fillStyle=tint(roof,60); ctx.fillRect(x-1, top, TILE+2, 1);
+    // front slope (mid -> shaded going down)
+    ctx.fillStyle=roof;   ctx.fillRect(x-1, top+8, TILE+2, 6);
+    ctx.fillStyle=roofDk; ctx.fillRect(x-1, top+14, TILE+2, 4);
+    // shingle streaks
+    ctx.fillStyle="rgba(0,0,0,0.10)"; for(let i=2;i<TILE;i+=4) ctx.fillRect(x+i, top+2, 1, 15);
+    // overhanging eave + its cast shadow onto the facade below
+    ctx.fillStyle=tint(roofDk,-24); ctx.fillRect(x-2, y+13, TILE+4, 3);
+    ctx.fillStyle="rgba(0,0,0,0.30)"; ctx.fillRect(x-1, y+16, TILE+2, 1);
+    if(season==="winter"){ ctx.fillStyle="#eef4fa"; ctx.fillRect(x-1, top, TILE+2, 4); ctx.fillStyle="#dfe8f2"; ctx.fillRect(x-1, top+4, TILE+2, 1); }
+  }
+  function drawHouseWall(x,y,p,window){
+    const tx=Math.round((x+cam.x)/TILE), ty=Math.round((y+cam.y)/TILE); const v=vary(tx,ty)*12;
+    const wall=tint(p.wall,v), wallDk=tint(p.wallDk,v);
+    // Only rise above the tile if there's open space above (not a roof/wall of the same building).
+    const above=tileAt(tx,ty-1);
+    const buildingAbove = /[RCHWDABVSGJ1-9]/.test(above);
+    const top = buildingAbove ? y : y-4;
+    if(!buildingAbove){ ctx.fillStyle=tint(wall,-18); ctx.fillRect(x,top,TILE,3); } // eave shade only when exposed
+    ctx.fillStyle=tint(wall,18);  ctx.fillRect(x,top+3,TILE,5);       // upper facade (lit)
+    ctx.fillStyle=wall;           ctx.fillRect(x,top+8,TILE,6);
+    ctx.fillStyle=tint(wall,-16); ctx.fillRect(x,top+14,TILE, (y+16)-(top+14) );  // lower facade to ground
+    ctx.fillStyle="rgba(0,0,0,0.24)"; ctx.fillRect(x,y+14,TILE,2);    // ground contact
+    ctx.fillStyle=tint(wall,26); ctx.fillRect(x,top+3,1,(y+14)-(top+3));
+    ctx.fillStyle="rgba(0,0,0,0.20)"; ctx.fillRect(x+TILE-2,top+3,2,(y+14)-(top+3));
+    if(window){
+      const wy=top+6;
+      ctx.fillStyle="#2a1c10"; ctx.fillRect(x+3,wy,10,8);
+      ctx.fillStyle="#e8dcc0"; ctx.fillRect(x+3,wy+8,10,1);
+      ctx.fillStyle="#3a6a90"; ctx.fillRect(x+4,wy+1,8,6);
+      ctx.fillStyle="#cfeaff"; ctx.fillRect(x+4,wy+1,4,3);
+      ctx.fillStyle="#26343f"; ctx.fillRect(x+7,wy+1,1,6); ctx.fillRect(x+4,wy+4,8,1);
+      ctx.fillStyle="#5a3a1e"; ctx.fillRect(x+3,wy-1,10,1);
+    }
+  }
+  function drawShopRoof(x,y,p){ // 3D striped awning with valance + hanging sign board
+    const top=y-6;
+    ctx.fillStyle="#00000025"; ctx.fillRect(x-1,y+11,TILE+2,2);          // shadow under awning
+    ctx.fillStyle="#b0b0bc"; ctx.fillRect(x-1,top,TILE+2,3);             // awning top bar
+    for(let i=0;i<TILE;i+=4){ ctx.fillStyle=(i/4)%2===0?"#e04a4a":"#f4f4f4"; ctx.fillRect(x+i,top+3,4,7); } // stripes
+    // scalloped valance (little triangles at the bottom edge)
+    for(let i=0;i<TILE;i+=4){ ctx.fillStyle=(i/4)%2===0?"#b83636":"#d8d8d8"; ctx.fillRect(x+i+1,top+10,2,2); }
+    ctx.fillStyle="#00000030"; ctx.fillRect(x,top+10,TILE,1);
+    ctx.fillStyle=p.wall; ctx.fillRect(x,y+12,TILE,4);                   // wall strip below
+    // small hanging sign
+    ctx.fillStyle="#6a4a2a"; ctx.fillRect(x+11,top-3,1,3); ctx.fillStyle="#8a6a3a"; ctx.fillRect(x+8,top-6,7,4);
+    ctx.fillStyle="#e0c040"; ctx.fillRect(x+9,top-5,5,1); ctx.fillStyle="#3a2414"; ctx.fillRect(x+9,top-4,4,1); }
+  function drawCivicRoof(x,y,p){ // grand tall roof with pediment + flag
+    const top=y-10;
+    ctx.fillStyle="#6a707c"; ctx.fillRect(x-1,top,TILE+2,6);             // upper roof
+    ctx.fillStyle="#8a90a0"; ctx.fillRect(x-1,top+6,TILE+2,6);
+    ctx.fillStyle="#a8aeba"; ctx.fillRect(x-1,top+2,TILE+2,1);           // highlight
+    ctx.fillStyle="#00000030"; ctx.fillRect(x-1,top+12,TILE+2,2);       // eave shadow
+    // golden finial + little flag
+    ctx.fillStyle="#e0c040"; ctx.fillRect(x+7,top-4,2,4); ctx.fillStyle="#f0e070"; ctx.fillRect(x+7,top-5,2,2);
+    ctx.fillStyle="#d84040"; ctx.fillRect(x+9,top-4,3,2); }
+  function drawCivicWall(x,y,p,window){ ctx.fillStyle="#c0c2cc"; ctx.fillRect(x,y,TILE,TILE); ctx.fillStyle="#d6d8e2"; ctx.fillRect(x,y,TILE,TILE-2);
+    // columns
+    ctx.fillStyle="#a8aab6"; ctx.fillRect(x+2,y,2,TILE); ctx.fillRect(x+12,y,2,TILE);
+    if(window){ ctx.fillStyle="#2c3a4a"; ctx.fillRect(x+5,y+2,6,12); ctx.fillStyle="#7ab0e0"; ctx.fillRect(x+6,y+3,4,10); ctx.fillStyle="#bfe0ff"; ctx.fillRect(x+6,y+3,2,4); } }
+  function drawDoor(x,y,glow){
+    ctx.fillStyle="rgba(0,0,0,0.30)"; ctx.fillRect(x+3,y+3,10,2);   // shadow under overhang above door
+    ctx.fillStyle="#e0c8a0"; ctx.fillRect(x+3,y+4,10,12);          // light stone frame
+    ctx.fillStyle="#2a180c"; ctx.fillRect(x+4,y+5,8,11);           // recess
+    ctx.fillStyle="#6a4324"; ctx.fillRect(x+5,y+5,6,11);           // door
+    ctx.fillStyle="#4a2c16"; ctx.fillRect(x+8,y+5,1,11);           // gap
+    ctx.fillStyle="#8a5a30"; ctx.fillRect(x+5,y+5,2,11);           // lit door edge
+    ctx.fillStyle="#e0c040"; ctx.fillRect(x+6,y+10,1,2);           // handle
+    ctx.fillStyle="#3a2414"; ctx.fillRect(x+4,y+16,8,1);          // threshold/step
+    if(glow){ ctx.strokeStyle=(Math.floor(performance.now()/350)%2===0)?"#ffd860":"#e0a020"; ctx.lineWidth=1; ctx.strokeRect(x+2.5,y+3.5,11,13); } }
+  function drawLamp(x,y){ ctx.fillStyle="#3a3a44"; ctx.fillRect(x+7,y+4,2,11); ctx.fillStyle="#2a2a34"; ctx.fillRect(x+5,y+2,6,3);
+    const on=nightFactor()>0.35; ctx.fillStyle=on?"#ffe070":"#5a5a4a"; ctx.fillRect(x+6,y+2,4,2); if(on){ ctx.fillStyle="#ffe07040"; ctx.fillRect(x+4,y,8,6); } }
+  function drawBench(x,y){ ctx.fillStyle="#6a4a2a"; ctx.fillRect(x+2,y+8,12,3); ctx.fillRect(x+2,y+5,12,2); ctx.fillStyle="#4a3018"; ctx.fillRect(x+3,y+11,2,3); ctx.fillRect(x+11,y+11,2,3); }
+  function drawSign(x,y){
+    ctx.fillStyle="rgba(0,0,0,0.22)"; ctx.fillRect(x+5,y+14,7,1);      // shadow
+    ctx.fillStyle="#5a3a1e"; ctx.fillRect(x+7,y+7,2,8); ctx.fillStyle="#7a5230"; ctx.fillRect(x+7,y+7,1,8); // post (lit edge)
+    ctx.fillStyle="#3a2414"; ctx.fillRect(x+2,y+2,12,7);               // board back/frame
+    ctx.fillStyle="#9a7a4a"; ctx.fillRect(x+3,y+3,10,5);               // board face
+    ctx.fillStyle="#c8a868"; ctx.fillRect(x+3,y+3,10,1);              // top highlight
+    ctx.fillStyle="#3a2414"; ctx.fillRect(x+4,y+4,7,1); ctx.fillRect(x+4,y+6,5,1); } // text lines
+
+  // ---- decorative props ----
+  function drawDecor(d,x,y){ x=Math.round(x); y=Math.round(y);
+    ctx.fillStyle="rgba(0,0,0,0.22)";
+    switch(d.t){
+      case "planter":
+        ctx.fillRect(x+4,y+13,8,2);
+        ctx.fillStyle="#8a5a34"; ctx.fillRect(x+4,y+9,8,5); ctx.fillStyle="#a5713a"; ctx.fillRect(x+4,y+9,8,1); ctx.fillStyle="#5a3a1e"; ctx.fillRect(x+11,y+9,1,5);
+        ctx.fillStyle="#3f7a2c"; ctx.fillRect(x+4,y+6,8,4); ctx.fillStyle="#6ab85a"; ctx.fillRect(x+5,y+5,2,2); ctx.fillRect(x+9,y+6,2,2);
+        ctx.fillStyle="#f060a0"; ctx.fillRect(x+6,y+6,1,1); ctx.fillStyle="#f0d040"; ctx.fillRect(x+9,y+7,1,1); break;
+      case "barrel":
+        ctx.fillRect(x+5,y+13,6,2);
+        ctx.fillStyle="#7a5230"; ctx.fillRect(x+5,y+5,6,9); ctx.fillStyle="#9a6a3e"; ctx.fillRect(x+5,y+5,5,9);
+        ctx.fillStyle="#5a3a1e"; ctx.fillRect(x+5,y+7,6,1); ctx.fillRect(x+5,y+11,6,1);
+        ctx.fillStyle="#c8a868"; ctx.fillRect(x+6,y+5,4,1); break;
+      case "crate":
+        ctx.fillRect(x+4,y+13,8,2);
+        ctx.fillStyle="#a87838"; ctx.fillRect(x+4,y+6,8,8); ctx.fillStyle="#c89858"; ctx.fillRect(x+4,y+6,7,7);
+        ctx.fillStyle="#7a5424"; ctx.fillRect(x+4,y+6,8,1); ctx.fillRect(x+4,y+13,8,1); ctx.fillRect(x+4,y+6,1,8); ctx.fillRect(x+11,y+6,1,8);
+        ctx.fillStyle="#7a5424"; ctx.fillRect(x+4,y+6,8,1); ctx.fillRect(x+5,y+7,6,6); break;
+      case "woodpile":
+        ctx.fillRect(x+3,y+13,10,2);
+        for(let i=0;i<3;i++){ ctx.fillStyle=i%2?"#8a5a34":"#a5713a"; ctx.fillRect(x+3,y+7+i*2,10,2); }
+        ctx.fillStyle="#c8a060"; for(let i=0;i<5;i++) ctx.fillRect(x+3+i*2,y+7,1,1);
+        break;
+      case "potted":
+        ctx.fillRect(x+5,y+14,6,1);
+        ctx.fillStyle="#7a4a2a"; ctx.fillRect(x+5,y+11,6,3); ctx.fillStyle="#9a5a34"; ctx.fillRect(x+5,y+11,5,3);
+        // little round tree
+        ctx.fillStyle="#2c5a1c"; ctx.fillRect(x+4,y+4,8,7); ctx.fillStyle="#3f7a2c"; ctx.fillRect(x+4,y+5,7,5);
+        ctx.fillStyle="#6ab85a"; ctx.fillRect(x+5,y+5,3,2); break;
+      case "stall":
+        ctx.fillRect(x+2,y+14,12,2);
+        // counter
+        ctx.fillStyle="#8a5a34"; ctx.fillRect(x+2,y+9,12,5); ctx.fillStyle="#a5713a"; ctx.fillRect(x+2,y+9,12,1);
+        // striped awning
+        for(let i=0;i<12;i+=4){ ctx.fillStyle=(i/4)%2===0?(d.c||"#d84040"):"#f4f4f4"; ctx.fillRect(x+2+i,y+3,4,4); }
+        ctx.fillStyle="#5a3a1e"; ctx.fillRect(x+2,y+7,12,1); ctx.fillRect(x+2,y+3,1,7); ctx.fillRect(x+13,y+3,1,7);
+        // goods on the counter
+        ctx.fillStyle="#e04040"; ctx.fillRect(x+4,y+8,2,1); ctx.fillStyle="#e0c040"; ctx.fillRect(x+8,y+8,2,1); ctx.fillStyle="#40a060"; ctx.fillRect(x+11,y+8,1,1); break;
+    }
+  }
+  function drawWell(x,y,p){ ctx.fillStyle="#8a8f9a"; ctx.fillRect(x+2,y+5,12,10); ctx.fillStyle="#6a6f7a"; ctx.fillRect(x+2,y+5,12,2);
+    ctx.fillStyle=p.water; ctx.fillRect(x+4,y+8,8,5); ctx.fillStyle="#bfe0ff"; ctx.fillRect(x+5,y+9,3,1); // fountain jet
+    ctx.fillStyle="#dff0ff"; ctx.fillRect(x+7,y+2,2,6); }
+  function drawCrane(x,y){ ctx.fillStyle="#c85030"; ctx.fillRect(x+3,y+2,3,13); ctx.fillRect(x+3,y+2,10,2); ctx.fillStyle="#3a3a44"; ctx.fillRect(x+12,y+3,1,6); ctx.fillStyle="#e0c040"; ctx.fillRect(x+11,y+9,3,2); }
+  function drawPier(x,y){ ctx.fillStyle="#7a5230"; ctx.fillRect(x,y,TILE,TILE); ctx.fillStyle="#5a3a1e"; for(let i=0;i<TILE;i+=4) ctx.fillRect(x,y+i,TILE,1); ctx.fillStyle="#3a2414"; ctx.fillRect(x+2,y,1,TILE); ctx.fillRect(x+13,y,1,TILE); }
+  function drawBoatTile(x,y,p){ ctx.fillStyle=p.water; ctx.fillRect(x,y,TILE,TILE); ctx.fillStyle="#c85040"; ctx.fillRect(x+2,y+7,12,5); ctx.fillStyle="#f0f0f0"; ctx.fillRect(x+7,y+2,2,6); ctx.fillStyle="#e0e0e0"; ctx.fillRect(x+9,y+3,3,4); ctx.fillStyle="#3a2414"; ctx.fillRect(x+2,y+11,12,1); }
+  function drawBoat(x,y){ ctx.fillStyle="#c85040"; ctx.fillRect(x,y,24,8); ctx.fillStyle="#a83828"; ctx.fillRect(x,y+6,24,2); ctx.fillStyle="#f0f0f0"; ctx.fillRect(x+11,y-10,2,10); ctx.fillStyle="#e8e8e8"; ctx.fillRect(x+13,y-8,7,7); }
+  function drawWarehouseWall(x,y){ ctx.fillStyle="#8a7458"; ctx.fillRect(x,y,TILE,TILE); ctx.fillStyle="#6a5844"; ctx.fillRect(x,y+TILE-3,TILE,3);
+    ctx.fillStyle="#00000018"; for(let i=0;i<TILE;i+=4) ctx.fillRect(x,y+i,TILE,1); }
+  function drawWarehouseRoof(x,y){ ctx.fillStyle="#5a6470"; ctx.fillRect(x,y,TILE,TILE); ctx.fillStyle="#6e7884"; ctx.fillRect(x,y+2,TILE,TILE-5);
+    ctx.fillStyle="#00000030"; ctx.fillRect(x,y+TILE-2,TILE,2); ctx.fillStyle="#ffffff18"; ctx.fillRect(x,y+2,TILE,1); }
+  function drawCrate(x,y){ ctx.fillStyle="#a87838"; ctx.fillRect(x+2,y+3,12,11); ctx.fillStyle="#7a5424"; ctx.fillRect(x+2,y+3,12,2); ctx.fillRect(x+2,y+12,12,2);
+    ctx.fillStyle="#5a3e18"; ctx.fillRect(x+2,y+3,2,11); ctx.fillRect(x+12,y+3,2,11); ctx.fillStyle="#c89858"; ctx.fillRect(x+7,y+5,2,7); }
+  function drawShell(x,y,animT){ x=Math.round(x); y=Math.round(y);
+    const g=(Math.floor(animT*3)%2)?1:0;
+    ctx.fillStyle="#0a0a12"; ctx.fillRect(x+4,y+7,8,6);
+    ctx.fillStyle="#f0a8c0"; ctx.fillRect(x+5,y+7,6,5); ctx.fillStyle="#f8d0e0"; ctx.fillRect(x+6,y+7,4,2);
+    ctx.fillStyle="#d06888"; ctx.fillRect(x+7,y+8,1,4); ctx.fillRect(x+9,y+9,1,3); ctx.fillRect(x+6,y+9,1,3);
+    ctx.fillStyle="#fff8"; if(g) ctx.fillRect(x+5,y+6,2,2); else ctx.fillRect(x+10,y+6,2,2); }
+  function drawBikeObj(x,y){ x=Math.round(x); y=Math.round(y);
+    ctx.fillStyle="rgba(0,0,0,0.22)"; ctx.fillRect(x+2,y+13,12,2);      // shadow
+    ctx.fillStyle="#15151a"; ctx.fillRect(x+2,y+8,5,5); ctx.fillRect(x+10,y+8,5,5);   // wheels
+    ctx.fillStyle="#7a7a84"; ctx.fillRect(x+3,y+9,3,3); ctx.fillRect(x+11,y+9,3,3);
+    ctx.fillStyle="#d03030"; ctx.fillRect(x+5,y+6,7,2); ctx.fillRect(x+6,y+4,2,3); ctx.fillRect(x+11,y+4,2,5); // frame
+    ctx.fillStyle="#3a2a1a"; ctx.fillRect(x+5,y+4,3,1);                 // saddle
+    ctx.fillStyle="#2a2a34"; ctx.fillRect(x+11,y+3,3,1);               // handlebar
+    // sparkle to hint interactivity
+    if(Math.floor(performance.now()/400)%2===0){ ctx.fillStyle="#fff"; ctx.fillRect(x+8,y+2,1,1); }
+  }
+  function drawBall(x,y){ x=Math.round(x); y=Math.round(y);
+    ctx.fillStyle="rgba(0,0,0,0.22)"; ctx.fillRect(x+5,y+13,6,1);
+    ctx.fillStyle="#f0f0f0"; ctx.fillRect(x+5,y+7,6,6); ctx.fillStyle="#e8e8e8"; ctx.fillRect(x+5,y+11,6,2);
+    ctx.fillStyle="#1a1a20"; ctx.fillRect(x+7,y+8,2,2); ctx.fillRect(x+6,y+10,1,1); ctx.fillRect(x+10,y+9,1,1);  // pentagon hints
+    ctx.fillStyle="#fff"; ctx.fillRect(x+6,y+7,2,1);
+    if(Math.floor(performance.now()/400)%2===0){ ctx.fillStyle="#fff"; ctx.fillRect(x+9,y+5,1,1); } }
+  function drawKeyring(x,y){ x=Math.round(x); y=Math.round(y);
+    ctx.fillStyle="rgba(0,0,0,0.20)"; ctx.fillRect(x+6,y+12,4,1);
+    ctx.fillStyle="#e0c040"; ctx.fillRect(x+6,y+7,4,4); ctx.fillStyle="#3a2a10"; ctx.fillRect(x+7,y+8,2,2); // ring
+    ctx.fillStyle="#c8c8d0"; ctx.fillRect(x+9,y+10,1,3); ctx.fillRect(x+10,y+12,2,1);   // key
+    if(Math.floor(performance.now()/400)%2===0){ ctx.fillStyle="#fff"; ctx.fillRect(x+6,y+6,1,1); } }
+  function drawPhoto(x,y){ x=Math.round(x); y=Math.round(y);
+    ctx.fillStyle="rgba(0,0,0,0.20)"; ctx.fillRect(x+4,y+12,8,1);
+    ctx.fillStyle="#f0ecdf"; ctx.fillRect(x+4,y+5,8,7); ctx.fillStyle="#c8c2b0"; ctx.fillRect(x+4,y+11,8,1); // paper
+    ctx.fillStyle="#7a8a9a"; ctx.fillRect(x+5,y+6,6,4); ctx.fillStyle="#5a6a7a"; ctx.fillRect(x+6,y+8,4,2); // faded image
+    if(Math.floor(performance.now()/400)%2===0){ ctx.fillStyle="#fff"; ctx.fillRect(x+8,y+4,1,1); } }
+
+  // ---- INTERIOR ----
+  function drawInterior(){ ctx.fillStyle="#2a2438"; ctx.fillRect(0,0,W,H);
+    const t0x=Math.floor(cam.x/TILE)-2,t0y=Math.floor(cam.y/TILE)-3,t1x=Math.ceil((cam.x+W)/TILE)+2,t1y=Math.ceil((cam.y+H)/TILE)+2;
+    for(let ty=t0y;ty<=t1y;ty++) for(let tx=t0x;tx<=t1x;tx++){ if(tx<0||ty<0||tx>=cur.w||ty>=cur.h) continue; drawInteriorTile(tileAt(tx,ty),tx*TILE-cam.x,ty*TILE-cam.y); }
+    const inpc=currentInteriorNpc(); if(inpc) drawNpc(inpc, inpc.tx*TILE-cam.x, inpc.ty*TILE-cam.y);
+    drawPlayer(player.px-cam.x, player.py-cam.y, player.dir, player.animT); drawInteractHint(); }
+  function drawInteriorTile(c,x,y){ ctx.fillStyle="#6a5038"; ctx.fillRect(x,y,TILE,TILE); ctx.fillStyle="#5a4230"; ctx.fillRect(x,y+TILE-2,TILE,2); ctx.fillRect(x,y,TILE,1);
+    switch(c){
+      case "#": ctx.fillStyle="#4a3f5e"; ctx.fillRect(x,y,TILE,TILE); ctx.fillStyle="#5a4f6e"; ctx.fillRect(x,y,TILE,4); ctx.fillStyle="#00000030"; ctx.fillRect(x,y+TILE-3,TILE,3); break;
+      case "e": ctx.fillStyle="#3a2414"; ctx.fillRect(x+3,y+2,10,14); ctx.fillStyle="#5a3a1e"; ctx.fillRect(x+4,y+3,8,13); ctx.fillStyle="#e0c040"; ctx.fillRect(x+9,y+9,1,2); break;
+      case "r": ctx.fillStyle="#a83c4c"; ctx.fillRect(x+1,y+2,14,12); ctx.fillStyle="#c8586a"; ctx.fillRect(x+3,y+4,10,8); break;
+      case "b": ctx.fillStyle="#c0c0d0"; ctx.fillRect(x+2,y+2,12,12); ctx.fillStyle="#e0e0ec"; ctx.fillRect(x+2,y+2,12,4); ctx.fillStyle="#8888a0"; ctx.fillRect(x+2,y+12,12,2); break;
+      case "t": ctx.fillStyle="#7a5230"; ctx.fillRect(x+2,y+5,12,7); ctx.fillStyle="#5a3a1e"; ctx.fillRect(x+2,y+11,2,4); ctx.fillRect(x+12,y+11,2,4); break;
+      case "c": ctx.fillStyle="#6a4a2a"; ctx.fillRect(x+5,y+6,6,4); ctx.fillRect(x+5,y+3,6,3); ctx.fillRect(x+5,y+10,2,4); ctx.fillRect(x+9,y+10,2,4); break;
+      case "s": ctx.fillStyle="#5a3f28"; ctx.fillRect(x+1,y+1,14,14); ctx.fillStyle="#7a5838"; ctx.fillRect(x+2,y+3,12,2); ctx.fillRect(x+2,y+8,12,2); ctx.fillStyle="#c05040"; ctx.fillRect(x+3,y+5,2,3); ctx.fillStyle="#4080c0"; ctx.fillRect(x+6,y+5,2,3); ctx.fillStyle="#40a060"; ctx.fillRect(x+9,y+10,2,3); break;
+      case "p": ctx.fillStyle="#5a3a1e"; ctx.fillRect(x+5,y+11,6,4); ctx.fillStyle="#3f7a2c"; ctx.fillRect(x+4,y+3,8,8); ctx.fillStyle="#6ab85a"; ctx.fillRect(x+6,y+4,3,3); break;
+      case "f": ctx.fillStyle="#5a5a64"; ctx.fillRect(x+1,y+2,14,13); ctx.fillStyle="#2a2a34"; ctx.fillRect(x+3,y+6,10,8); ctx.fillStyle=(Math.floor(performance.now()/250)%2===0)?"#f08030":"#e0a030"; ctx.fillRect(x+5,y+9,6,4); ctx.fillStyle="#f0d040"; ctx.fillRect(x+7,y+10,2,2); break;
+      case "V": ctx.fillStyle="#2c3a4a"; ctx.fillRect(x+4,y+2,8,12); ctx.fillStyle="#7ab0e0"; ctx.fillRect(x+5,y+3,6,10); ctx.fillStyle="#bfe0ff"; ctx.fillRect(x+5,y+3,2,4); break;
+    }
+  }
+
+  // ---- SPRITES ----
+  function outlineRect(x,y,w,h){ ctx.fillStyle="#0a0a12"; ctx.fillRect(x-1,y-1,w+2,h+2); }
+  // soft ground shadow (fake 3D grounding)
+  function shadow(x,y,w,h){ ctx.fillStyle="rgba(0,0,0,0.22)"; ctx.fillRect(x,y,w,h); ctx.fillStyle="rgba(0,0,0,0.12)"; ctx.fillRect(x-1,y,w+2,h); }
+  // deterministic per-tile variation (-1,0,1) so identical buildings differ a little
+  function vary(tx,ty){ const h=(tx*73856093 ^ ty*19349663)>>>0; return (h%3)-1; }
+  function tint(hex,amt){ // amt in [-40..40] lightens/darkens
+    const n=parseInt(hex.slice(1),16); let r=(n>>16)&255,g=(n>>8)&255,b=n&255;
+    r=Math.max(0,Math.min(255,r+amt)); g=Math.max(0,Math.min(255,g+amt)); b=Math.max(0,Math.min(255,b+amt));
+    return "#"+((1<<24)+(r<<16)+(g<<8)+b).toString(16).slice(1);
+  }
+  // Long directional shadow (light from NW -> shadow to SE) cast by "tall" tiles.
+  const TALL_TILES=new Set(["T","b","H","W","R","C","D","A","B","V","S","G","J","L","P","Q","K"]);
+  function isTall(c){ return TALL_TILES.has(c) || /[1-9]/.test(c); }
+  function drawTileShadow(c,x,y){
+    if(insideKey) return;
+    if(!isTall(c)) return;
+    // shadow projects down-right; length depends on "height" of the element
+    const tall = (c==="T"||c==="R"||c==="C"||c==="A"||c==="J"||c==="K"||c==="S"); // roofs/tree crowns = taller
+    const dx = tall?7:4, dy = tall?6:3;
+    ctx.fillStyle="rgba(20,24,40,0.22)";
+    // a slanted quad approximated by two offset rects
+    ctx.fillRect(x+3+dx, y+6+dy, TILE-4, TILE-6);
+    ctx.fillStyle="rgba(20,24,40,0.14)";
+    ctx.fillRect(x+1+dx, y+8+dy, TILE-2, TILE-8);
+  }
+
+  // Shared human sprite: head + hair + torso + arms + legs, with an expressive walk cycle.
+  function drawHuman(x,y,dir,walking,frame,o){
+    x=Math.round(x); y=Math.round(y);
+    const kind0=o.kind||"ym";
+    // ---- CHILDREN (smaller sprite) ----
+    if(kind0==="boy" || kind0==="girl"){
+      const girlc=(kind0==="girl");
+      const skinc=o.skin||"#f0c890";
+      const hairc = girlc ? (o.hair||"#6a4a2a") : "#1a1a1a";   // boy: black; girl: castano
+      const shirtc=o.shirt||"#e0483a", shirtDk=o.shirtDk||"#c0382c", bottom=o.pants||"#2a3a6a";
+      const s=walking?(frame?1:-1):0;
+      // ground shadow (smaller)
+      ctx.fillStyle="rgba(0,0,0,0.26)"; ctx.fillRect(x+5,y+15,6,2);
+      // legs / short skirt (child height: everything shifted down ~4px, shorter)
+      if(girlc){ ctx.fillStyle="#0a0a12"; ctx.fillRect(x+5,y+11,6,4); ctx.fillStyle=bottom; ctx.fillRect(x+5,y+11,6,3); ctx.fillRect(x+4,y+13,8,1);
+        ctx.fillStyle=skinc; ctx.fillRect(x+5,y+14,2,1); ctx.fillRect(x+9,y+14,2,1); }
+      else { ctx.fillStyle=bottom; if(s>=0){ ctx.fillRect(x+5,y+11,2,3); ctx.fillRect(x+9,y+11,2,2);} else { ctx.fillRect(x+5,y+11,2,2); ctx.fillRect(x+9,y+11,2,3);} // shorts (short)
+        ctx.fillStyle=skinc; ctx.fillRect(x+5,y+13,2,1); ctx.fillRect(x+9,y+13,2,1);  // bare legs (shorts)
+        ctx.fillStyle="#2a2028"; ctx.fillRect(x+5,y+14,2,1); ctx.fillRect(x+9,y+14,2,1); }
+      // torso (small)
+      outlineRect(x+5,y+6,6,5);
+      ctx.fillStyle=shirtc; ctx.fillRect(x+5,y+6,6,5); ctx.fillStyle=tint(shirtc,20); ctx.fillRect(x+5,y+6,6,1); ctx.fillStyle=shirtDk; ctx.fillRect(x+5,y+9,6,1);
+      // arms
+      ctx.fillStyle=skinc; const a=walking?(frame?1:-1):0;
+      if(dir==="left"||dir==="right"){ ctx.fillRect(x+(dir==="left"?4:10),y+7+a,2,3); }
+      else { ctx.fillRect(x+4,y+7+a,1,4); ctx.fillRect(x+11,y+7-a,1,4); }
+      // head (big-ish for a kid)
+      outlineRect(x+5,y+1,6,5);
+      ctx.fillStyle=skinc; ctx.fillRect(x+5,y+1,6,5); ctx.fillStyle=tint(skinc,18); ctx.fillRect(x+5,y+1,3,1);
+      ctx.fillStyle=hairc; ctx.fillRect(x+5,y+1,6,2);
+      if(girlc){ ctx.fillRect(x+4,y+1,1,5); ctx.fillRect(x+11,y+1,1,5); } else { ctx.fillRect(x+5,y+1,1,2); ctx.fillRect(x+10,y+1,1,2); }
+      ctx.fillStyle="#0a0a12";
+      if(dir==="down"){ ctx.fillRect(x+6,y+3,1,1); ctx.fillRect(x+9,y+3,1,1); }
+      else if(dir==="up"){ ctx.fillStyle=hairc; ctx.fillRect(x+5,y+1,6,3); }
+      else if(dir==="left"){ ctx.fillRect(x+6,y+3,1,1); }
+      else if(dir==="right"){ ctx.fillRect(x+9,y+3,1,1); }
+      if(o.outfit==="coat"){ // small kid coat with sleeves
+        ctx.fillStyle="#5a4a6a"; ctx.fillRect(x+5,y+6,6,6); ctx.fillStyle="#4a3a58"; ctx.fillRect(x+5,y+10,6,2);
+        ctx.fillStyle="#5a4a6a"; if(dir==="left"||dir==="right"){ ctx.fillRect(x+(dir==="left"?4:10),y+7,2,4); } else { ctx.fillRect(x+4,y+7,1,4); ctx.fillRect(x+11,y+7,1,4); }
+        ctx.fillStyle="#caa"; ctx.fillRect(x+6,y+6,4,1); }
+      return;
+    }
+    // elliptical ground shadow
+    ctx.fillStyle="rgba(0,0,0,0.28)"; ctx.fillRect(x+4,y+16,8,2); ctx.fillStyle="rgba(0,0,0,0.16)"; ctx.fillRect(x+3,y+16,10,1); ctx.fillRect(x+5,y+17,6,1);
+    const kind=kind0;                                 // ym/yw/om/ow
+    const female=(kind==="yw"||kind==="ow");
+    const old=(kind==="om"||kind==="ow");
+    const skin=o.skin||"#f0c890";
+    let hair=o.hair||"#3a2a1a"; if(old) hair="#e8e8ec";   // elders: white hair
+    const shirt=o.shirt||"#e0483a", shirtDk=o.shirtDk||"#c0382c", pants=o.pants||"#2a3a6a";
+    const s = walking ? (frame?1:-1) : 0;
+    if(female){
+      // A-LINE SKIRT: narrow at the waist, flared at the hem (feminine silhouette)
+      const sway = walking ? (frame?1:0) : 0;   // subtle hem sway while walking
+      ctx.fillStyle="#0a0a12"; ctx.fillRect(x+2-sway,y+15,12+sway,2);          // hem outline
+      ctx.fillStyle=pants;
+      ctx.fillRect(x+6,y+10,4,2);                 // waist (narrow)
+      ctx.fillRect(x+5,y+12,6,2);                 // upper skirt
+      ctx.fillRect(x+3-sway,y+14,10+sway*2,2);    // flared hem
+      ctx.fillStyle=tint(pants,18); ctx.fillRect(x+6,y+10,2,4);   // lit fold
+      ctx.fillStyle=tint(pants,-18); ctx.fillRect(x+3-sway,y+15,10+sway*2,1);
+      // slim legs peeking below the hem
+      ctx.fillStyle=skin;
+      if(s>=0){ ctx.fillRect(x+5,y+16,1,1); ctx.fillRect(x+10,y+16,1,1); } else { ctx.fillRect(x+6,y+16,1,1); ctx.fillRect(x+9,y+16,1,1); }
+    } else {
+      // trousers + stride
+      ctx.fillStyle=pants;
+      if(s===0){ ctx.fillRect(x+5,y+13,2,4); ctx.fillRect(x+9,y+13,2,4); }
+      else if(s>0){ ctx.fillRect(x+4,y+13,2,4); ctx.fillRect(x+10,y+12,2,3); }
+      else { ctx.fillRect(x+5,y+12,2,3); ctx.fillRect(x+9,y+13,2,4); }
+      ctx.fillStyle="#2a2028";
+      if(s===0){ ctx.fillRect(x+5,y+16,2,1); ctx.fillRect(x+9,y+16,2,1); }
+      else if(s>0){ ctx.fillRect(x+3,y+16,2,1); ctx.fillRect(x+10,y+14,2,1); }
+      else { ctx.fillRect(x+5,y+14,2,1); ctx.fillRect(x+10,y+16,2,1); }
+    }
+    // torso
+    if(female){
+      // hourglass: wider bust line, narrower waist
+      outlineRect(x+5,y+7,6,6);
+      ctx.fillStyle=shirt; ctx.fillRect(x+5,y+7,6,3);           // upper (bust) full width
+      ctx.fillStyle=shirt; ctx.fillRect(x+6,y+10,4,3);          // waist narrower
+      ctx.fillStyle=tint(shirt,22); ctx.fillRect(x+5,y+7,6,1);  // lit shoulders
+      ctx.fillStyle=tint(shirt,-14); ctx.fillRect(x+5,y+9,2,1); ctx.fillRect(x+9,y+9,2,1); // bust shading
+      ctx.fillStyle=shirtDk; ctx.fillRect(x+6,y+12,4,1);
+    } else {
+      outlineRect(x+5,y+7,6,6);
+      ctx.fillStyle=shirt; ctx.fillRect(x+5,y+7,6,6);
+      ctx.fillStyle=tint(shirt,20); ctx.fillRect(x+5,y+7,6,1);   // lit shoulders
+      ctx.fillStyle=shirtDk; ctx.fillRect(x+5,y+11,6,2);
+    }
+    // arms: swing opposite to legs
+    ctx.fillStyle=skin;
+    if(dir==="left"||dir==="right"){
+      const sw = walking ? (frame?2:-1) : 0;
+      ctx.fillRect(x+(dir==="left"?3:11), y+8+sw, 2, 4);
+    } else {
+      const a = walking ? (frame?2:-2) : 0;
+      ctx.fillRect(x+3, y+8+a, 2, 5); ctx.fillRect(x+11, y+8-a, 2, 5);
+    }
+    // head
+    outlineRect(x+5,y+1,6,6);
+    ctx.fillStyle=skin; ctx.fillRect(x+5,y+1,6,6);
+    ctx.fillStyle=tint(skin,18); ctx.fillRect(x+5,y+1,3,2);   // lit cheek
+    // hair (length by category)
+    ctx.fillStyle=hair;
+    if(female){
+      // fuller top + hair framing the face, flowing down past the shoulders
+      ctx.fillRect(x+4,y+0,8,3);                 // voluminous top
+      ctx.fillRect(x+4,y+1,1,9); ctx.fillRect(x+11,y+1,1,9);  // long sides down to the torso
+      ctx.fillRect(x+3,y+8,2,2); ctx.fillRect(x+11,y+8,2,2);  // waves widening at the ends
+      ctx.fillRect(x+4,y+3,1,1); ctx.fillRect(x+11,y+3,1,1);  // side bangs framing the face
+      if(kind==="ow"){ ctx.fillStyle=tint(hair,-8); ctx.fillRect(x+4,y+9,2,1); ctx.fillRect(x+10,y+9,2,1); } // a touch fuller
+    } else { // short hair
+      ctx.fillRect(x+5,y+1,6,2);
+      ctx.fillRect(x+5,y+1,1,3); ctx.fillRect(x+10,y+1,1,3);
+    }
+    // old man: white beard on the lower face
+    if(kind==="om" && dir!=="up"){ ctx.fillStyle="#e8e8ec"; ctx.fillRect(x+5,y+5,6,2); ctx.fillRect(x+6,y+6,4,1); }
+    // face by direction
+    ctx.fillStyle="#0a0a12";
+    if(dir==="down"){ ctx.fillRect(x+6,y+4,1,1); ctx.fillRect(x+9,y+4,1,1); if(kind!=="om"){ ctx.fillStyle="#c08"; ctx.fillRect(x+7,y+5,2,1);} }
+    else if(dir==="up"){ ctx.fillStyle=hair; ctx.fillRect(x+5,y+1,6,4); }
+    else if(dir==="left"){ ctx.fillRect(x+6,y+4,1,1); }
+    else if(dir==="right"){ ctx.fillRect(x+9,y+4,1,1); }
+    if(o.outfit) drawOutfit(x,y,dir,walking,frame,o.outfit,o);
+  }
+  // draw clothing/gear overlay on top of the base human
+  function drawOutfit(x,y,dir,walking,frame,outfit,o){
+    const female=(o.kind==="yw"||o.kind==="ow");
+    if(outfit==="coat"){
+      ctx.fillStyle="#5a4a6a"; ctx.fillRect(x+4,y+7,8,8);              // long coat body
+      ctx.fillStyle="#4a3a58"; ctx.fillRect(x+4,y+13,8,2);
+      ctx.fillStyle="#7a6a8a"; ctx.fillRect(x+4,y+7,8,1);             // collar highlight
+      ctx.fillStyle="#3a2e48"; ctx.fillRect(x+7,y+8,2,6);            // buttons line
+      ctx.fillStyle="#caa"; ctx.fillRect(x+5,y+7,6,1);              // scarf
+      // LONG SLEEVES covering the arms (match the base arm swing so no bare skin shows)
+      ctx.fillStyle="#5a4a6a";
+      if(dir==="left"||dir==="right"){
+        const sw = walking ? (frame?2:-1) : 0;
+        ctx.fillRect(x+(dir==="left"?3:11), y+8+sw, 2, 5);
+      } else {
+        const a = walking ? (frame?2:-2) : 0;
+        ctx.fillRect(x+3, y+8+a, 2, 6); ctx.fillRect(x+11, y+8-a, 2, 6);
+      }
+      ctx.fillStyle="#4a3a58"; // cuff
+      if(dir==="left"||dir==="right"){ const sw=walking?(frame?2:-1):0; ctx.fillRect(x+(dir==="left"?3:11), y+12+sw, 2, 1); }
+      else { const a=walking?(frame?2:-2):0; ctx.fillRect(x+3,y+13+a,2,1); ctx.fillRect(x+11,y+13-a,2,1); }
+    } else if(outfit==="swim"){
+      // bare torso + swim trunks + sunglasses
+      ctx.fillStyle=o.skin||"#f0c890"; ctx.fillRect(x+5,y+7,6,4);    // bare chest
+      ctx.fillStyle= female?"#e04888":"#2c7ad0"; ctx.fillRect(x+5,y+11,6,3); // trunks/costume
+      if(female){ ctx.fillStyle="#e04888"; ctx.fillRect(x+5,y+7,6,2); } // bikini top
+      ctx.fillStyle="#101014"; ctx.fillRect(x+5,y+4,6,1); ctx.fillRect(x+6,y+4,1,1); ctx.fillRect(x+9,y+4,1,1); // sunglasses
+    } else if(outfit==="worker"){
+      ctx.fillStyle="#8a7a5a"; ctx.fillRect(x+4,y+7,8,8);            // grey-brown overalls
+      ctx.fillStyle="#6a5a3e"; ctx.fillRect(x+4,y+11,8,4);
+      ctx.fillStyle="#5a5060"; ctx.fillRect(x+6,y+8,1,6); ctx.fillRect(x+9,y+8,1,6); // straps
+      ctx.fillStyle="#f0c020"; ctx.fillRect(x+4,y+0,8,3); ctx.fillStyle="#d0a010"; ctx.fillRect(x+4,y+2,8,1); // yellow helmet
+    } else if(outfit==="tirolese"){
+      ctx.fillStyle="#3a6a3a"; ctx.fillRect(x+4,y+7,8,7);           // green vest/dirndl
+      ctx.fillStyle="#f0f0f0"; ctx.fillRect(x+6,y+7,4,3);          // white shirt
+      ctx.fillStyle="#8a3a2a"; ctx.fillRect(x+5,y+9,1,5); ctx.fillRect(x+10,y+9,1,5); // suspenders/laces
+      ctx.fillStyle="#2c5a2c"; ctx.fillRect(x+4,y+0,8,2); ctx.fillStyle="#e04040"; ctx.fillRect(x+10,y-1,2,2); // green hat + feather
+    } else if(outfit==="hiker"){
+      ctx.fillStyle="#c07030"; ctx.fillRect(x+4,y+7,8,7);          // outdoor jacket
+      ctx.fillStyle="#5a3a1a"; ctx.fillRect(x+3,y+7,2,6);         // backpack strap
+      ctx.fillStyle="#6a4a24"; ctx.fillRect(x+2,y+8,2,5);        // backpack
+      ctx.fillStyle="#c8c8d0"; ctx.fillRect(x+ (dir==="left"?2:12), y+8, 1, 8); // walking pole
+    } else if(outfit==="lumberjack"){
+      // red/black checkered shirt + cap + axe
+      ctx.fillStyle="#b83030"; ctx.fillRect(x+4,y+7,8,8);
+      ctx.fillStyle="#701818"; ctx.fillRect(x+4,y+7,4,4); ctx.fillRect(x+8,y+11,4,4);
+      ctx.fillStyle="#2a2a30"; ctx.fillRect(x+4,y+0,8,2); ctx.fillStyle="#d0a030"; ctx.fillRect(x+4,y+1,8,1); // cap
+      const ax = dir==="left"?x+1:x+12;
+      ctx.fillStyle="#6a4a2a"; ctx.fillRect(ax, y+6, 1, 9); ctx.fillStyle="#c8ccd2"; ctx.fillRect(ax-1, y+5, 3, 2); // axe
+    } else if(outfit==="skier"){
+      ctx.fillStyle="#e05040"; ctx.fillRect(x+4,y+7,8,7);         // ski jacket
+      ctx.fillStyle="#203040"; ctx.fillRect(x+4,y+11,8,4);       // ski pants
+      ctx.fillStyle="#40d0f0"; ctx.fillRect(x+5,y+3,6,2);       // goggles
+      ctx.fillStyle="#f0f0f0"; ctx.fillRect(x+3,y+16,10,1);     // skis
+      ctx.fillStyle="#c8c8d0"; ctx.fillRect(x+2,y+9,1,6); ctx.fillRect(x+13,y+9,1,6); // ski poles
+    }
+  }
+
+  function drawPlayer(x,y,dir,animT){
+    if(player.swimming){ drawSwimmingPlayer(x,y,dir,animT); return; }
+    if(fishing.active){ drawHuman(x, y, "left", false, 0, {skin:"#f0c890",hair:"#3a2a1a",shirt:"#e0483a",shirtDk:"#c0382c",pants:"#2a3a6a"}); drawRod(x,y,fishing.t*2,"left"); return; }
+    const walking=player.moving, frame=Math.floor(animT*8)%2;
+    const bob=(walking&&frame===0)?1:0;
+    drawHuman(x, y-bob, dir, walking, frame, {skin:"#f0c890",hair:"#3a2a1a",shirt:"#e0483a",shirtDk:"#c0382c",pants:"#2a3a6a"});
+  }
+
+  // Swimming: head at water level, arms doing strokes around the face, body hidden by water.
+  function drawSwimmingPlayer(x,y,dir,animT){
+    x=Math.round(x); y=Math.round(y);
+    const p=pal();
+    const stroke=Math.floor(animT*6)%2;
+    // water ripple ring
+    ctx.fillStyle=p.waterDk; ctx.fillRect(x+2,y+12,12,2);
+    ctx.fillStyle="#ffffff40"; ctx.fillRect(x+3,y+11,3,1); ctx.fillRect(x+9,y+13,3,1);
+    // head
+    outlineRect(x+5,y+5,6,6);
+    ctx.fillStyle="#f0c890"; ctx.fillRect(x+5,y+5,6,6);
+    ctx.fillStyle="#3a2a1a"; ctx.fillRect(x+5,y+5,6,2);
+    ctx.fillStyle="#0a0a12"; ctx.fillRect(x+6,y+8,1,1); ctx.fillRect(x+9,y+8,1,1);
+    // arms stroking around the face (alternate)
+    ctx.fillStyle="#f0c890";
+    if(stroke===0){ ctx.fillRect(x+2,y+6,2,2); ctx.fillRect(x+12,y+9,2,2); }
+    else { ctx.fillRect(x+2,y+9,2,2); ctx.fillRect(x+12,y+6,2,2); }
+    // splash droplets
+    ctx.fillStyle="#dff0ff"; if(stroke===0){ ctx.fillRect(x+1,y+5,1,1); } else { ctx.fillRect(x+14,y+5,1,1); }
+  }
+
+  function drawNpc(n,x,y){ x=Math.round(x); y=Math.round(y);
+    const walking=!!(n.moving), frame=walking?(Math.floor((n.animT||0)*7)%2):0;
+    const opt={skin:"#f0c890",hair:n.hairCol||n.colorDk,shirt:n.color,shirtDk:n.colorDk,pants:n.pants||n.colorDk,kind:n.kind||"ym",outfit:outfitFor(n)};
+    if(n.bike){
+      // cyclist over a bike
+      ctx.fillStyle="#0a0a12"; ctx.fillRect(x+1,y+13,5,4); ctx.fillRect(x+10,y+13,5,4);
+      ctx.fillStyle="#888"; ctx.fillRect(x+2,y+14,3,2); ctx.fillRect(x+11,y+14,3,2);
+      ctx.fillStyle="#c0c0c8"; ctx.fillRect(x+4,y+13,8,1);
+      drawHuman(x, y-2, n.dir||"right", false, 0, opt);
+      return;
+    }
+    drawHuman(x, y, n.dir||"down", walking, frame, opt);
+    if(n.fishing) drawRod(x,y,n.animT||0, n.dir||"down");
+    if(npcHasQuest(n)) drawQuestMark(x, y);
+  }
+  // Decide an NPC's outfit from its base role + current area + season.
+  function outfitFor(n){
+    const base=n.outfitBase||"";   // "", "worker","tirolese","hiker","lumberjack","vacation","skier"
+    // fixed-role outfits (always worn)
+    if(base==="worker") return "worker";
+    if(base==="hiker") return "hiker";
+    if(base==="lumberjack") return "lumberjack";
+    if(base==="skier") return "skier";
+    if(base==="tirolese"){ return season==="winter" ? "coat" : "tirolese"; }
+    if(base==="vacation"){
+      if(season==="summer"||season==="spring") return "swim";
+      if(season==="winter") return "coat";
+      return ""; // autumn = normal clothes
+    }
+    // townsfolk (no base): coat in winter, else normal
+    return season==="winter" ? "coat" : "";
+  }
+  // bobbing "!" marker over a quest NPC
+  function drawQuestMark(x,y){
+    const bob=Math.floor(performance.now()/300)%2;
+    const mx=x+6, my=y-9-bob;
+    ctx.fillStyle="#0a0a12"; ctx.fillRect(mx-1,my-1,5,9);          // outline
+    ctx.fillStyle="#ffd020"; ctx.fillRect(mx,my,3,5); ctx.fillRect(mx,my+6,3,2);  // ! body + dot
+    ctx.fillStyle="#fff2a0"; ctx.fillRect(mx,my,1,4);             // highlight
+  }
+  // fishing rod + line into the water, pointing in the given direction ('left'=west, else 'down'=south)
+  function drawRod(x,y,animT,dir){
+    const bob=Math.floor((animT||0)*3)%2;
+    ctx.fillStyle="#8a5a2a"; // rod
+    if(dir==="left"){
+      for(let i=0;i<10;i++) ctx.fillRect(x+3-i, y+6-Math.floor(i*0.8), 1,1);   // rod up-left
+      ctx.fillStyle="#cfd6de"; ctx.fillRect(x-7, y+0, 1, 12+bob);              // line down at tip
+      ctx.fillStyle="#e04040"; ctx.fillRect(x-8, y+12+bob, 2,2);               // float
+    } else { // down/south
+      for(let i=0;i<10;i++) ctx.fillRect(x+12+i, y+6-Math.floor(i*0.8), 1,1);
+      ctx.fillStyle="#cfd6de"; ctx.fillRect(x+21, y+0, 1, 14+bob);
+      ctx.fillStyle="#e04040"; ctx.fillRect(x+20, y+14+bob, 2,2);
+    }
+  }
+
+  function drawCat(x,y,animT){ x=Math.round(x); y=Math.round(y); const tail=Math.floor(animT*4)%2;
+    ctx.fillStyle="rgba(0,0,0,0.24)"; ctx.fillRect(x+4,y+13,7,2);   // ground shadow
+    // body + head (orange), with thin dark edges only (no big black box)
+    ctx.fillStyle="#c05a10"; ctx.fillRect(x+3,y+6,10,8);         // subtle dark base = outline-ish
+    ctx.fillStyle="#f08830"; ctx.fillRect(x+4,y+7,8,6); ctx.fillRect(x+3,y+5,4,4);
+    ctx.fillRect(x+3,y+3,2,2); ctx.fillRect(x+6,y+3,2,2);        // ears
+    ctx.fillStyle="#f08830"; if(tail) ctx.fillRect(x+11,y+4,2,4); else ctx.fillRect(x+11,y+8,3,2); // tail
+    ctx.fillStyle="#c05a10"; ctx.fillRect(x+6,y+8,1,3); ctx.fillRect(x+9,y+8,1,3);  // stripes
+    ctx.fillStyle="#0a3a10"; ctx.fillRect(x+4,y+6,1,1); ctx.fillRect(x+6,y+6,1,1);  // eyes
+    ctx.fillStyle="#fff"; ctx.fillRect(x+5,y+9,2,1); }                              // muzzle
+
+  // ---- animals (wandering dog + cat) ----
+  function drawAnimal(a,x,y){ x=Math.round(x); y=Math.round(y); const step=Math.floor(a.animT*5)%2;
+    if(a.kind==="cat"){ drawCat(x,y,a.animT); return; }
+    // dog: brown body, legs, ears, wagging tail
+    const B="#a5713a", D="#7a5024";
+    ctx.fillStyle="rgba(0,0,0,0.24)"; ctx.fillRect(x+3,y+13,10,2);  // ground shadow
+    outlineRect(x+3,y+7,9,5);
+    ctx.fillStyle=B; ctx.fillRect(x+3,y+7,9,5);           // body
+    ctx.fillStyle=B; ctx.fillRect(x+11,y+5,4,4);          // head
+    ctx.fillStyle=D; ctx.fillRect(x+11,y+4,2,2);          // ear
+    ctx.fillStyle="#0a0a12"; ctx.fillRect(x+13,y+6,1,1);  // eye
+    ctx.fillStyle="#2a2028"; ctx.fillRect(x+14,y+8,1,1);  // nose
+    // legs (step)
+    ctx.fillStyle=D; if(step){ ctx.fillRect(x+4,y+12,2,2); ctx.fillRect(x+9,y+12,2,2); } else { ctx.fillRect(x+3,y+12,2,2); ctx.fillRect(x+10,y+12,2,2); }
+    // wagging tail
+    ctx.fillStyle=B; if(step) ctx.fillRect(x+1,y+5,3,2); else ctx.fillRect(x+1,y+8,3,2);
+  }
+
+  // ---- ship / buoy / beach ----
+  function drawShip(x,y){
+    x=Math.round(x); y=Math.round(y);
+    // big moored ferry over the sea (spans a few tiles). draw hull + cabin + mast + smokestack
+    const hx=x-16, hy=y-2;
+    // hull
+    ctx.fillStyle="#0a0a12"; ctx.fillRect(hx-1,hy+9,44,11);
+    ctx.fillStyle="#c23a3a"; ctx.fillRect(hx,hy+10,42,9);
+    ctx.fillStyle="#7a1e1e"; ctx.fillRect(hx,hy+16,42,3);
+    ctx.fillStyle="#e8e8ec"; ctx.fillRect(hx+2,hy+10,38,3);      // white upper hull stripe
+    // deck cabin
+    ctx.fillStyle="#dfe4ea"; ctx.fillRect(hx+8,hy+2,26,8);
+    ctx.fillStyle="#2c3a4a"; for(let i=0;i<5;i++) ctx.fillRect(hx+11+i*5,hy+4,3,3); // windows
+    // bridge
+    ctx.fillStyle="#c8ced6"; ctx.fillRect(hx+14,hy-3,10,5);
+    // smokestack
+    ctx.fillStyle="#e0a030"; ctx.fillRect(hx+26,hy-4,4,6); ctx.fillStyle="#c23a3a"; ctx.fillRect(hx+26,hy-4,4,2);
+    // gentle smoke
+    if(Math.floor(performance.now()/400)%2===0){ ctx.fillStyle="#cfcfcf"; ctx.fillRect(hx+27,hy-8,2,3); }
+    // mooring line to pier
+    ctx.fillStyle="#3a2a1a"; ctx.fillRect(hx+40,hy+8,4,1);
+  }
+  function drawBuoy(x,y,animT){ x=Math.round(x); y=Math.round(y);
+    const bob=Math.floor((animT||0)*2)%2; y+=bob;
+    ctx.fillStyle="#0a0a12"; ctx.fillRect(x+5,y+5,6,8);
+    ctx.fillStyle="#e03030"; ctx.fillRect(x+6,y+6,4,6);        // red float
+    ctx.fillStyle="#f0f0f0"; ctx.fillRect(x+6,y+8,4,2);        // white band
+    ctx.fillStyle="#c8c8d0"; ctx.fillRect(x+7,y+3,2,3);        // top marker
+    ctx.fillStyle="#ffffff40"; ctx.fillRect(x+4,y+12,8,2);     // reflection on water
+  }
+  function drawBeachProp(bp,x,y){ x=Math.round(x); y=Math.round(y);
+    if(bp.type==="umbrella"){
+      ctx.fillStyle="#7a5a2a"; ctx.fillRect(x+7,y+6,1,9);      // pole
+      ctx.fillStyle="#0a0a12"; ctx.fillRect(x+1,y+3,14,4);
+      ctx.fillStyle=bp.c; ctx.fillRect(x+2,y+4,12,3);
+      ctx.fillStyle="#ffffff"; ctx.fillRect(x+2,y+4,3,3); ctx.fillRect(x+8,y+4,3,3);
+    } else if(bp.type==="towel"){
+      ctx.fillStyle=bp.c; ctx.fillRect(x+3,y+8,10,6);
+      ctx.fillStyle="#ffffff80"; ctx.fillRect(x+3,y+8,10,1); ctx.fillRect(x+3,y+11,10,1);
+    } else { // sunbather lying on a towel
+      ctx.fillStyle="#40a0c0"; ctx.fillRect(x+2,y+9,12,5);     // towel
+      ctx.fillStyle=bp.c; ctx.fillRect(x+3,y+10,8,3);          // body
+      ctx.fillStyle="#f0c890"; ctx.fillRect(x+11,y+10,3,3);    // head
+      ctx.fillStyle="#3a2a1a"; ctx.fillRect(x+12,y+9,2,1);     // hair
+    }
+  }
+  function drawSwimmer(x,y,animT,dir){ x=Math.round(x); y=Math.round(y); const s=Math.floor(animT*5)%2; dir=dir||1;
+    const p=pal();
+    // wake trailing behind the direction of travel
+    ctx.fillStyle=p.waterDk; ctx.fillRect(x+3,y+11,10,2);
+    ctx.fillStyle="rgba(255,255,255,0.35)"; ctx.fillRect(dir>0?x-2:x+13, y+8, 3,3);
+    // head
+    ctx.fillStyle="#f0c890"; outlineRect(x+6,y+6,5,5); ctx.fillStyle="#f0c890"; ctx.fillRect(x+6,y+6,5,5);
+    ctx.fillStyle="#3a2a1a"; ctx.fillRect(x+6,y+6,5,2);
+    // eyes look forward
+    ctx.fillStyle="#0a0a12"; if(dir>0) ctx.fillRect(x+9,y+8,1,1); else ctx.fillRect(x+7,y+8,1,1);
+    // arms: one reaching forward, one back, alternating -> forward crawl
+    ctx.fillStyle="#f0c890";
+    const fwdX = dir>0 ? x+12 : x+2, backX = dir>0 ? x+2 : x+12;
+    if(s){ ctx.fillRect(fwdX,y+6,2,2); ctx.fillRect(backX,y+9,2,2); }
+    else { ctx.fillRect(fwdX,y+8,2,2); ctx.fillRect(backX,y+7,2,2); }
+    // splash at the reaching hand
+    ctx.fillStyle="#dff0ff"; ctx.fillRect(dir>0?x+14:x+1, y+6+(s?0:2), 1,1);
+  }
+
+  // ---- HUD ----
+  function firstActiveQuest(){
+    // priority: active main quests in order, then active side quests
+    for(const k of QORDER){ const q=QUESTS[k]; if(q.status==="active" && q.type==="main") return q; }
+    for(const k of QORDER){ const q=QUESTS[k]; if(q.status==="active") return q; }
+    return null;
+  }
+  function activeQuestText(){
+    const q=firstActiveQuest();
+    if(q) return t(q.steps[q.step]);
+    // any available (not yet started) main quest?
+    for(const k of QORDER){ const qq=QUESTS[k]; if(qq.status==="available"&&qq.type==="main") return t(qq.nameK); }
+    return t("q_none");
+  }
+  function drawHUD(){ panelBox(2,2,90,12);
+    if(insideKey){ text(t(INTERIORS[insideKey].nameKey).substring(0,12),6,4,pal().accent); }
+    else { text(seasonLabel().substring(0,3),6,4,pal().accent); text(clockLabel(),40,4,"#dfe8f2"); }
+    panelBox(W-98,2,96,12); text(t("quest_label"),W-94,4,"#a8a8b8"); text(activeQuestText().substring(0,14),W-94+(lang==="it"?46:38),4, "#f0f0e0"); }
+  function drawDialog(){ const bx=6,by=H-46,bw=W-12,bh=40; panelBox(bx,by,bw,bh);
+    if(dialog.npc) text(t(dialog.npc.nameKey),bx+6,by+3,pal().accent);
+    const full=dialog.lines[dialog.idx]||"";
+    const shown=full.substring(0,Math.floor(dialog.reveal));
+    // word-wrap within the box width
+    ctx.font="8px monospace"; const maxW=bw-14; const words=shown.split(" ");
+    let line="", ly=by+15;
+    for(const w of words){ const test=line?line+" "+w:w; if(ctx.measureText(test).width>maxW){ text(line,bx+6,ly,"#f0f0e0"); ly+=10; line=w; } else line=test; }
+    if(line) text(line,bx+6,ly,"#f0f0e0");
+    if(dialog.reveal>=full.length && Math.floor(performance.now()/400)%2===0) text((dialog.idx<dialog.lines.length-1)?"\u25BC":"\u25A0",bx+bw-14,by+bh-12,pal().accent); }
+  function drawSeasonPopup(){ ctx.globalAlpha=Math.min(1,seasonPopup); panelBox(W/2-46,58,92,24); textCenter("~ "+seasonLabel()+" ~",W/2,66,pal().accent); ctx.globalAlpha=1; }
+
+  // ---- MENU ----
+  function drawJournal(){
+    ctx.fillStyle="#0e0e18"; ctx.fillRect(8,14,W-16,H-28);
+    ctx.strokeStyle="#f0f0e0"; ctx.lineWidth=1; ctx.strokeRect(9.5,15.5,W-19,H-31);
+    textCenter(t("journal_title")+"  "+t("chapter")+" "+chapter,W/2,18,"#f0d840");
+    let y=30;
+    const draw1=(q)=>{
+      let mark = q.status==="done"?"[x]":(q.status==="active"?"[>]":"[ ]");
+      let col = q.status==="done"?"#7ae06a":(q.status==="active"?"#f0f0e0":"#7a7a88");
+      const tag = q.type==="main"?"*":" ";
+      text(tag+mark+" "+t(q.nameK), 14, y, col); y+=9;
+      if(q.status==="active"){ text("    "+t(q.steps[q.step]), 14, y, "#c8c8d0"); y+=9; }
+    };
+    text(t("journal_main"),14,y,"#f0d840"); y+=10;
+    QORDER.forEach(k=>{ const q=QUESTS[k]; if(q.type==="main" && q.status!=="locked") draw1(q); });
+    y+=4; text(t("journal_side"),14,y,"#f0d840"); y+=10;
+    QORDER.forEach(k=>{ const q=QUESTS[k]; if(q.type==="side" && q.status!=="locked") draw1(q); });
+    textCenter(t("map_hint"),W/2,H-18,"#c8c8d0");
+  }
+  function drawMenu(){
+    panelBox(W/2-52,34,104,100);
+    textCenter(t("menu_title"),W/2,42,pal().accent);
+    MENU_KEYS.forEach((k,i)=>{
+      let label=t(k);
+      if(k==="menu_lang") label+=" ["+lang.toUpperCase()+"]";
+      if(k==="menu_season") label+=" ("+seasonLabel().substring(0,3)+")";
+      const y=60+i*15; const sel=i===menu.index;
+      textCenter((sel?"> ":"")+label+(sel?" <":""), W/2, y, sel?"#fff":"#a8a8b8");
+    });
+    textCenter("A: ok  B: chiudi", W/2, 122, "#8a8a9a");
+  }
+
+  // ---- MINIMAP (whole town in miniature) ----
+  const MINI_COL = {
+    "T":"#2c5a1c","b":"#3f7a2c","'":"#c86",",":"#5e8e40",".":"#6a9a4a",
+    "=":"#c2a878","m":"#b09070","x":"#c8c4b8","s":"#e6d29a","~":"#3a8ad8",
+    "H":"#b09070","W":"#7ab0e0","R":"#c0504a","C":"#902c28","D":"#5a3a1e",
+    "A":"#8a8f9a","B":"#c0c2cc","V":"#7ab0e0","S":"#d84040",
+    "G":"#8a7458","J":"#5a6470","c":"#a87838","w":"#7a5230","o":"#c85040",
+    "L":"#ffe070","N":"#6a4a2a","P":"#8a6a3a","Q":"#8a8f9a","K":"#c85030"
+  };
+  function drawNightLights(nf){
+    const t0x=Math.floor(cam.x/TILE)-2, t0y=Math.floor(cam.y/TILE)-3;
+    const t1x=Math.ceil((cam.x+W)/TILE)+2, t1y=Math.ceil((cam.y+H)/TILE)+2;
+    const a=Math.min(1,nf);
+    for(let ty=t0y;ty<=t1y;ty++) for(let tx=t0x;tx<=t1x;tx++){
+      const c=tileAt(tx,ty); const x=tx*TILE-cam.x, y=ty*TILE-cam.y;
+      if(c==="L"){ // lamppost: soft warm pool of light
+        ctx.fillStyle="rgba(255,214,120,"+(0.14*a)+")"; ctx.fillRect(x-8,y-4,TILE+16,TILE+20);
+        ctx.fillStyle="rgba(255,224,150,"+(0.22*a)+")"; ctx.fillRect(x-3,y+0,TILE+6,TILE+10);
+        ctx.fillStyle="rgba(255,240,190,"+(0.9*a)+")"; ctx.fillRect(x+6,y+2,4,3);   // bright bulb
+      } else if(c==="W"||c==="V"){ // lit window
+        ctx.fillStyle="rgba(255,210,110,"+(0.85*a)+")"; ctx.fillRect(x+5,y+5,6,6);
+        ctx.fillStyle="rgba(255,225,150,"+(0.20*a)+")"; ctx.fillRect(x+2,y+2,12,12);
+      }
+    }
+    // a couple of stars / moon glow at deep night could go here (kept subtle)
+    // street-corner lamp glows
+    for(const L of streetLamps){
+      const x=L[0]*TILE-cam.x, y=L[1]*TILE-cam.y;
+      if(x<-20||x>W+20||y<-20||y>H+20) continue;
+      ctx.fillStyle="rgba(255,214,120,"+(0.14*a)+")"; ctx.fillRect(x-8,y-4,TILE+16,TILE+20);
+      ctx.fillStyle="rgba(255,224,150,"+(0.22*a)+")"; ctx.fillRect(x-3,y+0,TILE+6,TILE+10);
+      ctx.fillStyle="rgba(255,240,190,"+(0.9*a)+")"; ctx.fillRect(x+6,y+2,4,3);
+    }
+  }
+  function drawMinimap(){
+    const mw=cur.w, mh=cur.h;
+    const availW=W-14, availH=H-32;
+    let s=Math.max(2, Math.floor(Math.min(availW/mw, availH/mh)));  // min 2px per tile = crisper
+    const bw=mw*s, bh=mh*s;
+    const ox=Math.floor((W-bw)/2), oy=20+Math.floor((availH-bh)/2);
+    // opaque dark frame (no see-through fog)
+    ctx.fillStyle="#0e0e18"; ctx.fillRect(ox-5,oy-13,bw+10,bh+22);
+    ctx.strokeStyle="#f0f0e0"; ctx.lineWidth=1; ctx.strokeRect(ox-4.5,oy-12.5,bw+9,bh+21);
+    textCenter(t("map_title"),W/2,oy-11,"#f0d840");
+    for(let ty=0;ty<mh;ty++){ const row=cur.rows[ty]; for(let tx=0;tx<mw;tx++){
+      const c=row[tx];
+      let col = c.match(/[1-9]/)?"#ffd860":(MINI_COL[c]||"#6a9a4a");
+      ctx.fillStyle=col; ctx.fillRect(ox+tx*s, oy+ty*s, s, s);
+    }}
+    // quest markers: blinking yellow "!" dots on NPCs with an actionable quest
+    if(inTown() && Math.floor(performance.now()/350)%2===0){
+      npcs.forEach(n=>{ if(npcHasQuest(n)){ const qx=ox+Math.round(n.px/TILE)*s, qy=oy+Math.round(n.py/TILE)*s;
+        ctx.fillStyle="#0a0a12"; ctx.fillRect(qx-1,qy-1,s+2,s+2); ctx.fillStyle="#ffd020"; ctx.fillRect(qx,qy,s,s); } });
+    }
+    // player blip: crisp white-bordered red dot
+    const px=ox+player.tx*s, py=oy+player.ty*s;
+    ctx.fillStyle="#fff"; ctx.fillRect(px-1,py-1,s+2,s+2);
+    if(Math.floor(performance.now()/300)%2===0){ ctx.fillStyle="#ff3030"; ctx.fillRect(px,py,s,s); }
+    textCenter(t("map_hint"),W/2,oy+bh+4,"#c8c8d0");
+  }
+
+  // ================= LOOP =================
+  let last=performance.now();
+  function loop(now){ let dt=(now-last)/1000; last=now; if(dt>0.1) dt=0.1; SFX.setTempoScale(1.0); update(dt); draw(); requestAnimationFrame(loop); }
+  requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
