@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#1e1e2e">
-<title>Crudo RPG</title>
+<title>Crudo Detective</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   html, body { width:100%; height:100%; background:#15151f; overflow:hidden; font-family:monospace; touch-action:none; -webkit-user-select:none; user-select:none; }
@@ -44,7 +44,7 @@
 <body>
 <div id="device">
   <div id="screen-frame">
-    <div id="brand">CRUDO RPG</div>
+    <div id="brand">CRUDO DETECTIVE</div>
     <div id="power-row"><div id="power-led"></div><span>POWER</span></div>
     <div id="screen-bezel"><canvas id="game" width="192" height="168"></canvas></div>
   </div>
@@ -68,6 +68,15 @@
     </div>
   </div>
 </div>
+
+<script>
+window.STORY_DATA={"premise":{"it":"Cinque anni fa, il giovane biologo marinaio Elio scomparve nel nulla a Crudo. La polizia bollò il caso come annegamento accidentale, ma non fu mai trovato il corpo. Una pioggia d'autunno riapre le ferite: la madre ingaggia il Detective Crudo per riaprire le indagini. Scoprirai che la scomparsa di Elio è legata a una catena di segreti industriali, culti del mare e ricatti che coinvolgono l'élite della città.","en":"Five years ago, young marine biologist Elio vanished into thin air in Crudo. Local police ruled it an accidental drowning, but no body was ever found. Autumn rain reopens old wounds: his mother hires Detective Crudo to reopen the case. You will uncover that Elio's disappearance is tied to industrial secrets, sea cults, and blackmail involving the town's elite."},"new_npcs":[{"id":"vedova","name":{"it":"Signora Clara","en":"Mrs. Clara"},"role":{"it":"madre di Elio (scomparso)","en":"mother of Elio (missing)"},"area":"town","look":{"sex":"f","age":"old","clothes":"scialle grigio, abito nero"}},{"id":"guardia","name":{"it":"Guardia Sergio","en":"Guard Sergio"},"role":{"it":"guardiano della fabbrica","en":"factory watchman"},"area":"industrial","look":{"sex":"m","age":"old","clothes":"tuta da lavoro blu, berretto"}},{"id":"eremita","name":{"it":"Eremita Silas","en":"Hermit Silas"},"role":{"it":"ex chimico isolato","en":"isolated ex-chemist"},"area":"mountain","look":{"sex":"m","age":"old","clothes":"cappotto marrone, barba bianca"}}],"quests":[{"id":"case1","order":1,"season":"autumn","title":{"it":"Ombre dal passato","en":"Shadows of the Past"},"steps":[{"it":"Parla con la madre di Elio.","en":"Talk to Elio's mother."},{"it":"Cerca la chiave sul molo.","en":"Find the key on the pier."}],"start_banner":{"it":"Il caso si riapre...","en":"The case reopens..."},"done_banner":{"it":"Primo indizio trovato.","en":"First clue found."},"start_npc":"vedova","complete_npc":"marinaio","pickup":{"what":{"it":"una chiave arrugginita","en":"a rusty key"},"area":"town","hint":{"it":"vicino alle casse del molo","en":"near the pier crates"}}},{"id":"case2","order":2,"season":"autumn","title":{"it":"Diario sommerso","en":"Submerged Journal"},"steps":[{"it":"Parla con il marinaio.","en":"Speak with the sailor."},{"it":"Pescaggio sulla spiaggia.","en":"Search on the beach."}],"start_banner":{"it":"Il mare nasconde cose.","en":"The sea hides things."},"done_banner":{"it":"Pagine leggibili.","en":"Readable pages."},"start_npc":"marinaio","complete_npc":"pesc1","pickup":{"what":{"it":"un taccuino bagnato","en":"a wet notebook"},"area":"town","hint":{"it":"tra le alghe a sud","en":"among seaweed south"}}},{"id":"case3","order":3,"season":"autumn","title":{"it":"Verità inquinata","en":"Polluted Truth"},"steps":[{"it":"Interroga il pescatore.","en":"Question the fisherman."},{"it":"Trova la tanica strana.","en":"Find the strange canister."}],"start_banner":{"it":"Veleni nell'acqua.","en":"Poisons in the water."},"done_banner":{"it":"Campione raccolto.","en":"Sample collected."},"start_npc":"pesc1","complete_npc":"guardia","pickup":{"what":{"it":"fiala di rifiuto tossico","en":"toxic waste vial"},"area":"industrial","hint":{"it":"riva del mare scuro","en":"dark sea shore"}}},{"id":"case4","order":4,"season":"winter","title":{"it":"Il cancello di ferro","en":"The Iron Gate"},"steps":[{"it":"Parla con la guardia.","en":"Talk to the guard."},{"it":"Cerca la mappa nei boschi.","en":"Find map in the woods."}],"start_banner":{"it":"Il freddo blocca tutto.","en":"Cold freezes all."},"done_banner":{"it":"Passaggio trovato.","en":"Passage found."},"start_npc":"guardia","complete_npc":"vito","pickup":{"what":{"it":"mappa dei condotti","en":"tunnel map"},"area":"forestNE","hint":{"it":"sotto un albero spoglio","en":"under a bare tree"}}},{"id":"case5","order":5,"season":"winter","title":{"it":"Silenzio sulla neve","en":"Silence on Snow"},"steps":[{"it":"Parla con Vito.","en":"Talk to Vito."},{"it":"Trova lo scarpone isolato.","en":"Find the lone boot."}],"start_banner":{"it":"Orme cancellate.","en":"Erased footprints."},"done_banner":{"it":"Una traccia congelata.","en":"A frozen clue."},"start_npc":"vito","complete_npc":"eremita","pickup":{"what":{"it":"uno scarpone da lavoro","en":"a work boot"},"area":"mountain","hint":{"it":"vicino allo chalet","en":"near the chalet"}}},{"id":"case6","order":6,"season":"winter","title":{"it":"Ilchimista solitario","en":"The Lonely Chemist"},"steps":[{"it":"Parla con l'Eremita.","en":"Talk to the Hermit."},{"it":"Trova la formula chimica.","en":"Find the formula."}],"start_banner":{"it":"Nomi importanti.","en":"Big names involved."},"done_banner":{"it":"Documento decrypted.","en":"Decrypted document."},"start_npc":"eremita","complete_npc":"nonna","pickup":{"what":{"it":"foglio cifrato","en":"ciphered paper"},"area":"mountain","hint":{"it":"nella casa di legno","en":"in the wooden house"}}},{"id":"case7","order":7,"season":"spring","title":{"it":"Vecchi ricordi","en":"Old Memories"},"steps":[{"it":"Parla con la nonna.","en":"Talk to grandma."},{"it":"Trova la medaglietta.","en":"Find the locket."}],"start_banner":{"it":"La neve si scioglie.","en":"Snow melts away."},"done_banner":{"it":"Appartenenza confermata.","en":"Ownership verified."},"start_npc":"nonna","complete_npc":"gina","pickup":{"what":{"it":"medaglietta con r","en":"locket with r"},"area":"holiday","hint":{"it":"vicino ai bungalow","en":"near the bungalows"}}},{"id":"case8","order":8,"season":"spring","title":{"it":"La festa di paese","en":"The Town Festival"},"steps":[{"it":"Parla con Gina.","en":"Talk to Gina."},{"it":"Trova il registro nascosto.","en":"Find hidden ledger."}],"start_banner":{"it":"Inganni sotto il sole.","en":"Deceit in the sun."},"done_banner":{"it":"Nomi di politici.","en":"Politicians' names."},"start_npc":"gina","complete_npc":"capo","pickup":{"what":{"it":"libro dei pagamenti","en":"payment book"},"area":"town","hint":{"it":"dietro il municipio","en":"behind town hall"}}},{"id":"case9","order":9,"season":"spring","title":{"it":"L'alibi del Sindaco","en":"Mayor's Alibi"},"steps":[{"it":"Confronta il Capo.","en":"Confront the Chief."},{"it":"Trova la registrazione.","en":"Find the tape."}],"start_banner":{"it":"Tutti sanno, nessuno parla.","en":"All know, none speak."},"done_banner":{"it":"Nastro ascoltato.","en":"Tape played."},"start_npc":"capo","complete_npc":"fornaio","pickup":{"what":{"it":"audiocassetta rotta","en":"broken audio tape"},"area":"town","hint":{"it":"dentro l'emporio","en":"inside general store"}}},{"id":"case10","order":10,"season":"summer","title":{"it":"Testimone scomodo","en":"Unwelcome Witness"},"steps":[{"it":"Parla col Fornaio.","en":"Talk to the Baker."},{"it":"Trova la lettera d'insulti.","en":"Find threat letter."}],"start_banner":{"it":"Afra e minacce.","en":"Heat and threats."},"done_banner":{"it":"Sospetto confermato.","en":"Suspect confirmed."},"start_npc":"fornaio","complete_npc":"teo","pickup":{"what":{"it":"lettera con sigillo","en":"sealed letter"},"area":"holiday","hint":{"it":"sulla spiaggia ovest","en":"on west beach"}}},{"id":"case11","order":11,"season":"summer","title":{"it":"Riti sulla scogliera","en":"Cliffside Rituals"},"steps":[{"it":"Parla con Teo.","en":"Talk to Teo."},{"it":"Trova la maschera.","en":"Find the mask."}],"start_banner":{"it":"Simboli arcaici.","en":"Arcane symbols."},"done_banner":{"it":"Faccia della setta.","en":"Face of the cult."},"start_npc":"teo","complete_npc":"pesc2","pickup":{"what":{"it":"maschera in legno","en":"wooden mask"},"area":"forestNE","hint":{"it":"tra le rocce a nord","en":"among north rocks"}}},{"id":"case12","order":12,"season":"summer","title":{"it":"Il simbolo sulle navi","en":"Ship Markings"},"steps":[{"it":"Interroga Pescatore 2.","en":"Question Fisherman 2."},{"it":"Trova la cassa marchiata.","en":"Find marked crate."}],"start_banner":{"it":"Traffico notturno.","en":"Night traffic."},"done_banner":{"it":"Contenuto svelato.","en":"Contents revealed."},"start_npc":"pesc2","complete_npc":"bruno","pickup":{"what":{"it":"documento di carico","en":"cargo manifest"},"area":"industrial","hint":{"it":"vicino al molo sporco","en":"near dirty pier"}}},{"id":"case13","order":13,"season":"autumn","title":{"it":"Ritorno alla nebbia","en":"Return to Fog"},"steps":[{"it":"Parla con Bruno.","en":"Talk to Bruno."},{"it":"Trova l'arma del delitto.","en":"Find murder weapon."}],"start_banner":{"it":"Un anno intero...","en":"A whole year..."},"done_banner":{"it":"Il cerchio si chiude.","en":"The circle closes."},"start_npc":"bruno","complete_npc":"vedova","pickup":{"what":{"it":"coltello da pesca","en":"fishing knife"},"area":"town","hint":{"it":"sotto la scogliera sud","en":"under south cliff"}}},{"id":"case14","order":14,"season":"autumn","title":{"it":"La resa dei conti","en":"Final Reckoning"},"steps":[{"it":"Rivela la verità.","en":"Reveal the truth."},{"it":"Trova l'ultimo segreto.","en":"Find final secret."}],"start_banner":{"it":"Nessun colpevole è salvo.","en":"No guilty man safe."},"done_banner":{"it":"Verità amara.","en":"Bitter truth."},"start_npc":"vedova","complete_npc":"capo","pickup":{"what":{"it":"confessione firmata","en":"signed confession"},"area":"industrial","hint":{"it":"nella fabbrica vuota","en":"in empty factory"}}}],"dialogues":[{"npc_id":"vedova","quest_id":"case1","state":"start","lines":{"it":["Detective Crudo...","La ringrazio.","Mio figlio Elio...","Non e' annegato.","C'era una chiave."],"en":["Detective Crudo...","Thank you.","My son Elio...","He didn't drown.","There was a key."]}},{"npc_id":"vedova","quest_id":"case1","state":"active","lines":{"it":["Cerca la chiave sul","molo a sud-est.","Qualcuno l'ha vista."],"en":["Look for the key on","the south-east pier.","Someone saw it."]}},{"npc_id":"vedova","quest_id":"case1","state":"done","lines":{"it":["Hai parlato con il","marinaio? Sa piu'","di quel che dice."],"en":["Did you speak with","the sailor? He knows","more than he says."]}},{"npc_id":"marinaio","quest_id":"case1","state":"done","lines":{"it":["Quella chiave...","Apriva il vecchio","casotto di Elio.","Ma e' finito in mare","un taccuino."],"en":["That key...","It opened Elio's","old shack.","But a notebook","fell into the sea."]}},{"npc_id":"marinaio","quest_id":"case2","state":"start","lines":{"it":["Se vuoi risposte,","cerca sulla spiaggia.","La marea porta su","strani ricordi."],"en":["If you want answers,","search the beach.","Tide brings up","strange memories."]}},{"npc_id":"marinaio","quest_id":"case2","state":"active","lines":{"it":["Il taccuino e' a sud,","tra le alghe.","Sbrigati prima del","buio."],"en":["Notebook is south,","among the seaweed.","Hurry before it","gets dark."]}},{"npc_id":"pesc1","quest_id":"case2","state":"done","lines":{"it":["Questo taccuino...","Elio scriveva di","fusti tossici mossi","di notte."],"en":["This notebook...","Elio wrote about","toxic drums moved","at night."]}},{"npc_id":"pesc1","quest_id":"case3","state":"start","lines":{"it":["Va' alla zona scura.","Vedi cosa c'e' nell'","acqua inquinata.","Qualcuno sversa."],"en":["Go to dark zone.","See what's in the","polluted water.","Someone's dumping."]}},{"npc_id":"pesc1","quest_id":"case3","state":"active","lines":{"it":["Cerca una fiala sui","scogli industriali."],"en":["Look for a vial on","industrial rocks."]}},{"npc_id":"guardia","quest_id":"case3","state":"done","lines":{"it":["Ehi! Che fai con","quella fiala?","Qui non si vede","niente, capito?"],"en":["Hey! What are you","doing with that vial?","Nothin' to see here,","got it?"]}},{"npc_id":"guardia","quest_id":"case4","state":"start","lines":{"it":["Fa un freddo cane.","Se vuoi entrare nei","condotti ti serve","una mappa."],"en":["It's freezing.","Wanna enter tunnels?","You'll need a map."]}},{"npc_id":"guardia","quest_id":"case4","state":"active","lines":{"it":["La mappa e' caduta","nella foresta est.","Sotto la neve."],"en":["Map dropped in","east forest.","Under the snow."]}},{"npc_id":"vito","quest_id":"case4","state":"done","lines":{"it":["Hai la mappa.","Bene. Ma Elio non e'","finito nei condotti.","E' salito in alto."],"en":["Got the map.","Good. But Elio didn't","end in tunnels.","He went up high."]}},{"npc_id":"vito","quest_id":"case5","state":"start","lines":{"it":["Sulla montagna c'era","una capanna.","Trova le sue traccie","nel gelo."],"en":["On the mountain","was a hut.","Find his tracks","in the frost."]}},{"npc_id":"vito","quest_id":"case5","state":"active","lines":{"it":["Cerca vicino allo","chalet. Uno scarpone."],"en":["Search near chalet.","A work boot."]}},{"npc_id":"eremita","quest_id":"case5","state":"done","lines":{"it":["Uno scarpone?","Ah... Elio venne da","me quella notte.","Era ferito."],"en":["A boot?","Ah... Elio came to","me that night.","He was hurt."]}},{"npc_id":"eremita","quest_id":"case6","state":"start","lines":{"it":["Mi lascio' dei fogli.","Non riesco a leggerli.","Sono in casa."],"en":["He left papers.","Can't read them.","They are inside."]}},{"npc_id":"eremita","quest_id":"case6","state":"active","lines":{"it":["Prendi il foglio","nella casa di legno."],"en":["Get the paper in","the wooden house."]}},{"npc_id":"nonna","quest_id":"case6","state":"done","lines":{"it":["Questi codici...","Mio marito lavorava","in municipio.","E' il sigillo reale."],"en":["These ciphers...","My husband worked","at town hall.","Royal seal."]}},{"npc_id":"nonna","quest_id":"case7","state":"start","lines":{"it":["Con la primavera,","le storie riemergono.","Cerca al villaggio","vacanze."],"en":["With spring,","stories resurface.","Search at holiday","village."]}},{"npc_id":"nonna","quest_id":"case7","state":"active","lines":{"it":["C'e' una medaglietta","persa nel fango."],"en":["There is a locket","lost in the mud."]}},{"npc_id":"gina","quest_id":"case7","state":"done","lines":{"it":["Questa medaglietta...","Appartenne a una","ragazza sparita","negli anni '90."],"en":["This locket...","Belonged to a girl","who vanished","in the 90s."]}},{"npc_id":"gina","quest_id":"case8","state":"start","lines":{"it":["La città nasconde","un registro sotterraneo.","Trovalo."],"en":["Town hides a","secret ledger.","Find it."]}},{"npc_id":"gina","quest_id":"case8","state":"active","lines":{"it":["Guarda dietro al","municipio."],"en":["Check behind town","hall."]}},{"npc_id":"capo","quest_id":"case8","state":"done","lines":{"it":["Che stai mettendo","il naso dove non","devi, Crudo?","Lascia stare."],"en":["Nosing around where","you shouldn't,","Crudo?","Leave it."]}},{"npc_id":"capo","quest_id":"case9","state":"start","lines":{"it":["Se proprio insisti,","c'e' un nastro","nell'emporio.","Ascoltalo e vedi."],"en":["If you insist,","there's a tape in","the store.","Listen to it."]}},{"npc_id":"capo","quest_id":"case9","state":"active","lines":{"it":["L'emporio e' in centro.","Il nastro e' sul banco."],"en":["Store is in center.","Tape is on counter."]}},{"npc_id":"fornaio","quest_id":"case9","state":"done","lines":{"it":["Il nastro parlava","di una setta.","L'inquinamento era","solo una copertura."],"en":["Tape talked about","a cult.","Pollution was","just a cover."]}},{"npc_id":"fornaio","quest_id":"case10","state":"start","lines":{"it":["In estate vengono","strani turisti.","Trova la lettera","sulla spiaggia ovest."],"en":["In summer strange","tourists come.","Find letter on west","beach."]}},{"npc_id":"fornaio","quest_id":"case10","state":"active","lines":{"it":["Sabbia calda,","lettera minatoria."],"en":["Hot sand,","threat letter."]}},{"npc_id":"teo","quest_id":"case10","state":"done","lines":{"it":["Chi t'ha dato questa?","Chi parla muore","in mare."],"en":["Who gave you this?","Who talks dies in","the sea."]}},{"npc_id":"teo","quest_id":"case11","state":"start","lines":{"it":["Si radunavano nella","foresta est.","Indossavano maschere."],"en":["They gathered in","east forest.","Wore masks."]}},{"npc_id":"teo","quest_id":"case11","state":"active","lines":{"it":["Cerca tra le rocce","a nord della foresta."],"en":["Search rocks north","of forest."]}},{"npc_id":"pesc2","quest_id":"case11","state":"done","lines":{"it":["La maschera del","Re Cervo...","Serviva per i riti."],"en":["Stag King mask...","Used for rituals."]}},{"npc_id":"pesc2","quest_id":"case12","state":"start","lines":{"it":["Guarda le casse al","porto industriale.","Portano lo stesso","marchio."],"en":["Look at crates at","industrial port.","Bear same mark."]}},{"npc_id":"pesc2","quest_id":"case12","state":"active","lines":{"it":["Zona industriale,","cassa sporca."],"en":["Industrial zone,","dirty crate."]}},{"npc_id":"bruno","quest_id":"case12","state":"done","lines":{"it":["Un manifesto di","carico... Elio l'ha","scoperto e l'hanno","zittito."],"en":["Cargo manifest...","Elio found out and","they silenced him."]}},{"npc_id":"bruno","quest_id":"case13","state":"start","lines":{"it":["E' passato un anno.","L'autunno e' tornato.","Cerca l'arma sotto","la scogliera."],"en":["A year passed.","Autumn returns.","Find weapon under","the cliff."]}},{"npc_id":"bruno","quest_id":"case13","state":"active","lines":{"it":["Scogliera a sud,","tra la nebbia."],"en":["South cliff,","in the fog."]}},{"npc_id":"vedova","quest_id":"case13","state":"done","lines":{"it":["Il coltello di","mio marito...","Mio Dio... Era lui?","O l'hanno incastrato?"],"en":["My husband's knife...","My God... Was it him?","Or framed?"]}},{"npc_id":"vedova","quest_id":"case14","state":"start","lines":{"it":["Vai alla fabbrica","abbandonata.","Trova la confessione.","Chiudi il caso."],"en":["Go to empty factory.","Find confession.","Close the case."]}},{"npc_id":"vedova","quest_id":"case14","state":"active","lines":{"it":["Fabbrica vuota,","zona industriale."],"en":["Empty factory,","industrial zone."]}},{"npc_id":"capo","quest_id":"case14","state":"done","lines":{"it":["Crudo... Hai capito.","Elio non e' mai morto.","E' lui il Re Cervo.","Ha orchestrato tutto."],"en":["Crudo... You got it.","Elio never died.","He's the Stag King.","Orchestrated all."]}}]};
+window.STORY_POS={"npc":{"vedova":["town",6,3],"guardia":["industrial",4,3],"eremita":["mountain",3,13]},"pickups":{"case1":["town",31,5],"case2":["town",26,8],"case3":["industrial",6,9],"case4":["forestNE",3,3],"case5":["mountain",9,14],"case6":["mountain",13,15],"case7":["holiday",6,3],"case8":["town",26,10],"case9":["town",21,12],"case10":["holiday",15,5],"case11":["forestNE",6,4],"case12":["industrial",8,15],"case13":["town",10,15],"case14":["industrial",7,20]}};
+</script>
+
+<script>
+window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","title":{"it":"Il rogo al molo","en":"The dock fire"},"giver":{"it":["Un capanno e' bruciato.","Ricostruisci come e'","andata, in ordine."],"en":["A shed burned down.","Piece together how","it happened, in order."]},"events":[{"it":"Qualcuno lascia una lanterna accesa","en":"Someone leaves a lit lantern"},{"it":"Il vento rovescia la lanterna sul fieno","en":"The wind tips it onto the hay"},{"it":"Le fiamme divorano il capanno","en":"Flames swallow the shed"}]},{"id":"rec_marketheft","kind":"recon","area":"town","title":{"it":"Il furto al mercato","en":"The market theft"},"giver":{"it":["Sparita la cassa.","Rimetti in fila","i fatti."],"en":["The till is gone.","Put the facts","back in order."]},"events":[{"it":"Il ladro finge di comprare","en":"The thief pretends to buy"},{"it":"Distrae il venditore con una lite","en":"Distracts the seller with a row"},{"it":"Afferra la cassa e sparisce","en":"Grabs the till and vanishes"}]},{"id":"rec_lostkid","kind":"recon","area":"holiday","title":{"it":"Il bambino smarrito","en":"The lost child"},"giver":{"it":["Mio figlio si e' perso.","Ricostruisci i suoi","passi."],"en":["My son got lost.","Retrace his","steps."]},"events":[{"it":"Lascia la spiaggia per un gatto","en":"Leaves the beach chasing a cat"},{"it":"Segue il gatto tra i bungalow","en":"Follows it among the bungalows"},{"it":"Si addormenta all'ombra di un pino","en":"Falls asleep under a pine"}]},{"id":"rec_boatsink","kind":"recon","area":"town","title":{"it":"La barca affondata","en":"The sunken boat"},"giver":{"it":["La mia barca e' colata","a picco. Perche'?","Metti in ordine."],"en":["My boat went","under. Why?","Order it out."]},"events":[{"it":"Una falla piccola nello scafo","en":"A small hull crack"},{"it":"Nessuno la nota per giorni","en":"Nobody notices for days"},{"it":"Una mareggiata la finisce","en":"A swell finishes it off"}]},{"id":"rec_avalanche","kind":"recon","area":"mountain","title":{"it":"La slavina","en":"The avalanche"},"giver":{"it":["La neve e' venuta giu'.","Come e' successo?","In ordine."],"en":["The snow came","down. How?","In order."]},"events":[{"it":"Giorni di neve fresca instabile","en":"Days of unstable fresh snow"},{"it":"Un boato stacca il lastrone","en":"A boom cracks the slab"},{"it":"La slavina copre il sentiero","en":"The avalanche buries the trail"}]},{"id":"rec_poison","kind":"recon","area":"industrial","title":{"it":"Il mare avvelenato","en":"The poisoned sea"},"giver":{"it":["I pesci muoiono.","Ricostruisci la catena","dei fatti."],"en":["Fish are dying.","Reconstruct the chain","of events."]},"events":[{"it":"Una valvola resta aperta di notte","en":"A valve is left open at night"},{"it":"Lo scarico cola in mare per ore","en":"Waste seeps to sea for hours"},{"it":"La corrente porta la moria a riva","en":"The current brings the die-off ashore"}]},{"id":"rec_blackout","kind":"recon","area":"town","title":{"it":"Il blackout","en":"The blackout"},"giver":{"it":["Le luci si sono spente.","Rimetti in fila","cosa e' successo."],"en":["The lights went out.","Line up what","happened."]},"events":[{"it":"Un temporale gonfia le linee","en":"A storm swells the lines"},{"it":"Un fulmine colpisce la cabina","en":"Lightning hits the substation"},{"it":"Il paese piomba nel buio","en":"The town falls into the dark"}]},{"id":"rec_letter","kind":"recon","area":"forestNW","title":{"it":"La lettera bruciata","en":"The burned letter"},"giver":{"it":["Resta solo cenere.","Ricostruisci cosa","c'era scritto, prima."],"en":["Only ash is left.","Reconstruct what it","said, first."]},"events":[{"it":"Qualcuno scrive una confessione","en":"Someone writes a confession"},{"it":"Ci ripensa e la getta nel fuoco","en":"Thinks better of it, burns it"},{"it":"Un lembo sopravvive alle fiamme","en":"One corner survives the flames"}]},{"id":"rec_bridge","kind":"recon","area":"forestNE","title":{"it":"Il ponte crollato","en":"The collapsed bridge"},"giver":{"it":["Il ponte e' ceduto.","Nessun ferito. Come?","In ordine."],"en":["The bridge gave way.","No one hurt. How?","In order."]},"events":[{"it":"Le travi marciscono nell'umido","en":"The beams rot in the damp"},{"it":"Un carro pesante le incrina","en":"A heavy cart cracks them"},{"it":"Il ponte cede all'alba, vuoto","en":"It fails at dawn, empty"}]},{"id":"rec_disappear","kind":"recon","area":"town","title":{"it":"L'ultima sera","en":"The last evening"},"giver":{"it":["L'hanno vista sparire.","Ricostruisci le sue","ultime ore."],"en":["She was seen to vanish.","Reconstruct her","final hours."]},"events":[{"it":"Cena al ristorante sul porto","en":"Dinner at the harbour place"},{"it":"Una telefonata la fa impallidire","en":"A phone call turns her pale"},{"it":"Esce nella nebbia e non torna","en":"Walks into the fog, gone"}]}],"morale":[{"id":"mor_neighbor","kind":"morale","area":"town","title":{"it":"Il vicino ladro","en":"The thieving neighbour"},"giver":{"it":["So chi ha rubato.","E' il mio vicino,","ha figli piccoli."],"en":["I know who stole.","It's my neighbour,","he has small kids."]},"q":{"it":"Lo denunci?","en":"Report him?"},"a":{"it":"Denuncio. La legge e' uguale per tutti.","en":"Report. The law is equal for all."},"b":{"it":"Taccio. Restituira' in silenzio.","en":"Stay quiet. He'll return it quietly."}},{"id":"mor_dog","kind":"morale","area":"holiday","title":{"it":"Il cane randagio","en":"The stray dog"},"giver":{"it":["Il cane ha morso un turista.","Ma difendeva un bimbo.","Che si fa?"],"en":["The dog bit a tourist.","But it defended a kid.","What now?"]},"q":{"it":"Cosa decidi?","en":"What do you decide?"},"a":{"it":"Va portato via. Regole sono regole.","en":"It must be taken away. Rules are rules."},"b":{"it":"Lo affido a chi lo ama. Ha protetto.","en":"Give it to who loves it. It protected."}},{"id":"mor_debt","kind":"morale","area":"town","title":{"it":"Il debito del vecchio","en":"The old man's debt"},"giver":{"it":["Mi deve dei soldi","da anni. Ora e' malato","e non ha nulla."],"en":["He's owed me money","for years. Now he's ill","and has nothing."]},"q":{"it":"Esigi il debito?","en":"Collect the debt?"},"a":{"it":"Esigo. I patti sono patti.","en":"Collect. A deal is a deal."},"b":{"it":"Condono. Che si curi in pace.","en":"Forgive it. Let him heal in peace."}},{"id":"mor_witness","kind":"morale","area":"industrial","title":{"it":"Il testimone spaventato","en":"The frightened witness"},"giver":{"it":["Ho visto tutto, ma","se parlo mi licenziano.","Cosa devo fare?"],"en":["I saw it all, but","if I talk I'm fired.","What should I do?"]},"q":{"it":"Cosa gli consigli?","en":"What do you advise?"},"a":{"it":"Parla. La verita' viene prima.","en":"Speak. Truth comes first."},"b":{"it":"Proteggiti. Trovero' altre prove.","en":"Protect yourself. I'll find other proof."}},{"id":"mor_relic","kind":"morale","area":"forestNW","title":{"it":"La reliquia del borgo","en":"The village relic"},"giver":{"it":["Un museo la pagherebbe","una fortuna. Ma e'","la nostra storia."],"en":["A museum would pay","a fortune. But it's","our history."]},"q":{"it":"La vendi?","en":"Sell it?"},"a":{"it":"Vendo. I soldi salvano il borgo.","en":"Sell. The money saves the village."},"b":{"it":"Resta qui. Certe cose non si vendono.","en":"It stays. Some things aren't for sale."}},{"id":"mor_poacher","kind":"morale","area":"forestNE","title":{"it":"Il bracconiere affamato","en":"The starving poacher"},"giver":{"it":["Caccia di frodo, e' vero.","Ma la famiglia ha fame.","Lo fermo?"],"en":["He poaches, true.","But his family starves.","Do I stop him?"]},"q":{"it":"Che fai?","en":"What do you do?"},"a":{"it":"Lo fermo. La legge non guarda in faccia.","en":"Stop him. The law plays no favourites."},"b":{"it":"Chiudo un occhio, per stavolta.","en":"Look away, just this once."}},{"id":"mor_secret","kind":"morale","area":"town","title":{"it":"Il segreto del sindaco","en":"The mayor's secret"},"giver":{"it":["Ho una lettera che","rovina il sindaco.","Ma il paese lo ama."],"en":["I have a letter that","ruins the mayor.","But the town loves him."]},"q":{"it":"La riveli?","en":"Reveal it?"},"a":{"it":"Rivelo tutto. Nessuno e' intoccabile.","en":"Reveal it. No one is untouchable."},"b":{"it":"La brucio. Il paese ha bisogno di pace.","en":"Burn it. The town needs peace."}},{"id":"mor_medicine","kind":"morale","area":"holiday","title":{"it":"La medicina rubata","en":"The stolen medicine"},"giver":{"it":["Una madre ha rubato","medicine per la figlia","dalla mia bottega."],"en":["A mother stole","medicine for her girl","from my shop."]},"q":{"it":"La denunci?","en":"Report her?"},"a":{"it":"Denuncio. Il furto e' furto.","en":"Report. Theft is theft."},"b":{"it":"Pago io la medicina. Lascia stare.","en":"I'll pay for it. Let it go."}},{"id":"mor_inherit","kind":"morale","area":"forestNW","title":{"it":"L'eredita' contesa","en":"The disputed inheritance"},"giver":{"it":["Il testamento e' falso,","lo so. Ma chi ne","gode ora e' povero."],"en":["The will is forged,","I know it. But who","gains now is poor."]},"q":{"it":"Lo smaschererai?","en":"Will you expose it?"},"a":{"it":"Sveli il falso. La verita' vale.","en":"Expose the forgery. Truth matters."},"b":{"it":"Lasci correre. Ha piu' bisogno lui.","en":"Let it be. He needs it more."}},{"id":"mor_confession","kind":"morale","area":"industrial","title":{"it":"La confessione in punto di morte","en":"The deathbed confession"},"giver":{"it":["Un uomo morente","mi ha confessato un","vecchio crimine."],"en":["A dying man","confessed to me an","old crime."]},"q":{"it":"Lo rendi pubblico?","en":"Make it public?"},"a":{"it":"Lo rendo pubblico. Le vittime meritano verita'.","en":"Make it public. Victims deserve truth."},"b":{"it":"Lo tengo per me. Ormai e' morto.","en":"Keep it. He's gone now."}}],"confront":[{"id":"cf_landlord","kind":"confront","area":"town","title":{"it":"Il padrone di casa","en":"The landlord"},"giver":{"it":["Mi caccia senza motivo.","Fallo ragionare tu."],"en":["He's evicting me for","nothing. Make him reason."]},"intro":{"it":"Non cede facilmente.","en":"He won't back down easily."},"args":[{"t":{"it":"Il contratto e' ancora valido","en":"The lease is still valid"},"good":true},{"t":{"it":"Hai incassato l'affitto ieri","en":"You took the rent yesterday"},"good":true},{"t":{"it":"Sei antipatico","en":"You're unpleasant"},"good":false},{"t":{"it":"Il tempo e' brutto","en":"The weather is bad"},"good":false}]},{"id":"cf_captain","kind":"confront","area":"town","title":{"it":"Il capitano bugiardo","en":"The lying captain"},"giver":{"it":["Dice di non aver","visto nulla quella","notte. Mente."],"en":["He says he saw","nothing that night.","He's lying."]},"intro":{"it":"Ti fissa, di ghiaccio.","en":"He stares, ice cold."},"args":[{"t":{"it":"La tua barca era al molo","en":"Your boat was at the dock"},"good":true},{"t":{"it":"Hai firmato il registro alle 2","en":"You signed the log at 2am"},"good":true},{"t":{"it":"Hai una brutta faccia","en":"You have an ugly face"},"good":false},{"t":{"it":"Non mi piaci","en":"I don't like you"},"good":false}]},{"id":"cf_foreman","kind":"confront","area":"industrial","title":{"it":"Il caposquadra","en":"The foreman"},"giver":{"it":["Nega gli scarichi","abusivi. Mettilo","alle strette."],"en":["He denies the illegal","dumping. Corner","him."]},"intro":{"it":"Si asciuga il sudore.","en":"He wipes off sweat."},"args":[{"t":{"it":"Le valvole sono aperte di notte","en":"The valves open at night"},"good":true},{"t":{"it":"Il registro turni ti smentisce","en":"The shift log contradicts you"},"good":true},{"t":{"it":"Puzzi di pesce","en":"You smell of fish"},"good":false},{"t":{"it":"Fa caldo qui","en":"It's hot in here"},"good":false}]},{"id":"cf_hermit","kind":"confront","area":"mountain","title":{"it":"L'eremita ostile","en":"The hostile hermit"},"giver":{"it":["Sa qualcosa del","sentiero, ma non","parla con nessuno."],"en":["He knows something","of the trail, but talks","to no one."]},"intro":{"it":"Non ti invita a entrare.","en":"He won't ask you in."},"args":[{"t":{"it":"Le tue impronte sulla neve","en":"Your tracks in the snow"},"good":true},{"t":{"it":"La lanterna accesa alle 3","en":"The lantern lit at 3am"},"good":true},{"t":{"it":"Hai una brutta barba","en":"Your beard is ugly"},"good":false},{"t":{"it":"Vivi da solo","en":"You live alone"},"good":false}]},{"id":"cf_merchant","kind":"confront","area":"town","title":{"it":"Il mercante disonesto","en":"The dishonest merchant"},"giver":{"it":["Mi ha venduto pesce","marcio e nega tutto.","Fallo confessare."],"en":["He sold me rotten","fish and denies it.","Make him confess."]},"intro":{"it":"Sorride, sicuro di se'.","en":"He smiles, self-assured."},"args":[{"t":{"it":"La data sulla cassa e' vecchia","en":"The crate's date is old"},"good":true},{"t":{"it":"Altri tre si sono ammalati","en":"Three others fell ill too"},"good":true},{"t":{"it":"Hai i baffi storti","en":"Your moustache is crooked"},"good":false},{"t":{"it":"Parli troppo","en":"You talk too much"},"good":false}]},{"id":"cf_guide","kind":"confront","area":"forestNE","title":{"it":"La guida evasiva","en":"The evasive guide"},"giver":{"it":["Ha perso un cliente","nel bosco e nega","di esserci stato."],"en":["He lost a client","in the woods and denies","being there."]},"intro":{"it":"Gioca col cappello.","en":"He fiddles with his hat."},"args":[{"t":{"it":"Il tuo bastone e' vicino al dirupo","en":"Your staff is by the cliff"},"good":true},{"t":{"it":"Il cane ti ha riconosciuto","en":"The dog recognized you"},"good":true},{"t":{"it":"Cammini strano","en":"You walk oddly"},"good":false},{"t":{"it":"Sei sudato","en":"You're sweaty"},"good":false}]},{"id":"cf_host","kind":"confront","area":"holiday","title":{"it":"L'animatrice sfuggente","en":"The evasive host"},"giver":{"it":["Nasconde perche' un","ospite se n'e' andato","di notte, di corsa."],"en":["She hides why a","guest left at night,","in a hurry."]},"intro":{"it":"Ride, ma le trema la voce.","en":"She laughs, voice shaking."},"args":[{"t":{"it":"La sua stanza pagata e vuota","en":"His room paid and empty"},"good":true},{"t":{"it":"Hai chiamato un taxi alle 4","en":"You called a cab at 4am"},"good":true},{"t":{"it":"Balli male","en":"You dance badly"},"good":false},{"t":{"it":"Fa caldo","en":"It's hot"},"good":false}]},{"id":"cf_banker","kind":"confront","area":"town","title":{"it":"Il banchiere freddo","en":"The cold banker"},"giver":{"it":["Ha svuotato un conto","altrui. Nega con","un sorriso."],"en":["He drained someone","else's account. Denies","with a smile."]},"intro":{"it":"Incrocia le dita, calmo.","en":"He steeples his fingers."},"args":[{"t":{"it":"La firma e' contraffatta","en":"The signature is forged"},"good":true},{"t":{"it":"Il prelievo e' delle 9, eri li'","en":"The withdrawal was at 9, you were there"},"good":true},{"t":{"it":"Hai un brutto completo","en":"Your suit is ugly"},"good":false},{"t":{"it":"Sei noioso","en":"You're boring"},"good":false}]},{"id":"cf_widow2","kind":"confront","area":"forestNW","title":{"it":"La locandiera reticente","en":"The reticent innkeeper"},"giver":{"it":["Sa chi dormiva qui","quella notte, ma","fa la vaga."],"en":["She knows who slept","here that night, but","plays dumb."]},"intro":{"it":"Pulisce lo stesso bicchiere.","en":"She wipes the same glass."},"args":[{"t":{"it":"Il registro ha una pagina strappata","en":"A page torn from the ledger"},"good":true},{"t":{"it":"La stufa era accesa in quella stanza","en":"The stove was lit in that room"},"good":true},{"t":{"it":"Sei scortese","en":"You're rude"},"good":false},{"t":{"it":"Piove","en":"It's raining"},"good":false}]},{"id":"cf_official","kind":"confront","area":"town","title":{"it":"Il funzionario corrotto","en":"The corrupt official"},"giver":{"it":["Ha firmato un permesso","falso. Nega di","conoscere l'uomo."],"en":["He signed a fake","permit. Denies knowing","the man."]},"intro":{"it":"Sistema le carte, nervoso.","en":"He shuffles papers, nervous."},"args":[{"t":{"it":"La tua firma sul permesso","en":"Your signature on the permit"},"good":true},{"t":{"it":"Vi hanno visti cenare insieme","en":"You were seen dining together"},"good":true},{"t":{"it":"Hai le mani sudate","en":"Your hands are sweaty"},"good":false},{"t":{"it":"Sei basso","en":"You're short"},"good":false}]}],"tail":[{"id":"tl_smuggler","kind":"tail","area":"holiday","title":{"it":"Il contrabbandiere","en":"The smuggler"},"giver":{"it":["Segui quell'uomo.","Non farti notare."],"en":["Follow that man.","Don't get spotted."]},"tail":{"from":[1,0],"to":[43,31],"speed":16}},{"id":"tl_courier","kind":"tail","area":"mountain","title":{"it":"Il corriere notturno","en":"The night courier"},"giver":{"it":["Consegna qualcosa","di losco. Pedinalo."],"en":["He's delivering","something shady. Tail him."]},"tail":{"from":[0,1],"to":[42,39],"speed":15}},{"id":"tl_informer","kind":"tail","area":"forestNE","title":{"it":"L'informatore doppio","en":"The double informer"},"giver":{"it":["Fa il doppio gioco.","Seguilo da lontano."],"en":["He plays both sides.","Follow from afar."]},"tail":{"from":[0,1],"to":[42,39],"speed":16}},{"id":"tl_thief2","kind":"tail","area":"forestNW","title":{"it":"Il topo d'appartamento","en":"The cat burglar"},"giver":{"it":["Ha svaligiato una casa.","Vedi dove porta il bottino."],"en":["He robbed a house.","See where the loot goes."]},"tail":{"from":[32,1],"to":[43,39],"speed":16}},{"id":"tl_lover","kind":"tail","area":"town","title":{"it":"L'amante segreto","en":"The secret lover"},"giver":{"it":["Voglio sapere","dove va di notte.","Seguila."],"en":["I want to know","where she goes at night.","Follow her."]},"tail":{"from":[1,0],"to":[43,31],"speed":15}},{"id":"tl_fence","kind":"tail","area":"industrial","title":{"it":"Il ricettatore","en":"The fence"},"giver":{"it":["Compra roba rubata.","Scopri il magazzino."],"en":["He buys stolen goods.","Find the warehouse."]},"tail":{"from":[1,1],"to":[13,26],"speed":15}},{"id":"tl_spy","kind":"tail","area":"holiday","title":{"it":"La spia in vacanza","en":"The spy on holiday"},"giver":{"it":["Finge di essere","un turista. Pedinalo."],"en":["He pretends to be","a tourist. Tail him."]},"tail":{"from":[43,31],"to":[1,0],"speed":16}},{"id":"tl_debtor","kind":"tail","area":"town","title":{"it":"Il debitore in fuga","en":"The fleeing debtor"},"giver":{"it":["Mi deve dei soldi","e scappa. Seguilo","senza spaventarlo."],"en":["He owes me money","and runs. Follow him","without spooking him."]},"tail":{"from":[43,31],"to":[1,0],"speed":16}},{"id":"tl_ranger","kind":"tail","area":"mountain","title":{"it":"Il guardaboschi sospetto","en":"The suspicious ranger"},"giver":{"it":["Sparisce ogni notte","sul crinale. Scopri","dove va."],"en":["He vanishes each night","up the ridge. Find","where he goes."]},"tail":{"from":[42,39],"to":[0,1],"speed":15}},{"id":"tl_pilgrim","kind":"tail","area":"forestNW","title":{"it":"Il falso pellegrino","en":"The false pilgrim"},"giver":{"it":["Non e' un pellegrino.","Seguilo tra gli alberi."],"en":["He's no pilgrim.","Follow him through the trees."]},"tail":{"from":[43,39],"to":[32,1],"speed":16}}],"fight":[{"id":"ft_dockthug","kind":"fight","area":"town","title":{"it":"Il teppista del molo","en":"The dock thug"},"giver":{"it":["Quel tipo importuna","tutti. Dagli una","lezione."],"en":["That guy harasses","everyone. Teach him","a lesson."]}},{"id":"ft_drunk","kind":"fight","area":"town","title":{"it":"L'ubriaco molesto","en":"The rowdy drunk"},"giver":{"it":["Se la prende con","i passanti. Fermalo."],"en":["He's picking on","passers-by. Stop him."]}},{"id":"ft_bandit","kind":"fight","area":"forestNE","title":{"it":"Il bandito del bosco","en":"The forest bandit"},"giver":{"it":["Assale i viandanti","sul sentiero. Aiutaci."],"en":["He ambushes travelers","on the trail. Help us."]}},{"id":"ft_bruiser","kind":"fight","area":"industrial","title":{"it":"Il picchiatore","en":"The bruiser"},"giver":{"it":["Il caposquadra ha","un gorilla. Toglilo","di mezzo."],"en":["The foreman keeps","a heavy. Get him","out of the way."]}},{"id":"ft_poacher2","kind":"fight","area":"mountain","title":{"it":"Il bracconiere armato","en":"The armed poacher"},"giver":{"it":["Ha minacciato una","guida. Mettilo a posto."],"en":["He threatened a","guide. Sort him out."]}},{"id":"ft_thug2","kind":"fight","area":"holiday","title":{"it":"Il buttafuori violento","en":"The violent bouncer"},"giver":{"it":["Ha steso un ospite","senza motivo. Fermalo."],"en":["He decked a guest","for nothing. Stop him."]}},{"id":"ft_robber","kind":"fight","area":"town","title":{"it":"Lo scippatore","en":"The mugger"},"giver":{"it":["Ha scippato una","signora. Rincorrilo!"],"en":["He mugged a lady.","Chase him down!"]}},{"id":"ft_smith","kind":"fight","area":"forestNW","title":{"it":"Il fabbro rissoso","en":"The brawling smith"},"giver":{"it":["Ubriaco e furioso,","spacca tutto. Calmalo."],"en":["Drunk and furious,","he smashes everything. Calm him."]}},{"id":"ft_enforcer","kind":"fight","area":"industrial","title":{"it":"L'esattore","en":"The enforcer"},"giver":{"it":["Riscuote col pugno.","Difendi il bottegaio."],"en":["He collects with his","fists. Defend the shopkeeper."]}},{"id":"ft_stalker","kind":"fight","area":"town","title":{"it":"L'inseguitore","en":"The stalker"},"giver":{"it":["Perseguita una donna.","Affrontalo, ora."],"en":["He's stalking a woman.","Confront him, now."]}}]};
+</script>
 
 <script>
 (function () {
@@ -102,62 +111,83 @@
   let lang = "it";
   const STR = {
     it: {
-      title_sub:"La cittadina di mare",
+      title_sub:"Detective Crudo",
       continue:"CONTINUA", newgame:"NUOVA PARTITA", press_ab:"A / START",
       season_spring:"PRIMAVERA", season_summer:"ESTATE", season_autumn:"AUTUNNO", season_winter:"INVERNO",
       quest_label:"Missione:", q_none:"Parla in giro", q_find:"Trova Micio", q_return:"Riporta Micio", q_done:"Fatto!",
-      new_quest:"NUOVA MISSIONE!", quest_done:"MISSIONE COMPLETATA!", found_cat:"Hai trovato Micio!",
+      new_quest:"NUOVA MISSIONE!", quest_done:"MISSIONE COMPLETATA!", found_cat:"Hai ritrovato il gatto. Ti fissa, poi il mare.",
       hint_lang:"START: Menu",
       nonna:"Nonna Rosa", vito:"Vito", lena:"Lena", marinaio:"Marinaio", ciclista:"Ciclista", pino:"Pino",
       shopkeeper:"Bottegaio", mayor:"Sindaco",
-      nonna0:["Oh, ciao piccolo!","Micio e' scappato","di nuovo... ama il mare.","Cercalo verso la","spiaggia, a sud!"],
-      nonna1:["Micio gira spesso","in spiaggia o sul","lungomare. Vai a sud!"],
-      nonna2:["Micio! Sei tornato!","Grazie di cuore,","piccolo mio!"],
-      nonna3:["Micio fa le fusa.","Passa quando vuoi!"],
-      vito:["Bella la nostra","cittadina di mare, eh?","Cambia con le stagioni...","(SELECT per provare)","(START apre il menu)"],
-      lena:["Il porto e' laggiu'","a sud-est. D'estate","il mare e' stupendo!"],
-      marinaio:["Le barche dormono","al molo. In inverno","il vento e' gelido!"],
-      ciclista:["Scusa, di corsa!","Giro tutta la","passeggiata in bici!"],
-      pino0:["Ehi! Ho perso la mia","conchiglia fortunata","sulla spiaggia.","La cerchi tu?"],
-      pino1:["La conchiglia e'","da qualche parte","sulla sabbia, a est!"],
-      pino2:["La mia conchiglia!","Grazie mille,","sei un mito!"],
-      pino3:["Con questa vinco","sempre a braccio","di ferro!"],
-      found_shell:"Hai trovato la conchiglia!",
+      nonna0:["Oh, sei tu, piccolo.","Il mio gatto e' sparito","un'altra volta... torna","sempre giu' al mare.","Cercalo a sud. Fa' presto."],
+      nonna1:["Micio si aggira","dove l'acqua e' scura,","in spiaggia. Vai a sud...","e non voltarti."],
+      nonna2:["Sei tornato. E lui","con te. Certe cose","tornano sempre a casa,","volenti o nolenti."],
+      nonna3:["Il gatto fa le fusa.","Ma guarda ancora il mare,","come se aspettasse","qualcuno."],
+      vito_l:["Bella la nostra","cittadina di mare, eh?","Cambia con le stagioni...","(SELECT per provare)","(START apre il menu)"],
+      lena_l:["Il porto e' laggiu'","a sud-est. D'estate","il mare e' stupendo!"],
+      marinaio_l:["Le barche dormono","al molo. In inverno","il vento e' gelido!"],
+      ciclista_l:["Scusa, di corsa!","Giro tutta la","passeggiata in bici!"],
+      pino0:["La mia conchiglia.","L'ho persa sulla sabbia,","la notte in cui...","lascia stare. Me la","ritrovi tu?"],
+      pino1:["E' la' sulla spiaggia,","a est. Dove la marea","lascia le cose che","nessuno rivuole."],
+      pino2:["L'hai trovata. Bene.","Ora quella notte","posso quasi","dimenticarla."],
+      pino3:["La tengo in tasca","sempre. Mi ricorda","che il mare restituisce","tutto, prima o poi."],
+      found_shell:"Hai trovato la conchiglia, mezza sepolta nella sabbia.",
       in_nonna:["Benvenuto in casa mia!","Mettiti comodo,","c'e' il camino acceso."],
       in_store:["Benvenuto all'emporio!","Presto potrai comprare","esche e provviste."],
       in_mayor:["Sono il sindaco.","La nostra cittadina","cambia con le stagioni:","ne sono orgoglioso!"],
-      menu_title:"MENU", menu_map:"MAPPA", menu_lang:"LINGUA", menu_season:"STAGIONE", menu_close:"CHIUDI", menu_journal:"DIARIO",
-      area_town:"CRUDO", area_mountain:"MONTAGNA", area_forestNW:"BORGO DI MONTAGNA", area_forestNE:"FORESTA EST", area_holiday:"VILLAGGIO VACANZE", area_industrial:"ZONA INDUSTRIALE",
+      menu_title:"MENU", menu_map:"MAPPA", menu_lang:"LINGUA", menu_season:"STAGIONE", menu_close:"CHIUDI", menu_journal:"DIARIO", menu_notebook:"TACCUINO",
+      journal_case:"Indagine:", notebook_title:"TACCUINO DEL DETECTIVE", notebook_empty:"Nessun indizio raccolto.", notebook_hint:"Indizi del caso raccolti finora:", clue_logged:"Indizio annotato:", menu_hint:"A: ok  B: chiudi",
+      examine_intro:"Esamino la scena...", interro_q:"Cosa gli metti davanti?", interro_ok:"Il testimone vacilla. Parla.",
+      interro_no0:"Non e' la prova giusta.", interro_no1:"Il testimone si chiude a riccio.", interro_no2:"Torna domani. Serve dormirci su.",
+      interro_tomorrow:["Le ho gia' detto tutto","per oggi. Torni domani."], interro_tomorrow_b:"Si e' chiuso. Riprova domani (fai passare la notte).",
+      deduce_q1:"Collega un indizio...", deduce_q2:"...con quale altro?",
+      confront_intro:"E' l'ora della verita'.", confront_suspect:"SOSPETTO", confront_you:"TU", confront_q:"Quale prova usi?", confront_win:"Ha ceduto. Confessa tutto.", confront_lose:"Hai perso il filo. Ti liquida.",
+      tail_label:"SOSPETTO", tail_intro:"Seguilo. Ne' troppo vicino, ne' troppo lontano.", tail_ok:"L'hai seguito senza farti notare.",
+      fight_intro:"Ti aggredisce!", fight_win:"L'hai messo al tappeto.", fight_lose:"Ti ha steso... ti rialzi.", fight_you:"CRUDO", fight_enemy:"AGGRESSORE", fight_hint:"A: colpisci  B: schiva",
+      sq_done:"Incarico risolto.", sq_fail:"Non e' andata. Riprova.",
+      moral_case5_q:"Un testimone ti implora di tacere. Che fai?", moral_case5_a:"Verbalizzo tutto. La legge e' legge.", moral_case5_b:"Taccio. Certe ferite non vanno riaperte.",
+      moral_case10_q:"Hai in mano una prova che rovina un innocente.", moral_case10_a:"La uso. Conta solo il caso.", moral_case10_b:"La proteggo. Non su un innocente.",
+      ending_just_0:"Chiudo il caso con la legge in pugno.", ending_just_1:"Qualcuno paghera'. Tutto e' a verbale.", ending_just_2:"La citta' non mi ringraziera'. Non importa.",
+      ending_mercy_0:"Chiudo il caso, ma non tutto finisce in un verbale.", ending_mercy_1:"Ho scelto le persone, non solo le regole.", ending_mercy_2:"Dormiro'? Non lo so. Ma potevo guardarmi allo specchio.",
+      ending_grey_0:"Il caso e' chiuso. La verita' resta grigia.", ending_grey_1:"Un po' di legge, un po' di pieta'.", ending_grey_2:"Come sempre, a Crudo, nessuno esce pulito.",
+      deduce_ok0:"I pezzi combaciano.", deduce_ok1:"Ora ho la mia teoria.",
+      deduce_no0:"Questi due non c'entrano.", deduce_no1:"Ragionaci ancora.",
+      area_town:"BAIA DEL SUD", area_mountain:"ALTURE DEL NORD", area_forestNW:"CONTEA DEGLI ALTIPIANI", area_forestNE:"BOSCO DEGLI OLMI", area_holiday:"BORGO DEL FARO", area_industrial:"RIONE DELLE OFFICINE",
       in_bungalow_t:"BUNGALOW", host:"Animatrice", in_bungalow:["Benvenuto al villaggio!","Rilassati e goditi","il sole e il mare."],
       in_cabin_t:"CASA DI LEGNO", hermit:"Eremita", in_cabin:["Non ricevo spesso","visite quassu'...","cosa ti porta qui?"],
       in_chalet_t:"CHALET", granny2:"Nonna Alpina", in_chalet:["Entra, fa freddo fuori!","Ti preparo una cioccolata","calda, piccolo."],
       passerby:"Passante", passerby_l:["Buongiorno!"],
       journal_title:"DIARIO", journal_main:"Principali:", journal_side:"Secondarie:", chapter:"Capitolo", chapter_done:"CAPITOLO COMPLETATO!",
+      q_intro_t:"L'arrivo a Crudo", q_intro_s0:"Chiedi in giro di chi ti ha convocato", q_intro_s1:"Presentati alla committente",
+      intro_start:["Lei dev'essere","l'investigatore.","La aspettano. La trova","al vicolo dietro","la piazza. Vada."],
+      intro_wait:["La committente e'","dietro la piazza.","Non la faccia","aspettare."],
+      intro_end:["E' arrivato, detective.","La polizia ha chiuso","il caso in fretta.","Io no. Cominci pure","a fare domande."],
+      intro_done:"Il caso e' riaperto. La citta' e' tutta da interrogare.",
       q_room_t:"Sistemare la stanza", q_room_s0:"Torna a casa e sistema la tua stanza", q_room_s1:"Stanza sistemata!",
       q_job_t:"Trovare un lavoro", q_job_s0:"Chiedi lavoro all'officina", q_job_s1:"Hai trovato un lavoro!",
       q_fri_t:"Ritrovare i vecchi amici", q_fri_s0:"Parla con il tuo vecchio amico Teo", q_fri_s1:"Hai riconquistato la loro stima!",
       q_bike_t:"Recuperare una bici", q_bike_s0:"Trova una bicicletta in citta'", q_bike_s1:"Hai una bici!",
-      q_cat_t:"Il gatto perduto", q_cat_s0:"Trova Micio e riportalo a Nonna Rosa", q_cat_s1:"Micio e' a casa!",
-      q_shell_t:"La conchiglia di Pino", q_shell_s0:"Trova la conchiglia sulla spiaggia", q_shell_s1:"Conchiglia consegnata!",
-      q_par_t:"Una consegna", q_par_s0:"Consegna il pacco dall'altra parte", q_par_s1:"Pacco consegnato!",
-      q_kids_t:"Il litigio nel parco", q_kids_s0:"Parla con i due bambini che litigano", q_kids_s1:"Trova la palla contesa", q_kids_s2:"Bambini rappacificati!",
-      q_of_t:"Un vecchio compagno", q_of_s0:"Ritrova il portachiavi d'infanzia di Nico", q_of_s1:"Ricordo restituito!",
-      q_ph_t:"Ricordi sbiaditi", q_ph_s0:"Trova le 3 vecchie foto in giro per la citta'", q_ph_s1:"Album completato!",
+      q_cat_t:"Il gatto e il mare", q_cat_s0:"Ritrova il gatto sparito e riportalo a Nonna Rosa", q_cat_s1:"Il gatto e' tornato a casa.",
+      q_shell_t:"Cio' che la marea restituisce", q_shell_s0:"Ritrova la conchiglia di Pino sulla spiaggia", q_shell_s1:"Conchiglia riconsegnata.",
+      q_par_t:"Un pacco, nessuna domanda", q_par_s0:"Consegna il pacco al molo, senza aprirlo", q_par_s1:"Pacco consegnato.",
+      q_kids_t:"Cio' che e' rotolato nel buio", q_kids_s0:"Parla con i due bambini che litigano", q_kids_s1:"Ritrova la palla finita lontano", q_kids_s2:"Bambini rappacificati.",
+      q_of_t:"Vecchie promesse", q_of_s0:"Ritrova il portachiavi d'infanzia di Nico", q_of_s1:"Ricordo restituito.",
+      q_ph_t:"Volti sbiaditi", q_ph_s0:"Ritrova le 3 vecchie foto in giro per la citta'", q_ph_s1:"Album ricomposto.",
       fornaio:"Fornaio", nico:"Nico",
-      fornaio0:["Ehi, tu che vai in giro!","Porti questo pacco","al molo per me?"],
-      fornaio1:["Grazie mille!","Passa quando vuoi","per una pagnotta."],
-      dest0:["Ah, il pacco del","fornaio! Grazie,","lo aspettavo."],
-      nico0:["Ma sei tornato!","Da bambini giocavamo","sempre qui... ho perso","il mio portachiavi.","Lo ritrovi per me?"],
-      nico1:["Il mio portachiavi!","Non e' cambiato niente,","vecchio mio."],
-      kid_a0:["E' colpa sua! Mi ha","preso la palla e l'ha","tirata via!"],
-      kid_b0:["Non e' vero! E'","volata da sola,","lo giuro..."],
-      kids_done:"Hai riportato la palla: i bambini fanno pace!",
-      kids_done_l0:["Hai trovato la palla?","Dammela, facciamo","la pace!"],
-      parcel_got:"Hai preso il pacco del fornaio.",
-      keyring_found:"Hai trovato il portachiavi di Nico!",
-      photo_found:"Hai trovato una vecchia foto!",
-      photos_msg:"Hai raccolto tutte e 3 le foto!",
-      ball_found:"Hai trovato la palla!",
+      fornaio0:["Tu che giri di notte.","Porta questo pacco","al molo. Non chiedere","cosa c'e' dentro."],
+      fornaio1:["Hai consegnato.","Non l'hai aperto.","Bravo. Certe cose","e' meglio non saperle."],
+      dest0:["Il pacco del fornaio.","Puntuale. Lo aspettavo","da parecchio.","Non una parola a nessuno."],
+      nico0:["Sei tornato, dopo","tutto questo tempo.","Da bambini giuravamo","tutto qui... ho perso","il mio portachiavi."],
+      nico1:["Il portachiavi. Lo","credevo perso come","il resto. Alcune promesse","non si sciolgono."],
+      kid_a0:["E' colpa sua! Ha","preso la palla e l'ha","buttata dove non","si dovrebbe andare."],
+      kid_b0:["Non e' vero...","e' rotolata da sola.","Verso il buio.","Lo giuro."],
+      kids_done:"Riporti la palla dal buio: i bambini fanno pace.",
+      kids_done_l0:["L'hai ripresa la palla?","Da... la' sotto?","Dammela. Facciamo","pace e non parliamone piu'."],
+      parcel_got:"Hai preso il pacco. Non chiederti cosa contiene.",
+      keyring_found:"Hai ritrovato il portachiavi di Nico.",
+      photo_found:"Una vecchia foto. I volti sono quasi svaniti.",
+      photos_msg:"Hai ricomposto le 3 foto. Adesso li riconosci.",
+      ball_found:"Hai recuperato la palla, dove nessuno guarda mai.",
       teo:"Teo", capo:"Capo Officina", mamma:"Mamma",
       teo0:["Ma... sei proprio tu?!","Quanto tempo!","Fatti valere e vedrai","che i ragazzi ti","riaccolgono."],
       teo1:["Bentornato tra noi,","vecchio mio! Andiamo","a farci un giro."],
@@ -168,9 +198,9 @@
       room_msg:"Hai sistemato la tua vecchia stanza!",
       bike_found:"Hai trovato una vecchia bici!",
       bimbo:"Bambino", bimba:"Bambina",
-      bimbo_l:["Vuoi giocare a","nascondino con noi?"],
-      bimba_l:["Ho trovato una","conchiglia rosa!"],
-      map_title:"MAPPA CITTA'", map_hint:"B: indietro",
+      bimbo_l:["Giochi a nascondino","con noi? Non andare","pero' oltre gli alberi..."],
+      bimba_l:["Ho trovato una","conchiglia rosa.","Era in un posto","dove non dovevo essere."],
+      map_title:"MAPPA", map_hint:"B: indietro", map_nav:"Frecce: scegli  A: apri  B: esci", map_back:"A/B: indietro",
       sea_spring:"Che fresca l'acqua!",
       sea_summer:"Che bello rinfrescarsi in mare!",
       sea_autumn:"Brrr, che freddo!",
@@ -191,62 +221,83 @@
       house_nonna:"CASA DI NONNA ROSA", store:"EMPORIO", townhall:"MUNICIPIO"
     },
     en: {
-      title_sub:"The seaside town",
+      title_sub:"Detective Crudo",
       continue:"CONTINUE", newgame:"NEW GAME", press_ab:"A / START",
       season_spring:"SPRING", season_summer:"SUMMER", season_autumn:"AUTUMN", season_winter:"WINTER",
       quest_label:"Quest:", q_none:"Talk around", q_find:"Find Micio", q_return:"Bring Micio back", q_done:"Done!",
-      new_quest:"NEW QUEST!", quest_done:"QUEST COMPLETE!", found_cat:"You found Micio!",
+      new_quest:"NEW QUEST!", quest_done:"QUEST COMPLETE!", found_cat:"You found the cat. He stares at you, then the sea.",
       hint_lang:"START: Menu",
       nonna:"Granny Rosa", vito:"Vito", lena:"Lena", marinaio:"Sailor", ciclista:"Cyclist", pino:"Pino",
       shopkeeper:"Shopkeeper", mayor:"Mayor",
-      nonna0:["Oh, hello dear!","Micio ran off","again... he loves the sea.","Look for him near","the beach, to the south!"],
-      nonna1:["Micio often roams","the beach or the","promenade. Head south!"],
-      nonna2:["Micio! You're back!","Thank you so much,","little one!"],
-      nonna3:["Micio is purring.","Come by anytime!"],
-      vito:["Nice little","seaside town, huh?","It changes with seasons...","(SELECT to try it)","(START opens menu)"],
-      lena:["The port is down","to the south-east.","The summer sea is gorgeous!"],
-      marinaio:["The boats sleep","at the dock. In winter","the wind is freezing!"],
-      ciclista:["Sorry, in a hurry!","I ride the whole","promenade by bike!"],
-      pino0:["Hey! I lost my","lucky seashell","on the beach.","Would you find it?"],
-      pino1:["The shell is","somewhere on the","sand, to the east!"],
-      pino2:["My seashell!","Thank you so much,","you're the best!"],
-      pino3:["With this I always","win at arm","wrestling!"],
-      found_shell:"You found the seashell!",
+      nonna0:["Oh, it's you, dear.","My cat is gone","again... he always","goes down to the sea.","Look south. Be quick."],
+      nonna1:["The cat prowls where","the water runs dark,","on the beach. Go south...","and don't look back."],
+      nonna2:["You're back. And he's","with you. Some things","always come home,","willing or not."],
+      nonna3:["The cat is purring.","But he still watches","the sea, as if waiting","for someone."],
+      vito_l:["Nice little","seaside town, huh?","It changes with seasons...","(SELECT to try it)","(START opens menu)"],
+      lena_l:["The port is down","to the south-east.","The summer sea is gorgeous!"],
+      marinaio_l:["The boats sleep","at the dock. In winter","the wind is freezing!"],
+      ciclista_l:["Sorry, in a hurry!","I ride the whole","promenade by bike!"],
+      pino0:["My seashell.","I lost it on the sand,","the night that... never","mind. Would you find","it for me?"],
+      pino1:["It's out there on the","beach, to the east.","Where the tide leaves","what no one wants back."],
+      pino2:["You found it. Good.","Now maybe that night","I can almost","forget."],
+      pino3:["I keep it in my pocket","always. Reminds me the","sea gives everything","back, sooner or later."],
+      found_shell:"You found the seashell, half-buried in the sand.",
       in_nonna:["Welcome to my home!","Make yourself comfy,","the fire is lit."],
       in_store:["Welcome to the store!","Soon you'll be able to buy","bait and supplies."],
       in_mayor:["I'm the mayor.","Our little town","changes with the seasons:","I'm proud of it!"],
-      menu_title:"MENU", menu_map:"MAP", menu_lang:"LANGUAGE", menu_season:"SEASON", menu_close:"CLOSE", menu_journal:"JOURNAL",
-      area_town:"CRUDO", area_mountain:"MOUNTAIN", area_forestNW:"MOUNTAIN TOWN", area_forestNE:"EAST FOREST", area_holiday:"HOLIDAY VILLAGE", area_industrial:"INDUSTRIAL ZONE",
+      menu_title:"MENU", menu_map:"MAP", menu_lang:"LANGUAGE", menu_season:"SEASON", menu_close:"CLOSE", menu_journal:"JOURNAL", menu_notebook:"NOTEBOOK",
+      journal_case:"Case:", notebook_title:"DETECTIVE'S NOTEBOOK", notebook_empty:"No clues collected yet.", notebook_hint:"Case clues collected so far:", clue_logged:"Clue logged:", menu_hint:"A: ok  B: close",
+      examine_intro:"I examine the scene...", interro_q:"What do you show them?", interro_ok:"The witness cracks. They talk.",
+      interro_no0:"Wrong evidence.", interro_no1:"The witness clams up.", interro_no2:"Come back tomorrow. Sleep on it.",
+      interro_tomorrow:["I've told you enough","for today. Come tomorrow."], interro_tomorrow_b:"They clammed up. Try tomorrow (let the night pass).",
+      deduce_q1:"Connect one clue...", deduce_q2:"...with which other?",
+      confront_intro:"It's the moment of truth.", confront_suspect:"SUSPECT", confront_you:"YOU", confront_q:"Which proof do you use?", confront_win:"They break. Full confession.", confront_lose:"You lost the thread. They brush you off.",
+      tail_label:"SUSPICION", tail_intro:"Follow them. Not too close, not too far.", tail_ok:"You followed them unseen.",
+      fight_intro:"They attack you!", fight_win:"You put them down.", fight_lose:"They dropped you... you get back up.", fight_you:"CRUDO", fight_enemy:"ATTACKER", fight_hint:"A: strike  B: dodge",
+      sq_done:"Job done.", sq_fail:"Didn't work out. Try again.",
+      moral_case5_q:"A witness begs you to stay quiet. What do you do?", moral_case5_a:"I log it all. The law is the law.", moral_case5_b:"I stay quiet. Some wounds shouldn't reopen.",
+      moral_case10_q:"You hold proof that would ruin an innocent.", moral_case10_a:"I use it. Only the case matters.", moral_case10_b:"I protect them. Not on an innocent.",
+      ending_just_0:"I close the case with the law in hand.", ending_just_1:"Someone will pay. It's all on record.", ending_just_2:"The town won't thank me. It doesn't matter.",
+      ending_mercy_0:"I close the case, but not all of it goes on record.", ending_mercy_1:"I chose people over rules.", ending_mercy_2:"Will I sleep? I don't know. But I can face the mirror.",
+      ending_grey_0:"The case is closed. The truth stays grey.", ending_grey_1:"A little law, a little mercy.", ending_grey_2:"As always, in Crudo, no one walks away clean.",
+      deduce_ok0:"The pieces fit.", deduce_ok1:"Now I have my theory.",
+      deduce_no0:"These two don't connect.", deduce_no1:"Think it over again.",
+      area_town:"SOUTHERN BAY", area_mountain:"NORTH HEIGHTS", area_forestNW:"HIGHLAND COUNTY", area_forestNE:"ELM WOOD", area_holiday:"LIGHTHOUSE VILLAGE", area_industrial:"INDUSTRY DISTRICT",
       in_bungalow_t:"BUNGALOW", host:"Host", in_bungalow:["Welcome to the resort!","Relax and enjoy","the sun and the sea."],
       in_cabin_t:"WOOD CABIN", hermit:"Hermit", in_cabin:["I don't get many","visitors up here...","what brings you?"],
       in_chalet_t:"CHALET", granny2:"Alpine Granny", in_chalet:["Come in, it's cold out!","I'll make you some","hot cocoa, dear."],
       passerby:"Passer-by", passerby_l:["Hello there!"],
       journal_title:"JOURNAL", journal_main:"Main:", journal_side:"Side:", chapter:"Chapter", chapter_done:"CHAPTER COMPLETE!",
+      q_intro_t:"Arrival in Crudo", q_intro_s0:"Ask around for who summoned you", q_intro_s1:"Introduce yourself to the client",
+      intro_start:["You must be the","investigator.","She's expecting you.","In the alley behind","the square. Go."],
+      intro_wait:["The client is behind","the square.","Don't keep her","waiting."],
+      intro_end:["You're here, detective.","The police closed the","case in a hurry.","I didn't. Go ahead,","start asking."],
+      intro_done:"The case is reopened. The whole town is to be questioned.",
       q_room_t:"Tidy your room", q_room_s0:"Go home and tidy your room", q_room_s1:"Room tidied!",
       q_job_t:"Find a job", q_job_s0:"Ask for work at the workshop", q_job_s1:"You got a job!",
       q_fri_t:"Reunite with old friends", q_fri_s0:"Talk to your old friend Teo", q_fri_s1:"You won back their trust!",
       q_bike_t:"Get a bike", q_bike_s0:"Find a bicycle in town", q_bike_s1:"You have a bike!",
-      q_cat_t:"The lost cat", q_cat_s0:"Find Micio and bring him to Granny Rosa", q_cat_s1:"Micio is home!",
-      q_shell_t:"Pino's seashell", q_shell_s0:"Find the shell on the beach", q_shell_s1:"Shell delivered!",
-      q_par_t:"A delivery", q_par_s0:"Deliver the parcel across town", q_par_s1:"Parcel delivered!",
-      q_kids_t:"The park quarrel", q_kids_s0:"Talk to the two quarreling kids", q_kids_s1:"Find the disputed ball", q_kids_s2:"Kids made up!",
-      q_of_t:"An old buddy", q_of_s0:"Find Nico's childhood keyring", q_of_s1:"Memory returned!",
-      q_ph_t:"Faded memories", q_ph_s0:"Find the 3 old photos around town", q_ph_s1:"Album complete!",
+      q_cat_t:"The cat and the sea", q_cat_s0:"Find the missing cat and bring him to Granny Rosa", q_cat_s1:"The cat is home.",
+      q_shell_t:"What the tide gives back", q_shell_s0:"Find Pino's seashell on the beach", q_shell_s1:"Shell returned.",
+      q_par_t:"A parcel, no questions", q_par_s0:"Deliver the parcel to the pier, unopened", q_par_s1:"Parcel delivered.",
+      q_kids_t:"What rolled into the dark", q_kids_s0:"Talk to the two quarreling kids", q_kids_s1:"Find the ball that rolled away", q_kids_s2:"Kids made up.",
+      q_of_t:"Old promises", q_of_s0:"Find Nico's childhood keyring", q_of_s1:"Memory returned.",
+      q_ph_t:"Faded faces", q_ph_s0:"Find the 3 old photos around town", q_ph_s1:"Album pieced together.",
       fornaio:"Baker", nico:"Nico",
-      fornaio0:["Hey, you wandering around!","Take this parcel","to the pier for me?"],
-      fornaio1:["Thanks a lot!","Come by anytime","for a fresh loaf."],
-      dest0:["Ah, the baker's","parcel! Thanks,","I was waiting for it."],
-      nico0:["You're back!","As kids we always","played here... I lost","my keyring.","Would you find it?"],
-      nico1:["My keyring!","Nothing's changed,","old friend."],
-      kid_a0:["It's his fault! He took","my ball and threw","it away!"],
-      kid_b0:["Not true! It just","flew off on its own,","I swear..."],
-      kids_done:"You brought back the ball: the kids make up!",
-      kids_done_l0:["Did you find the ball?","Give it to me,","let's make up!"],
-      parcel_got:"You took the baker's parcel.",
-      keyring_found:"You found Nico's keyring!",
-      photo_found:"You found an old photo!",
-      photos_msg:"You collected all 3 photos!",
-      ball_found:"You found the ball!",
+      fornaio0:["You, out at this hour.","Take this parcel","to the pier. Don't ask","what's inside."],
+      fornaio1:["You delivered it.","You didn't open it.","Good. Some things","are better not known."],
+      dest0:["The baker's parcel.","On time. I've been","waiting a long while.","Not a word to anyone."],
+      nico0:["You came back, after","all this time.","As kids we swore","everything here... I lost","my keyring."],
+      nico1:["The keyring. I thought","it was lost like all","the rest. Some promises","don't come undone."],
+      kid_a0:["It's his fault! He took","the ball and threw it","where no one's supposed","to go."],
+      kid_b0:["Not true...","it rolled off on its own.","Toward the dark.","I swear."],
+      kids_done:"You bring the ball back from the dark: the kids make up.",
+      kids_done_l0:["Did you get the ball back?","From... down there?","Give it to me. Let's make","up and never speak of it."],
+      parcel_got:"You took the parcel. Don't wonder what's inside.",
+      keyring_found:"You found Nico's keyring.",
+      photo_found:"An old photo. The faces are almost gone.",
+      photos_msg:"You pieced the 3 photos together. Now you recognize them.",
+      ball_found:"You recovered the ball, where no one ever looks.",
       teo:"Teo", capo:"Workshop Boss", mamma:"Mom",
       teo0:["Wait... is that really you?!","Long time!","Show us what you've got","and the crew will","take you back."],
       teo1:["Welcome back, old friend!","Let's go for a ride."],
@@ -257,9 +308,9 @@
       room_msg:"You tidied your old room!",
       bike_found:"You found an old bike!",
       bimbo:"Boy", bimba:"Girl",
-      bimbo_l:["Wanna play","hide and seek with us?"],
-      bimba_l:["I found a","pink seashell!"],
-      map_title:"TOWN MAP", map_hint:"B: back",
+      bimbo_l:["Play hide and seek","with us? Just don't go","past the trees..."],
+      bimba_l:["I found a pink","seashell.","It was somewhere","I wasn't supposed to be."],
+      map_title:"MAP", map_hint:"B: back", map_nav:"Arrows: pick  A: open  B: exit", map_back:"A/B: back",
       sea_spring:"The water is chilly!",
       sea_summer:"So refreshing to swim in the sea!",
       sea_autumn:"Brrr, so cold!",
@@ -282,6 +333,50 @@
   };
   function t(k){ return (STR[lang] && STR[lang][k]!==undefined) ? STR[lang][k] : (STR.it[k]||k); }
   function toggleLang(){ lang = (lang==="it")?"en":"it"; SFX.confirm(); saveGame(); }
+
+  // ---- VARIED SYSTEM LINES (investigation flavour, per language) ----
+  // Each group holds several alternatives so the same mechanic doesn't read identically every time.
+  const VARIANTS = {
+    it:{
+      examine:["Esamino la scena...","Mi accosto e guardo meglio...","Prendo nota di ogni dettaglio...","Qualcosa qui non torna...","Studio la scena in silenzio...","Illumino l'angolo buio..."],
+      interro_q:["Cosa gli metti davanti?","Cosa gli mostri?","Con cosa lo metti alle strette?","Quale prova gli sbatti in faccia?","Che indizio tiri fuori?"],
+      interro_ok:["Il testimone vacilla. Parla.","Sbianca. E poi confessa.","Regge lo sguardo un attimo, poi cede.","Deglutisce. Comincia a parlare.","Le mani gli tremano. Vuota il sacco."],
+      interro_fail:[["Non e' la prova giusta.","Il testimone si chiude a riccio.","Torna domani. Serve dormirci su."],["Sbagli mossa.","Lui incrocia le braccia.","Niente da fare, oggi. Domani."],["Ti guarda storto.","Quella prova non lo tocca.","Ripassa domani, detective."]],
+      interro_wait:[["Le ho gia' detto tutto","per oggi. Torni domani."],["Basta cosi' per oggi.","Torni domani, detective."],["Oggi ho chiuso.","Ci pensi. A domani."]],
+      interro_wait_b:["Si e' chiuso. Riprova domani.","Muto come una tomba. Domani.","Oggi non parla piu'. Torna domani."],
+      deduce_q1:["Collega un indizio...","Metti insieme i pezzi...","Da dove parte il filo?","Quale prova apre la pista?"],
+      deduce_q2:["...con quale altro?","...e con cosa lo leghi?","...con quale altro pezzo?","...cosa ci metti accanto?"],
+      deduce_ok:[["I pezzi combaciano.","Ora ho la mia teoria."],["Tutto torna.","Il quadro si compone."],["Ecco il filo.","Adesso ha un senso."]],
+      deduce_no:[["Questi due non c'entrano.","Ragionaci ancora."],["Il nesso non regge.","Riprova a collegarli."],["No. Non e' questo il legame.","Pensaci meglio."]],
+      recon_first:["Cosa e' successo per primo?","Da dove comincia tutto?","Qual e' il primo tassello?"],
+      recon_next:["...e poi?","Cosa viene dopo?","...il passo seguente?"],
+      recon_ok:[["La sequenza torna.","Ora vedo come e' andata."],["Tutto in ordine.","La scena si ricompone."]],
+      recon_no:[["No, l'ordine e' sbagliato.","Ricomincio da capo."],["I tempi non tornano.","Rimetto tutto in fila."]],
+      moral_after:[["La scelta e' fatta.","Me la porto dietro."],["Non si torna indietro.","E' deciso."],["Decido io. E ci convivo.",""]],
+      confront_hit:[["Colpito nel segno."],["Sussulta."],["Una crepa nella maschera."],["Perde terreno."]],
+      confront_miss:[["Debole. Ribatte."],["Angolo sbagliato. Recupera."],["Sorride. Mossa sbagliata."],["Non regge."]]
+    },
+    en:{
+      examine:["I examine the scene...","I lean in for a closer look...","I note every detail...","Something here is off...","I study the scene in silence...","I light up the dark corner..."],
+      interro_q:["What do you show them?","What do you put in front of them?","How do you corner them?","Which proof do you throw at them?","What clue do you pull out?"],
+      interro_ok:["The witness cracks. They talk.","They go pale, then confess.","They hold your gaze, then break.","They swallow hard, and start talking.","Their hands shake. They spill it."],
+      interro_fail:[["Wrong evidence.","The witness clams up.","Come back tomorrow. Sleep on it."],["Wrong move.","They fold their arms.","Nothing doing today. Tomorrow."],["They glare at you.","That proof means nothing to them.","Come back tomorrow, detective."]],
+      interro_wait:[["I've told you enough","for today. Come tomorrow."],["That's enough for today.","Come back tomorrow, detective."],["I'm done for today.","Sleep on it. Tomorrow."]],
+      interro_wait_b:["They clammed up. Try tomorrow.","Silent as the grave. Tomorrow.","No more talk today. Come back tomorrow."],
+      deduce_q1:["Connect one clue...","Put the pieces together...","Where does the thread start?","Which proof opens the trail?"],
+      deduce_q2:["...with which other?","...and tie it to what?","...with which other piece?","...what do you set beside it?"],
+      deduce_ok:[["The pieces fit.","Now I have my theory."],["It all adds up.","The picture comes together."],["There's the thread.","Now it makes sense."]],
+      deduce_no:[["These two don't connect.","Think it over again."],["The link doesn't hold.","Try connecting them again."],["No. That's not the link.","Think harder."]],
+      recon_first:["What happened first?","Where does it all start?","Which is the first piece?"],
+      recon_next:["...and then?","What comes next?","...the next step?"],
+      recon_ok:[["The sequence fits.","Now I see how it went."],["All in order.","The scene comes together."]],
+      recon_no:[["No, the order is wrong.","I start over."],["The timing is off.","I line it all up again."]],
+      moral_after:[["The choice is made.","I'll carry it."],["No going back now.","It's done."],["I decide. And live with it.",""]],
+      confront_hit:[["That hits home."],["They flinch."],["A crack in the mask."],["They lose their footing."]],
+      confront_miss:[["Weak. They push back."],["Wrong angle. They regain ground."],["They smile. Bad move."],["That won't hold."]]
+    }
+  };
+  function vpick(group){ const arr=(VARIANTS[lang]&&VARIANTS[lang][group])||VARIANTS.it[group]||[""]; return arr[Math.floor(Math.random()*arr.length)]; }
 
   // ================= 8-BIT AUDIO =================
   const SFX = (function(){
@@ -307,7 +402,8 @@
           spring:{beat:0.17,vol:0.028,wave:"square",bassWave:"triangle",mel:[[N.G4,2],[N.C5,2],[N.B4,1],[N.A4,1],[N.G4,2],[N.E4,2],[N.G4,2],[N.A4,2],[N.G4,2],[N.F4,2],[N.A4,2],[N.C5,2],[N.B4,2],[N.C5,4],[N.R,2],[N.G4,2]],bass:[N.C3,N.G3,N.A3,N.F3]},
           summer:{beat:0.19,vol:0.026,wave:"square",bassWave:"triangle",mel:[[N.E4,2],[N.G4,2],[N.A4,2],[N.C5,2],[N.B4,3],[N.A4,1],[N.G4,4],[N.A4,2],[N.C5,2],[N.D5,2],[N.C5,2],[N.G4,4],[N.E4,4]],bass:[N.A3,N.A3,N.E3,N.E3]},
           autumn:{beat:0.21,vol:0.024,wave:"triangle",bassWave:"triangle",mel:[[N.A4,2],[N.G4,2],[N.E4,4],[N.F4,2],[N.E4,2],[N.D4,4],[N.E4,2],[N.G4,2],[N.A4,2],[N.G4,2],[N.E4,4],[N.D4,4]],bass:[N.A3,N.F3,N.C3,N.G3]},
-          winter:{beat:0.24,vol:0.022,wave:"triangle",bassWave:"triangle",mel:[[N.C5,3],[N.B4,1],[N.A4,4],[N.G4,3],[N.A4,1],[N.E4,4],[N.G4,2],[N.A4,2],[N.B4,2],[N.C5,2],[N.A4,4],[N.G4,4]],bass:[N.C3,N.C3,N.G3,N.E3]}
+          winter:{beat:0.24,vol:0.022,wave:"triangle",bassWave:"triangle",mel:[[N.C5,3],[N.B4,1],[N.A4,4],[N.G4,3],[N.A4,1],[N.E4,4],[N.G4,2],[N.A4,2],[N.B4,2],[N.C5,2],[N.A4,4],[N.G4,4]],bass:[N.C3,N.C3,N.G3,N.E3]},
+          noir:{beat:0.34,vol:0.026,wave:"triangle",bassWave:"triangle",mel:[[N.A3,4],[N.C4,2],[N.B3,2],[N.A3,4],[N.E3,4],[N.R,2],[N.A3,2],[N.C4,3],[N.D4,1],[N.C4,4],[N.A3,2],[N.G3,2],[N.A3,6],[N.R,2]],bass:[N.A3,N.A3,N.F3,N.E3]}
         }; })(),
       startMusic:function(track){ const a=ctxAudio(); if(!a) return; if(track&&track!==this._track){ this._track=track; this.stopMusic(); } if(this._musicOn) return; this._musicOn=true;
         const T=this._tracks[this._track]; const self=this; let mi=0,bi=0;
@@ -338,6 +434,8 @@
   // clock in [0,1): 0=midnight, 0.25=6am, 0.5=noon, 0.75=6pm. One full day = DAY_LEN seconds.
   let clock=0.35;                 // start mid-morning
   const DAY_LEN=180;              // seconds for a full day/night cycle
+  let dayCount=0;                 // whole days elapsed (advances when the clock passes midnight)
+  function advanceClock(dt){ const nc=clock+dt/DAY_LEN; if(nc>=1){ dayCount+=Math.floor(nc); } clock=nc%1; }
   // 0 = full day, 1 = deep night (used for tinting + lit windows)
   function nightFactor(){
     // dark between ~19:30 (0.81) and ~5:30 (0.23), smooth transitions
@@ -349,7 +447,7 @@
   }
   function clockLabel(){ const mins=Math.floor(clock*24*60); const hh=String(Math.floor(mins/60)).padStart(2,"0"); const mm=String(mins%60).padStart(2,"0"); return hh+":"+mm; }
   function pal(){ return SEASON_PAL[season]; }
-  function setSeason(s){ season=s; seasonPopup=2.0; SFX.season(); SFX.setTrack(s); if(!SFX.musicPlaying()) SFX.startMusic(s); resetWeather(); saveGame(); }
+  function setSeason(s){ season=s; seasonPopup=2.0; SFX.season(); SFX.setTrack("noir"); if(!SFX.musicPlaying()) SFX.startMusic("noir"); resetWeather(); saveGame(); }
   function cycleSeason(){ const i=SEASONS.indexOf(season); setSeason(SEASONS[(i+1)%SEASONS.length]); }
 
   // ================= WEATHER (particles ~50% duty per season) =================
@@ -403,6 +501,39 @@
     }
   }
 
+  // ================= FOG (rolling banks, all seasons, ~independent duty) =================
+  // Drifting fog banks that roll in and out regardless of season, for a noir atmosphere.
+  const fog = { banks:[], intensity:0, target:0, timer:0, phase:8 };
+  function resetFog(){ fog.banks.length=0; fog.intensity=0; fog.target=0.9; fog.timer=0; fog.phase=6+Math.random()*4;
+    for(let i=0;i<12;i++){
+      fog.banks.push({ x:Math.random()*(W+120)-60, y:Math.random()*H, s:Math.random()*0.6+0.7,
+        vx:5+Math.random()*10, w:44+Math.random()*70, h:16+Math.random()*20, o:Math.random()*Math.PI*2 });
+    }
+  }
+  function updateFog(dt){
+    // toggle target intensity in/out (~50% duty) so banks roll through then thin out
+    fog.timer+=dt;
+    if(fog.timer>=fog.phase){ fog.timer=0; fog.phase=7+Math.random()*6; fog.target = fog.target>0.4 ? 0.0 : 0.9; }
+    // ease current intensity toward target
+    fog.intensity += (fog.target-fog.intensity)*Math.min(1,dt*0.6);
+    for(const b of fog.banks){
+      b.o+=dt*0.25; b.x+=dt*(b.vx*(0.6+b.s*0.6)); b.y+=Math.sin(b.o)*dt*3;
+      if(b.x-b.w>W+60){ b.x=-b.w-Math.random()*40; b.y=Math.random()*H; }
+    }
+  }
+  function drawFog(){
+    if(fog.intensity<=0.01) return;
+    const gi=fog.intensity;
+    // low uniform haze
+    ctx.fillStyle="rgba(158,170,180,"+(0.12*gi).toFixed(3)+")"; ctx.fillRect(0,0,W,H);
+    // drifting banks
+    for(const b of fog.banks){
+      ctx.fillStyle="rgba(184,196,204,"+((0.05+0.05*b.s)*gi).toFixed(3)+")";
+      ctx.fillRect(Math.round(b.x),Math.round(b.y),Math.round(b.w),Math.round(b.h));
+    }
+  }
+  resetFog();
+
   // ================= TEXT / UI =================
   function text(str,x,y,color){ ctx.fillStyle=color||"#f0f0e0"; ctx.font="8px monospace"; ctx.textBaseline="top"; ctx.fillText(str,x,y); }
   function textOutlined(str,x,y,color,outline){ ctx.font="8px monospace"; ctx.textBaseline="top"; ctx.fillStyle=outline||"#000"; ctx.fillText(str,x+1,y);ctx.fillText(str,x-1,y);ctx.fillText(str,x,y+1);ctx.fillText(str,x,y-1); ctx.fillStyle=color||"#f0f0e0"; ctx.fillText(str,x,y); }
@@ -447,15 +578,15 @@
     "..=========.==GGGGGG.GGGGG==============....",
     ".....b...'.....=............=...'..b...'..b.",
     ".mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm.",
-    ".ssssssssssssssssssmmmmmmssssssssssKmmmssss.",
+    ".ssssssssssssssssssmmmmmmssssssssssmmmmssss.",
     ".sssssssssssssssssssmmmmssssssssssmmmmsssss.",
-    ".~~~~~~~~~~~~~~~~~~~~ww~~~~~~~~~~~~~ww~~~~~.",
-    ".~~~~~~~~~~~~~~~~~~~~ww~~~~~~~~~~~~~ww~~~~~.",
-    ".~~~~~~~~~~~~~o~~~~~~ww~~~~~~~~o~~~~ww~~~~~.",
-    ".~~~~~~~~~~~~~~~~~~~~ww~~~~~~~~~~~~~ww~~~~~.",
-    ".~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.",
-    ".~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.",
-    ".~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.",
+    "~~~~~~~~~~~~~~~~~~~~~ww~~~~~~~~~~~~~ww~~~~~~",
+    "~~~~~~~~~~~~~~~~~~~~~ww~~~~~~~~~~~~~ww~~~~~~",
+    "~~~~~~~~~~~~~~~~~~~~~ww~~~~~~~~~~~~~ww~~~~~~",
+    "~~~~~~~~~~~~~~~~~~~~~ww~~~~~~~~~~~~~ww~~~~~~",
+    "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+    "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+    "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
     "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
   ];
   const AREA_mountain=[
@@ -616,18 +747,18 @@
     "Tssssssssssssssssssssssssssssssssssssssssss.",
     "Tdddddddddddddddddddddddddddddddddddddddddd.",
     "Tssssssssssssssssssssssssssssssssssssssssss.",
-    "Tssssssssssssssssssssssssssssssssssssssssss.",
-    "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.",
-    "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.",
-    "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.",
-    "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.",
-    "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.",
-    "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.",
-    "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.",
+    "Tsssssssssssssssssssgggssssssssssssssssssss.",
+    "~~~~~~~~~~~~~~~~~~~ggggg~~~~~~~~~~~~~~~~~~~~",
+    "~~~~~~~~~~~~~~~~~~~~gggg~~~~~~~~~~~~~~~~~~~~",
+    "~~~~~~~~~~~~~~~~~~~~~gg~~~~~~~~~~~~~~~~~~~~~",
+    "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+    "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+    "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+    "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
     "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
   ];
   const AREA_industrial=[
-    "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTi",
+    "TTTTTTT.TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTi",
     "Y.......YYY.YYYYYYYYYYYYYYYYYYYYYYYYYYYYcYYi",
     "Y.........Y.Y.YYYYYYYYYYYYcYYYYYYcYYYYYcYYYi",
     "Y..T'....Y..Y.YYJkJkJkJYYJkJkJkJYYYJkJkJJYYi",
@@ -659,18 +790,18 @@
     "Y......'...YYYYYYYYYJJJYYYYYYYJJJYYYYYYYYYYi",
     "Y.....'Y.TY.YYTYYYYYzzzYYYYYYYzzzYYYYYYYYYYi",
     "YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYi",
-    "YqqqqqqqqqqqqqqqqqqqYYqqqqqqqqqqqqYYYYYYYYYi",
-    "YqqqqqqqqqqqqqqqqqqqYYqqqqqqqqqqqqYvYYYYvYYi",
-    "YqqqqqqqqqqqqqqqqqqqYYqqqqqqqqqqqqYYYYYcYYYi",
-    "YqqqqqqqqqqqqqqqqqqqYYqqqqqqqqqqqqYYYvYYYYYi",
-    "YqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqcYYYYYYvYi",
-    "YqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqYYvYYYYYYi",
-    "Yqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqi",
+    "qqqqqqqqqqqqqqqqqqqqYYqqqqqqqqqqqqYYYYYYYYYi",
+    "qqqqqqqqqqqqqqqqqqqqYYqqqqqqqqqqqqYvYYYYvYYi",
+    "qqqqqqqqqqqqqqqqqqqqYYqqqqqqqqqqqqYYYYYcYYYi",
+    "qqqqqqqqqqqqqqqqqqqqYYqqqqqqqqqqqqYYYvYYYYYi",
+    "qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqcYYYYYYvYi",
+    "qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqYYvYYYYYYi",
+    "qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqi",
     "qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq"
   ];
   const AREAS={ town:TOWN, mountain:AREA_mountain, forestNW:AREA_forestNW, forestNE:AREA_forestNE, holiday:AREA_holiday, industrial:AREA_industrial };
   const AREA_GRID={"0,0": "forestNW", "1,0": "mountain", "2,0": "forestNE", "0,1": "holiday", "1,1": "town", "2,1": "industrial"};
-  const AREA_LABEL={ town:"CRUDO", mountain:"MONTAGNA", forestNW:"BORGO DI MONTAGNA", forestNE:"FORESTA EST", holiday:"VILLAGGIO VACANZE", industrial:"ZONA INDUSTRIALE" };
+  const AREA_LABEL={ town:"BAIA DEL SUD", mountain:"ALTURE DEL NORD", forestNW:"CONTEA DEGLI ALTIPIANI", forestNE:"BOSCO DEGLI OLMI", holiday:"BORGO DEL FARO", industrial:"RIONE DELLE OFFICINE" };
   let areaKey="town";
 
 
@@ -708,7 +839,10 @@
     if(dir==="W") return areaAt(c-1,r); if(dir==="E") return areaAt(c+1,r); return null; }
   function switchArea(key, entryX, entryY){
     if(insideKey) return; areaKey=key; useMap(AREAS[key]);
-    player.tx=entryX; player.ty=entryY; player.px=entryX*TILE; player.py=entryY*TILE; player.moving=false; player.swimming=false;
+    player.tx=entryX; player.ty=entryY; player.px=entryX*TILE; player.py=entryY*TILE; player.moving=false;
+    // stay swimming if we crossed over onto a sea tile (sea-to-sea area transition)
+    const entrySea = (key==="industrial") ? (tileAt(entryX,entryY)==="q") : (tileAt(entryX,entryY)==="~");
+    player.swimming = entrySea;
     banner(t("area_"+key)||AREA_LABEL[key]||key); SFX.door(); saveGame();
   }
   function inTown(){ return areaKey==="town"; }
@@ -718,10 +852,10 @@
     return cur.rows[ty][tx]; }
 
   // Walkable outside: . , ' = s(sand) m(promenade) x(plaza). Structural tiles solid.
-  const OUT_SOLID=new Set(["T","H","R","W","C","Q","~","L","N","D","A","B","V","S","K","w","o","G","J","c","P","^","l","q","F","k","e","z","p","u","v","i"]);
+  const OUT_SOLID=new Set(["T","H","R","W","C","Q","~","L","N","D","A","B","V","S","K","w","o","G","J","c","P","^","l","q","F","k","e","z","p","u","v","i","g"]);
   const INSIDE_SOLID=new Set(["#","s","t","b","f","p","V","k"]);
-  // The central pier is walkable (you can stroll onto it); the east pier stays decorative.
-  function isCentralPier(tx,ty){ return (tx===21||tx===22) && ty>=32 && ty<=35; }
+  // Both piers are walkable (you can stroll onto them): central (21-22) and east (36-37).
+  function isCentralPier(tx,ty){ return ((tx===21||tx===22)||(tx===36||tx===37)) && ty>=32 && ty<=35; }
   function currentInteriorNpc(){ return insideKey ? INTERIORS[insideKey].npc : null; }
   function isSolid(tx,ty){ const c=tileAt(tx,ty);
     if(insideKey){ const inpc=currentInteriorNpc(); if(inpc && inpc.tx===tx && inpc.ty===ty) return true; return INSIDE_SOLID.has(c); }
@@ -747,20 +881,22 @@
 
   // Chapter 1 quests. type main/side. steps: array of short journal labels (i18n keys).
   const QUESTS = {
+    // ---- INTRO (the only quest available at start; unlocks everything else) ----
+    intro:  { chap:1, type:"intro", nameK:"q_intro_t", steps:["q_intro_s0","q_intro_s1"], status:"available", step:0 },
     // ---- MAIN ----
-    room:   { chap:1, type:"main", nameK:"q_room_t",  steps:["q_room_s0","q_room_s1"], status:"available", step:0 },
+    room:   { chap:1, type:"main", nameK:"q_room_t",  steps:["q_room_s0","q_room_s1"], status:"locked", step:0 },
     job:    { chap:1, type:"main", nameK:"q_job_t",   steps:["q_job_s0","q_job_s1"],   status:"locked",    step:0, needs:"room" },
     friends:{ chap:1, type:"main", nameK:"q_fri_t",   steps:["q_fri_s0","q_fri_s1"],   status:"locked",    step:0, needs:"job" },
     bike:   { chap:1, type:"main", nameK:"q_bike_t",  steps:["q_bike_s0","q_bike_s1"], status:"locked",    step:0, needs:"friends" },
-    // ---- SIDE (open via encounters/chicche) ----
-    cat:    { chap:1, type:"side", nameK:"q_cat_t",   steps:["q_cat_s0","q_cat_s1"],   status:"available", step:0 },
-    shell:  { chap:1, type:"side", nameK:"q_shell_t", steps:["q_shell_s0","q_shell_s1"],status:"available",step:0 },
-    parcel: { chap:1, type:"side", nameK:"q_par_t",   steps:["q_par_s0","q_par_s1"],   status:"available", step:0 },
-    kids:   { chap:1, type:"side", nameK:"q_kids_t",  steps:["q_kids_s0","q_kids_s1","q_kids_s2"], status:"available", step:0 },
-    oldfriend:{ chap:1, type:"side", nameK:"q_of_t",  steps:["q_of_s0","q_of_s1"],     status:"available", step:0 },
-    photos: { chap:1, type:"side", nameK:"q_ph_t",    steps:["q_ph_s0","q_ph_s1"],     status:"available", step:0 }
+    // ---- SIDE (open after the intro) ----
+    cat:    { chap:1, type:"side", nameK:"q_cat_t",   steps:["q_cat_s0","q_cat_s1"],   status:"locked", step:0 },
+    shell:  { chap:1, type:"side", nameK:"q_shell_t", steps:["q_shell_s0","q_shell_s1"],status:"locked",step:0 },
+    parcel: { chap:1, type:"side", nameK:"q_par_t",   steps:["q_par_s0","q_par_s1"],   status:"locked", step:0 },
+    kids:   { chap:1, type:"side", nameK:"q_kids_t",  steps:["q_kids_s0","q_kids_s1","q_kids_s2"], status:"locked", step:0 },
+    oldfriend:{ chap:1, type:"side", nameK:"q_of_t",  steps:["q_of_s0","q_of_s1"],     status:"locked", step:0 },
+    photos: { chap:1, type:"side", nameK:"q_ph_t",    steps:["q_ph_s0","q_ph_s1"],     status:"locked", step:0 }
   };
-  const QORDER = ["room","job","friends","bike","cat","shell","parcel","kids","oldfriend","photos"];
+  const QORDER = ["intro","room","job","friends","bike","cat","shell","parcel","kids","oldfriend","photos"];
   let questPop="", questPopT=0;
   function questPopup(msg){ questPop=msg; questPopT=2.6; }
 
@@ -788,8 +924,8 @@
     const av=(id)=>QUESTS[id]&&QUESTS[id].status==="available";
     const act=(id)=>QUESTS[id]&&QUESTS[id].status==="active";
     switch(n.id){
-      case "nonna":   return questState===0 || questState===2;         // cat: give / hand back
-      case "pino":    return shellQuest===0 || shellQuest===2;         // shell
+      case "nonna":   return (av("cat")&&questState===0) || (act("cat")&&questState===2); // cat: give / hand back
+      case "pino":    return (av("shell")&&shellQuest===0) || (act("shell")&&shellQuest===2); // shell
       case "mamma":   return av("room")||act("room");
       case "capo":    return av("job")||act("job");
       case "teo":     return av("friends")||act("friends");
@@ -804,25 +940,41 @@
   // serialize/restore quest engine for saves
   function serializeQuests(){ const o={}; QORDER.forEach(k=>o[k]=[QUESTS[k].status,QUESTS[k].step]); return o; }
   function restoreQuests(o){ if(!o) return; QORDER.forEach(k=>{ if(o[k]&&QUESTS[k]){ QUESTS[k].status=o[k][0]; QUESTS[k].step=o[k][1]; } }); }
-  function resetQuests(){ QORDER.forEach(k=>{ const q=QUESTS[k]; q.step=0; q.status = (k==="room"||k==="cat"||k==="shell"||k==="parcel"||k==="kids"||k==="oldfriend"||k==="photos")?"available":"locked"; });
+  function resetQuests(){ QORDER.forEach(k=>{ const q=QUESTS[k]; q.step=0; q.status = (k==="intro")?"available":"locked"; });
     for(const f in flags) delete flags[f]; chapter=1; }
+  // Called when the intro quest completes: opens the casual quests + the central story.
+  function unlockCasualQuests(){ ["room","cat","shell","parcel","kids","oldfriend","photos"].forEach(k=>{ if(QUESTS[k]&&QUESTS[k].status==="locked") QUESTS[k].status="available"; }); }
+
+  // ---- QUEST CATEGORY: central story ("case", red marker) vs casual ("casual", yellow marker) ----
+  // Ids of central-story (detective case) quests. Populated when the Gemini story is integrated.
+  const CASE_QUESTS = new Set([]);
+  function isCaseQuest(id){ return CASE_QUESTS.has(id); }
+  // Returns "case" | "casual" | null for the actionable quest an NPC currently offers.
+  function npcQuestKind(n){
+    if(!n) return null;
+    if(typeof introNpcHasMark==="function" && introNpcHasMark(n.id)) return "casual";  // intro is yellow
+    if(typeof caseNpcHasQuest==="function" && caseNpcHasQuest(n)) return "case";
+    if(typeof sqNpcMission==="function" && sqNpcMission(n.id)) return "casual";        // side-quest slot
+    if(!npcHasQuest(n)) return null;
+    return "casual";
+  }
 
   // ================= NPCs =================
   const npcs = [
     { id:"nonna", tx:2, ty:5, dir:"down", color:"#d060a0", colorDk:"#902c68", kind:"ow", hairCol:"#e8e8ec", pants:"#7a4a6a", nameKey:"nonna",
       lines:()=>{ if(questState===0) return t("nonna0"); if(questState===1) return t("nonna1"); if(questState===2) return t("nonna2"); return t("nonna3"); },
-      onTalk:()=>{ if(questState===0){questState=1;qStart("cat");saveGame();} else if(questState===2){questState=3;qComplete("cat");saveGame();} } },
-    { id:"vito", tx:35, ty:19, dir:"down", color:"#5088d0", colorDk:"#2c5490", kind:"om", pants:"#5a5040", nameKey:"vito", lines:()=>t("vito"), onTalk:()=>{} },
+      onTalk:()=>{ if(questState===0 && QUESTS.cat.status==="available"){questState=1;qStart("cat");saveGame();} else if(questState===2){questState=3;qComplete("cat");saveGame();} } },
+    { id:"vito", tx:35, ty:19, dir:"down", color:"#5088d0", colorDk:"#2c5490", kind:"om", pants:"#5a5040", nameKey:"vito", lines:()=>t("vito_l"), onTalk:()=>{} },
     { id:"pino", tx:28, ty:24, dir:"down", color:"#40a0a0", colorDk:"#2c7070", kind:"ym", hairCol:"#6a4a2a", pants:"#3a4a6a", nameKey:"pino",
       lines:()=>{ if(shellQuest===0) return t("pino0"); if(shellQuest===1) return t("pino1"); if(shellQuest===2) return t("pino2"); return t("pino3"); },
-      onTalk:()=>{ if(shellQuest===0){shellQuest=1;qStart("shell");saveGame();} else if(shellQuest===2){shellQuest=3;qComplete("shell");saveGame();} } },
-    { id:"lena", tx:8, ty:19, dir:"down", color:"#50b070", colorDk:"#2c7048", kind:"yw", hairCol:"#e0c040", pants:"#3a6a48", nameKey:"lena", lines:()=>t("lena"), onTalk:()=>{}, speed:24,
+      onTalk:()=>{ if(shellQuest===0 && QUESTS.shell.status==="available"){shellQuest=1;qStart("shell");saveGame();} else if(shellQuest===2){shellQuest=3;qComplete("shell");saveGame();} } },
+    { id:"lena", tx:8, ty:19, dir:"down", color:"#50b070", colorDk:"#2c7048", kind:"yw", hairCol:"#e0c040", pants:"#3a6a48", nameKey:"lena", lines:()=>t("lena_l"), onTalk:()=>{}, speed:24,
       home:[2,20], routine:[ {h:[7,9],go:[17,10]}, {h:[9,13],go:[30,8]}, {h:[13,15],go:[9,23]}, {h:[15,19],go:[8,29]}, {h:[19,24],go:[2,20]}, {h:[0,7],go:[2,20]} ] },
     { id:"marinaio", tx:28, ty:29, dir:"down", color:"#4060a0", colorDk:"#243c68", kind:"om", pants:"#2a3a4a", nameKey:"marinaio",
-      lines:()=>{ return (QUESTS.parcel.status==="active" && hasFlag("hasParcel")) ? t("dest0") : t("marinaio"); },
+      lines:()=>{ return (QUESTS.parcel.status==="active" && hasFlag("hasParcel")) ? t("dest0") : t("marinaio_l"); },
       onTalk:()=>{ if(QUESTS.parcel.status==="active" && hasFlag("hasParcel")){ setFlag("parcelDone"); qComplete("parcel"); } }, speed:20,
       home:[38,19], routine:[ {h:[6,17],go:[28,29]}, {h:[17,20],go:[8,29]}, {h:[20,24],go:[38,19]}, {h:[0,6],go:[38,19]} ] },
-    { id:"ciclista", tx:2, ty:20, dir:"right", color:"#e0a030", colorDk:"#a86818", kind:"ym", hairCol:"#3a2a1a", pants:"#5a4a2a", nameKey:"ciclista", lines:()=>t("ciclista"), onTalk:()=>{}, bike:true, speed:60,
+    { id:"ciclista", tx:2, ty:20, dir:"right", color:"#e0a030", colorDk:"#a86818", kind:"ym", hairCol:"#3a2a1a", pants:"#5a4a2a", nameKey:"ciclista", lines:()=>t("ciclista_l"), onTalk:()=>{}, bike:true, speed:60,
       home:[2,20], routine:[ {h:[8,12],go:[41,20]}, {h:[12,14],go:[9,23]}, {h:[14,19],go:[41,20]}, {h:[19,24],go:[2,20]}, {h:[0,8],go:[2,20]} ] },
     { id:"gina", tx:16, ty:20, dir:"down", color:"#c85088", colorDk:"#8a2c5a", kind:"yw", hairCol:"#6a4a2a", pants:"#8a2c5a", nameKey:"gina", lines:()=>t("gina_lines"), onTalk:()=>{}, speed:22,
       home:[16,20], routine:[ {h:[8,12],go:[18,18]}, {h:[12,16],go:[30,20]}, {h:[16,20],go:[9,23]}, {h:[20,24],go:[16,20]}, {h:[0,8],go:[16,20]} ] },
@@ -931,10 +1083,18 @@
   function isSeaTile(tx,ty){ return tileAt(tx,ty)==="~"; }
   function inSwimZone(tx,ty){ return !insideKey && ty>=SWIM_TOP && ty<=SWIM_BOTTOM && isSeaTile(tx,ty); }
   const buoys=[];
-  (function initBuoys(){ for(let x=2;x<cur.w-1;x+=3){ if(tileAt(x,BUOY_ROW)==="~") buoys.push({tx:x,ty:BUOY_ROW,animT:Math.random()*6}); } })();
+  // Buoys mark the southern open-sea limit; generated per sea area (town & holiday use '~').
+  const BUOYS_BY_AREA={};
+  function buildBuoys(areaName, rows){
+    const list=[]; const w=rows[0].length;
+    for(let x=2;x<w-1;x+=3){ if(rows[BUOY_ROW] && rows[BUOY_ROW][x]==="~") list.push({tx:x,ty:BUOY_ROW,animT:Math.random()*6}); }
+    BUOYS_BY_AREA[areaName]=list;
+  }
+  buildBuoys("town", TOWN); buildBuoys("holiday", AREA_holiday);
+  function currentBuoys(){ return BUOYS_BY_AREA[areaKey]||[]; }
 
-  // Moored departure ship at the SE pier; board from the promenade above it.
-  const ship={ tx:36, ty:33, boardX:37, boardY:31 };
+  // Moored departure ship at the end of the east pier; board from the pier tip above it.
+  const ship={ tx:37, ty:36, boardX:37, boardY:35 };
 
 
 
@@ -948,6 +1108,37 @@
   const swimmers=[ {x:6*TILE, y:33*TILE, dir:1, x0:3*TILE, x1:16*TILE, sp:14, animT:0},
                    {x:25*TILE, y:34*TILE, dir:-1, x0:24*TILE, x1:30*TILE, sp:12, animT:1.5},
                    {x:39*TILE, y:33*TILE, dir:1, x0:38*TILE, x1:42*TILE, sp:13, animT:3} ];
+
+  // ---- Lively beach at Lighthouse Village (holiday) in spring/summer ----
+  // A packed beach: umbrellas, towels, sunbathers on the sand rows (28-31), plus many swimmers.
+  const holidayBeachProps=[
+    {type:"umbrella",tx:3,ty:30,c:"#e04040"},{type:"towel",tx:5,ty:31,c:"#f0c040"},{type:"sunbather",tx:7,ty:31,c:"#4090e0"},
+    {type:"umbrella",tx:9,ty:30,c:"#40b0e0"},{type:"towel",tx:11,ty:31,c:"#e060a0"},{type:"sunbather",tx:13,ty:30,c:"#e08030"},
+    {type:"umbrella",tx:16,ty:31,c:"#e0a030"},{type:"towel",tx:18,ty:30,c:"#50c080"},{type:"sunbather",tx:20,ty:31,c:"#c05088"},
+    {type:"umbrella",tx:26,ty:30,c:"#d84040"},{type:"towel",tx:28,ty:31,c:"#4090e0"},{type:"sunbather",tx:30,ty:30,c:"#f0c040"},
+    {type:"umbrella",tx:33,ty:31,c:"#8a6ac0"},{type:"towel",tx:35,ty:30,c:"#40c0a0"},{type:"sunbather",tx:37,ty:31,c:"#e08030"},
+    {type:"umbrella",tx:40,ty:30,c:"#e05088"},{type:"towel",tx:24,ty:29,c:"#f0d040"},{type:"sunbather",tx:15,ty:29,c:"#5088d0"}
+  ];
+  const holidaySwimmers=[ {x:5*TILE,y:33*TILE,dir:1,x0:3*TILE,x1:18*TILE,sp:14,animT:0},
+                          {x:12*TILE,y:34*TILE,dir:-1,x0:8*TILE,x1:17*TILE,sp:11,animT:1.2},
+                          {x:30*TILE,y:33*TILE,dir:1,x0:26*TILE,x1:38*TILE,sp:13,animT:0.6},
+                          {x:36*TILE,y:34*TILE,dir:-1,x0:30*TILE,x1:41*TILE,sp:12,animT:2.1},
+                          {x:8*TILE,y:35*TILE,dir:1,x0:4*TILE,x1:16*TILE,sp:10,animT:3} ];
+  // Kids playing: two beach-ball pairs + a paddle-ball pair. Ball bounces between the two kids.
+  const beachGames=[
+    { kids:[[6,29],[10,29]], ball:{x:6*TILE,y:29*TILE,t:0}, kind:"ball", to:1 },
+    { kids:[[31,29],[35,29]], ball:{x:31*TILE,y:29*TILE,t:0}, kind:"paddle", to:1 },
+    { kids:[[17,28],[21,28]], ball:{x:17*TILE,y:28*TILE,t:0}, kind:"ball", to:1 }
+  ];
+  function holidayBeachOn(){ return areaKey==="holiday" && (season==="spring"||season==="summer"); }
+  function updateBeachGames(dt){
+    for(const g of beachGames){ g.ball.t+=dt*1.6;
+      const a=g.kids[0], b=g.kids[1]; const k=(Math.sin(g.ball.t)+1)/2;   // 0..1 back and forth
+      g.ball.x=(a[0]+(b[0]-a[0])*k)*TILE;
+      g.ball.y=(a[1]+(b[1]-a[1])*k)*TILE - Math.abs(Math.sin(g.ball.t*2))*6;   // arc hop
+    }
+  }
+
 
   // Winter skiers on the mountain's central slope (only shown in mountain area in winter).
   const skiers=[ {x:20*TILE,y:3*TILE,vx:-8,vy:30,sway:0}, {x:24*TILE,y:2*TILE,vx:10,vy:34,sway:2}, {x:22*TILE,y:5*TILE,vx:-4,vy:28,sway:4} ];
@@ -983,6 +1174,8 @@
   // ================= DIALOGUE =================
   const dialog={ active:false, lines:[], idx:0, reveal:0, npc:null };
   function openDialog(npc){ dialog.active=true; dialog.lines=npc.lines(); dialog.idx=0; dialog.reveal=0; dialog.npc=npc; SFX.talk(); }
+  // Show a narrator/examine dialogue (no NPC on screen), then run an optional callback.
+  function showExamine(lines, after){ dialog.active=true; dialog.lines=lines; dialog.idx=0; dialog.reveal=0; dialog.npc={ lines:()=>lines, onTalk:()=>{ if(after) after(); } }; SFX.talk(); }
   function advanceDialog(){ const full=dialog.lines[dialog.idx]; if(dialog.reveal<full.length){ dialog.reveal=full.length; return; }
     dialog.idx++; dialog.reveal=0; if(dialog.idx>=dialog.lines.length){ dialog.active=false; const cb=dialog.npc&&dialog.npc.onTalk; const n=dialog.npc; dialog.npc=null; if(cb) cb(n); } else SFX.talk(); }
 
@@ -990,42 +1183,203 @@
   const prompt2={ active:false, text:"", yes:null, sel:0 };
   function askYesNo(text, onYes){ prompt2.active=true; prompt2.text=text; prompt2.yes=onYes; prompt2.sel=0; SFX.talk(); }
 
+  // ---- multiple-choice prompt (used for interrogations) ----
+  // choice = { active, title, options:[{label, correct}], sel, onPick(idx,opt) }
+  const choice={ active:false, title:"", options:[], sel:0, onPick:null };
+  function askChoice(title, options, onPick){ choice.active=true; choice.title=title; choice.options=options; choice.sel=0; choice.onPick=onPick; SFX.talk(); }
+  function updateChoice(){
+    if(consumePress("up")){ choice.sel=(choice.sel-1+choice.options.length)%choice.options.length; SFX.up&&SFX.up(); }
+    if(consumePress("down")){ choice.sel=(choice.sel+1)%choice.options.length; SFX.down&&SFX.down(); }
+    if(consumePress("b")){ choice.active=false; SFX.cancel(); return; }
+    if(consumePress("a")){ const i=choice.sel, opt=choice.options[i]; const cb=choice.onPick; choice.active=false; SFX.confirm(); if(cb) cb(i,opt); }
+  }
+  function drawChoice(){
+    const n=choice.options.length; const bh=22+n*11; const by=H-bh-4;
+    panelBox(6,by,W-12,bh);
+    text(choice.title, 12, by+5, "#f0d840");
+    choice.options.forEach((o,i)=>{ const sel=i===choice.sel; text((sel?"> ":"  ")+o.label, 14, by+18+i*11, sel?pal().accent:"#c8c8d0"); });
+  }
+
+  // ---- CONFRONT: phased "verbal boss": beat the suspect's resistance with the right proofs ----
+  // confront = { active, id, res, comp, options:[{label,key,good}], sel, msg, msgT, onWin, onLose }
+  const confront={ active:false, id:null, res:100, comp:100, options:[], sel:0, msg:"", msgT:0, onWin:null, onLose:null, endT:0, ended:null };
+  function startConfront(id, goodKeys, onWin, onLose){
+    // options = collected clues; the "good" ones (goodKeys) chip the suspect's resistance
+    const opts=[];
+    (CASE.order||[]).forEach(k=>{ const c=CASE.clues[k]; if(c&&c.taken){ const d=t("cs_"+k+"_clue"); if(d!=="cs_"+k+"_clue") opts.push({label:trim(d), key:k, good:goodKeys.indexOf(k)>=0}); } });
+    runConfront(opts, onWin, onLose, t("confront_intro"));
+  }
+  // Generic confront core (reused by the central case AND by side quests with their own arguments).
+  function runConfront(options, onWin, onLose, introMsg){
+    confront.active=true; confront.id=null; confront.res=100; confront.comp=100; confront.options=options; confront.sel=0;
+    confront.msg=introMsg||t("confront_intro"); confront.msgT=2.2; confront.onWin=onWin; confront.onLose=onLose; confront.endT=0; confront.ended=null;
+    SFX.talk();
+  }
+  function updateConfront(dt){
+    if(confront.msgT>0) confront.msgT-=dt;
+    if(confront.ended){ confront.endT-=dt; if(confront.endT<=0){ const cb=confront.ended==="win"?confront.onWin:confront.onLose; confront.active=false; if(cb) cb(); } return; }
+    if(consumePress("up")){ confront.sel=(confront.sel-1+confront.options.length)%confront.options.length; SFX.up&&SFX.up(); }
+    if(consumePress("down")){ confront.sel=(confront.sel+1)%confront.options.length; SFX.down&&SFX.down(); }
+    if(consumePress("a")){
+      const opt=confront.options[confront.sel];
+      if(opt.good){ confront.res=Math.max(0, confront.res-35); confront.msg=vpick("confront_hit")[0]||"..."; confront.msgT=1.8; SFX.confirm();
+        if(confront.res<=0){ confront.msg=t("confront_win"); confront.msgT=1.6; confront.ended="win"; confront.endT=1.6; SFX.questDone&&SFX.questDone(); }
+      } else { confront.comp=Math.max(0, confront.comp-25); confront.res=Math.min(100, confront.res+8); confront.msg=vpick("confront_miss")[0]||"..."; confront.msgT=1.8; SFX.cancel();
+        if(confront.comp<=0){ confront.msg=t("confront_lose"); confront.msgT=1.6; confront.ended="lose"; confront.endT=1.6; }
+      }
+    }
+  }
+  function drawConfront(){
+    // dim background
+    ctx.fillStyle="rgba(6,8,12,0.55)"; ctx.fillRect(0,0,W,H);
+    // suspect resistance bar (top) + detective composure bar (bottom)
+    function bar(x,y,w,h,frac,col,bg){ ctx.fillStyle="#0a0a12"; ctx.fillRect(x-1,y-1,w+2,h+2); ctx.fillStyle=bg; ctx.fillRect(x,y,w,h); ctx.fillStyle=col; ctx.fillRect(x,y,Math.round(w*Math.max(0,frac)),h); }
+    text(t("confront_suspect"), 8, 6, "#ff8a6a"); bar(8,16,W-16,6, confront.res/100, "#d83a3a", "#3a1e1e");
+    text(t("confront_you"), 8, 28, "#8ad0ff"); bar(8,38,W-16,6, confront.comp/100, "#3a8ad0", "#1e2a3a");
+    // message line
+    if(confront.msgT>0){ panelBox(6,50,W-12,16); textCenter(confront.msg, W/2, 55, pal().accent); }
+    // options menu
+    const opts=confront.options; const n=Math.min(opts.length,5); const bh=14+n*11; const by=H-bh-4;
+    panelBox(6,by,W-12,bh); text(t("confront_q"),12,by+4,"#f0d840");
+    // show a window of options around sel
+    let start=Math.max(0, Math.min(confront.sel-2, opts.length-n));
+    for(let i=0;i<n;i++){ const o=opts[start+i]; const sel=(start+i)===confront.sel; text((sel?"> ":"  ")+o.label, 14, by+16+i*11, sel?pal().accent:"#c8c8d0"); }
+  }
+
+  // ---- FIGHT (Zelda-like scripted duel): move + attack (A) + dodge (B), HP bars ----
+  // Arena in screen space. Rare, story-scripted encounters only.
+  const AR = { x:16, y:52, w:W-32, h:H-84 };   // arena rectangle
+  const fight = { active:false, id:null, onWin:null,
+    px:0, py:0, pdir:"down", php:100, patk:0, pdodge:0, pinv:0, phit:0,
+    ex:0, ey:0, ehp:100, etimer:0, elunge:0, ehit:0, msg:"", msgT:0, endT:0, ended:null };
+  function startFight(id, onWin){
+    fight.active=true; fight.id=id; fight.onWin=onWin;
+    fight.px=AR.x+20; fight.py=AR.y+AR.h/2; fight.pdir="right"; fight.php=100; fight.patk=0; fight.pdodge=0; fight.pinv=0; fight.phit=0;
+    fight.ex=AR.x+AR.w-24; fight.ey=AR.y+AR.h/2; fight.ehp=100; fight.etimer=1.2; fight.elunge=0; fight.ehit=0;
+    fight.msg=t("fight_intro"); fight.msgT=2.0; fight.endT=0; fight.ended=null;
+    SFX.talk();
+  }
+  function updateFight(dt){
+    if(fight.msgT>0) fight.msgT-=dt;
+    if(fight.ended){ fight.endT-=dt; if(fight.endT<=0){ if(fight.ended==="win"){ const cb=fight.onWin; fight.active=false; if(cb) cb(); } else { startFight(fight.id, fight.onWin); } } return; }
+    const PSPD=70;
+    // player movement
+    let mvx=0,mvy=0;
+    if(keys.left){mvx=-1;fight.pdir="left";} else if(keys.right){mvx=1;fight.pdir="right";}
+    if(keys.up){mvy=-1;fight.pdir="up";} else if(keys.down){mvy=1;fight.pdir="down";}
+    // dodge dash
+    if(fight.pdodge>0){ fight.pdodge-=dt; fight.pinv=Math.max(fight.pinv, 0.02); }
+    const spd = fight.pdodge>0 ? PSPD*2.4 : PSPD;
+    fight.px=Math.max(AR.x+6, Math.min(AR.x+AR.w-6, fight.px+mvx*spd*dt));
+    fight.py=Math.max(AR.y+6, Math.min(AR.y+AR.h-6, fight.py+mvy*spd*dt));
+    if(fight.pinv>0) fight.pinv-=dt;
+    if(fight.phit>0) fight.phit-=dt;
+    if(fight.ehit>0) fight.ehit-=dt;
+    if(fight.patk>0) fight.patk-=dt;
+    // attack (A): short reach in facing direction
+    if(consumePress("a") && fight.patk<=0){ fight.patk=0.22; SFX.b&&SFX.b();
+      const range=16; let ax=fight.px, ay=fight.py;
+      if(fight.pdir==="left")ax-=range; else if(fight.pdir==="right")ax+=range; else if(fight.pdir==="up")ay-=range; else ay+=range;
+      if(Math.abs(ax-fight.ex)<12 && Math.abs(ay-fight.ey)<12){ fight.ehp=Math.max(0,fight.ehp-18); fight.ehit=0.2;
+        if(fight.ehp<=0){ fight.msg=t("fight_win"); fight.msgT=1.6; fight.ended="win"; fight.endT=1.6; SFX.questDone&&SFX.questDone(); }
+      }
+    }
+    // dodge (B)
+    if(consumePress("b") && fight.pdodge<=0){ fight.pdodge=0.18; fight.pinv=0.3; SFX.confirm(); }
+    // enemy AI: chase, then lunge periodically
+    if(fight.elunge>0){ fight.elunge-=dt;
+      // during lunge, dash toward last player pos
+      fight.ex+=fight.elvx*dt; fight.ey+=fight.elvy*dt;
+    } else {
+      const dx=fight.px-fight.ex, dy=fight.py-fight.ey; const d=Math.hypot(dx,dy)||1;
+      fight.ex+=dx/d*40*dt; fight.ey+=dy/d*40*dt;
+      fight.etimer-=dt;
+      if(fight.etimer<=0){ fight.etimer=1.4+Math.random()*0.8; fight.elunge=0.35; const dd=Math.hypot(dx,dy)||1; fight.elvx=dx/dd*160; fight.elvy=dy/dd*160; }
+    }
+    fight.ex=Math.max(AR.x+6, Math.min(AR.x+AR.w-6, fight.ex));
+    fight.ey=Math.max(AR.y+6, Math.min(AR.y+AR.h-6, fight.ey));
+    // enemy hits player on contact (unless dodging/invulnerable)
+    if(Math.abs(fight.px-fight.ex)<10 && Math.abs(fight.py-fight.ey)<10 && fight.pinv<=0 && fight.phit<=0){
+      fight.php=Math.max(0, fight.php-12); fight.phit=0.6; fight.pinv=0.4; SFX.cancel();
+      if(fight.php<=0){ fight.msg=t("fight_lose"); fight.msgT=1.6; fight.ended="lose"; fight.endT=1.6; }
+    }
+  }
+  function drawFight(){
+    ctx.fillStyle="rgba(6,8,12,0.7)"; ctx.fillRect(0,0,W,H);
+    // arena floor
+    ctx.fillStyle="#1a1a22"; ctx.fillRect(AR.x,AR.y,AR.w,AR.h);
+    ctx.strokeStyle="#3a3a48"; ctx.lineWidth=1; ctx.strokeRect(AR.x+0.5,AR.y+0.5,AR.w-1,AR.h-1);
+    // HP bars
+    function bar(x,y,w,frac,col){ ctx.fillStyle="#0a0a12"; ctx.fillRect(x-1,y-1,w+2,6); ctx.fillStyle="#3a1e1e"; ctx.fillRect(x,y,w,4); ctx.fillStyle=col; ctx.fillRect(x,y,Math.round(w*Math.max(0,frac)),4); }
+    text(t("fight_you"),8,4,"#8ad0ff"); bar(8,14,70,fight.php/100,"#3a8ad0");
+    text(t("fight_enemy"),W-64,4,"#ff8a6a"); bar(W-64,14,56,fight.ehp/100,"#d83a3a");
+    // enemy (red-ish thug)
+    const eflash=fight.ehit>0 && Math.floor(performance.now()/60)%2===0;
+    drawHuman(fight.ex-8, fight.ey-16, "left", true, Math.floor(performance.now()/150)%2, {skin:"#e0b080",hair:"#1a1a1a",shirt:eflash?"#ffffff":"#7a2a2a",shirtDk:"#5a1e1e",pants:"#2a2028",kind:"ym"});
+    // player (detective), flashing if hit
+    const pflash=fight.phit>0 && Math.floor(performance.now()/60)%2===0;
+    if(!pflash) drawHuman(fight.px-8, fight.py-16, fight.pdir, (keys.left||keys.right||keys.up||keys.down), Math.floor(performance.now()/150)%2, {skin:"#f0c890",hair:"#2a2018",shirt:"#1a1a1e",shirtDk:"#0e0e12",pants:"#2f4d78",kind:"ym"});
+    // attack flash
+    if(fight.patk>0.1){ ctx.fillStyle="#fff2a0"; let ax=fight.px, ay=fight.py; const r=14;
+      if(fight.pdir==="left")ax-=r; else if(fight.pdir==="right")ax+=r; else if(fight.pdir==="up")ay-=r; else ay+=r;
+      ctx.fillRect(ax-3,ay-3,6,6); }
+    if(fight.msgT>0){ panelBox(6,H-20,W-12,16); textCenter(fight.msg,W/2,H-16,pal().accent); }
+    else textCenter(t("fight_hint"),W/2,H-12,"#8a8a9a");
+  }
+
   // ---- fishing mini-activity (5s rod animation) ----
   const fishing={ active:false, t:0 };
   function startFishing(){ fishing.active=true; fishing.t=0; player.dir="down"; SFX.confirm(); }
 
   // ================= SAVE / LOAD =================
-  const SAVE_KEY="crudoRPG.save.v1";
-  function saveGame(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify({tx:player.tx,ty:player.ty,dir:player.dir,season,questState,catFound:cat.found,shellQuest,shellFound:shell.found,bikeTaken:bike.taken,ballTaken:ball.taken,keyringTaken:keyring.taken,photos:photos.map(p=>p.taken),lang,chapter,flags,quests:serializeQuests()})); return true;}catch(e){return false;} }
-  function saveGame(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify({areaKey,tx:player.tx,ty:player.ty,dir:player.dir,season,questState,catFound:cat.found,shellQuest,shellFound:shell.found,bikeTaken:bike.taken,ballTaken:ball.taken,keyringTaken:keyring.taken,photos:photos.map(p=>p.taken),lang,chapter,flags,quests:serializeQuests()})); return true;}catch(e){return false;} }
+  const SAVE_KEY="crudoRPG.save.v2";
+  function serializeCase(){ const cl={}; if(window.CASE_REF){ for(const id in window.CASE_REF.clues){ cl[id]=window.CASE_REF.clues[id].taken?1:0; } } return {clues:cl, introDone: window.CASE_REF? (window.CASE_REF.introDone?1:0):0, closedUntil: window.CASE_REF? window.CASE_REF.closedUntil : {}, deduced: window.CASE_REF? window.CASE_REF.deduced : {}, reconstructed: window.CASE_REF? window.CASE_REF.reconstructed : {}, morals: window.CASE_REF? window.CASE_REF.morals : {}, fought: window.CASE_REF? window.CASE_REF.fought : {}}; }
+  function restoreCase(o){ if(!o||!window.CASE_REF) return; if(o.clues){ for(const id in o.clues){ if(window.CASE_REF.clues[id]) window.CASE_REF.clues[id].taken=!!o.clues[id]; } } window.CASE_REF.introDone=!!o.introDone; window.CASE_REF.closedUntil = o.closedUntil||{}; window.CASE_REF.deduced = o.deduced||{}; window.CASE_REF.reconstructed = o.reconstructed||{}; window.CASE_REF.morals = o.morals||{}; window.CASE_REF.fought = o.fought||{}; }
+  function saveGame(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify({areaKey,tx:player.tx,ty:player.ty,dir:player.dir,season,dayCount,questState,catFound:cat.found,shellQuest,shellFound:shell.found,bikeTaken:bike.taken,ballTaken:ball.taken,keyringTaken:keyring.taken,photos:photos.map(p=>p.taken),lang,chapter,flags,quests:serializeQuests(),cs:serializeCase(),sq:(typeof serializeSQ==="function"?serializeSQ():null)})); return true;}catch(e){return false;} }
   function hasSave(){ try{ return !!localStorage.getItem(SAVE_KEY);}catch(e){return false;} }
   function loadGame(){ try{ const d=JSON.parse(localStorage.getItem(SAVE_KEY)||"null"); if(!d) return false;
     areaKey=d.areaKey&&AREAS[d.areaKey]?d.areaKey:"town"; useMap(AREAS[areaKey]);
     player.tx=d.tx!=null?d.tx:15; player.ty=d.ty!=null?d.ty:12; player.px=player.tx*TILE; player.py=player.ty*TILE; player.dir=d.dir||"down";
-    season=d.season||"spring"; questState=d.questState||0; cat.found=!!d.catFound; shellQuest=d.shellQuest||0; shell.found=!!d.shellFound; bike.taken=!!d.bikeTaken; if(d.lang) lang=d.lang;
+    season=d.season||"spring"; dayCount=d.dayCount||0; questState=d.questState||0; cat.found=!!d.catFound; shellQuest=d.shellQuest||0; shell.found=!!d.shellFound; bike.taken=!!d.bikeTaken; if(d.lang) lang=d.lang;
     ball.taken=!!d.ballTaken; keyring.taken=!!d.keyringTaken; if(d.photos) photos.forEach((p,i)=>p.taken=!!d.photos[i]);
-    chapter=d.chapter||1; for(const f in flags) delete flags[f]; if(d.flags) Object.assign(flags,d.flags); restoreQuests(d.quests);
+    chapter=d.chapter||1; for(const f in flags) delete flags[f]; if(d.flags) Object.assign(flags,d.flags); restoreQuests(d.quests); restoreCase(d.cs); restoreSQ(d.sq); sqInit();
     player.swimming=false; resetWeather(); return true;}catch(e){return false;} }
-  function resetProgress(){ areaKey="town"; useMap(TOWN); player.tx=15; player.ty=12; player.px=15*TILE; player.py=12*TILE; player.dir="down"; player.moving=false;
-    season="spring"; questState=0; cat.found=false; shellQuest=0; shell.found=false; bike.taken=false; ball.taken=false; keyring.taken=false; photos.forEach(p=>p.taken=false); insideKey=null; resetQuests(); resetWeather(); saveGame(); }
+  function resetProgress(){ areaKey="town"; useMap(TOWN); player.tx=21; player.ty=31; player.px=21*TILE; player.py=31*TILE; player.dir="up"; player.moving=false;
+    season="spring"; dayCount=0; questState=0; cat.found=false; shellQuest=0; shell.found=false; bike.taken=false; ball.taken=false; keyring.taken=false; photos.forEach(p=>p.taken=false); insideKey=null; if(window.CASE_REF){ window.CASE_REF.closedUntil={}; window.CASE_REF.deduced={}; window.CASE_REF.reconstructed={}; window.CASE_REF.morals={}; window.CASE_REF.fought={}; } if(window.SQ_REF){ SQ.done={}; SQ_KINDS.forEach(k=>SQ.queueIdx[k]=0); } resetQuests(); resetWeather(); sqInit(); saveGame(); }
 
   // ================= MENU =================
-  const menu = { open:false, index:0, showMap:false, showJournal:false };
-  const MENU_KEYS = ["menu_journal","menu_map","menu_lang","menu_season","menu_close"];
-  function openMenu(){ menu.open=true; menu.index=0; menu.showMap=false; menu.showJournal=false; SFX.confirm(); }
-  function closeMenu(){ menu.open=false; menu.showMap=false; menu.showJournal=false; SFX.cancel(); }
+  const menu = { open:false, index:0, showMap:false, showJournal:false, showNotebook:false };
+  const mapNav = { zoom:null, col:1, row:1 };   // zoom=null -> grid view; else zoomed area key
+  const MENU_KEYS = ["menu_journal","menu_notebook","menu_map","menu_lang","menu_close"];
+  function openMenu(){ menu.open=true; menu.index=0; menu.showMap=false; menu.showJournal=false; menu.showNotebook=false; SFX.confirm(); }
+  function closeMenu(){ menu.open=false; menu.showMap=false; menu.showJournal=false; menu.showNotebook=false; SFX.cancel(); }
   function updateMenu(dt){
-    if(menu.showMap){ if(consumePress("b")||consumePress("start")){ menu.showMap=false; SFX.cancel(); } return; }
+    if(menu.showMap){
+      if(mapNav.zoom){
+        // zoomed into one area: B goes back to the grid
+        if(consumePress("b")||consumePress("a")||consumePress("start")){ mapNav.zoom=null; SFX.cancel(); }
+        return;
+      }
+      // grid view: move selection with the d-pad
+      if(consumePress("left")){ mapNav.col=(mapNav.col+2)%3; SFX.up&&SFX.up(); }
+      if(consumePress("right")){ mapNav.col=(mapNav.col+1)%3; SFX.up&&SFX.up(); }
+      if(consumePress("up")){ mapNav.row=(mapNav.row+1)%2; SFX.up&&SFX.up(); }
+      if(consumePress("down")){ mapNav.row=(mapNav.row+1)%2; SFX.up&&SFX.up(); }
+      if(consumePress("a")){ const k=AREA_GRID[mapNav.col+","+mapNav.row]; if(k){ mapNav.zoom=k; SFX.confirm(); } return; }
+      if(consumePress("b")||consumePress("start")){ menu.showMap=false; SFX.cancel(); }
+      return;
+    }
     if(menu.showJournal){ if(consumePress("b")||consumePress("start")){ menu.showJournal=false; SFX.cancel(); } return; }
+    if(menu.showNotebook){ if(consumePress("b")||consumePress("start")){ menu.showNotebook=false; SFX.cancel(); } return; }
     if(consumePress("up")) { menu.index=(menu.index-1+MENU_KEYS.length)%MENU_KEYS.length; SFX.up&&SFX.up(); }
     if(consumePress("down")) { menu.index=(menu.index+1)%MENU_KEYS.length; SFX.down&&SFX.down(); }
     if(consumePress("b")||consumePress("start")){ closeMenu(); return; }
     if(consumePress("a")){
       const k=MENU_KEYS[menu.index];
       if(k==="menu_journal"){ menu.showJournal=true; SFX.confirm(); }
-      else if(k==="menu_map"){ menu.showMap=true; SFX.confirm(); }
+      else if(k==="menu_notebook"){ menu.showNotebook=true; SFX.confirm(); }
+      else if(k==="menu_map"){ menu.showMap=true; mapNav.zoom=null; const gp=gridPosOf(areaKey); mapNav.col=gp[0]; mapNav.row=gp[1]; SFX.confirm(); }
       else if(k==="menu_lang"){ toggleLang(); }
-      else if(k==="menu_season"){ cycleSeason(); }
       else { closeMenu(); }
     }
   }
@@ -1037,14 +1391,14 @@
     if(seasonPopup>0) seasonPopup-=dt;
     if(bannerT>0) bannerT-=dt;
     if(questPopT>0) questPopT-=dt;
-    if(screen==="overworld" && !insideKey && !menu.open){ updateWeather(dt); clock=(clock+dt/DAY_LEN)%1; }
+    if(screen==="overworld" && !insideKey && !menu.open){ updateWeather(dt); updateFog(dt); advanceClock(dt); }
   }
   function updateTitle(dt){
     const options=hasSave()?2:1;
     if(consumePress("up")) titleIndex=(titleIndex-1+options)%options;
     if(consumePress("down")) titleIndex=(titleIndex+1)%options;
     if(consumePress("select")) toggleLang();
-    if(consumePress("a")){ SFX.confirm(); if(hasSave()&&titleIndex===0) loadGame(); else resetProgress(); if(!SFX.musicPlaying()) SFX.startMusic(season); screen="overworld"; }
+    if(consumePress("a")){ SFX.confirm(); if(hasSave()&&titleIndex===0) loadGame(); else resetProgress(); SFX.setTrack("noir"); if(!SFX.musicPlaying()) SFX.startMusic("noir"); screen="overworld"; }
     else if(consumePress("start")){ toggleLang(); }
   }
   function facingTile(){ let fx=player.tx,fy=player.ty; if(player.dir==="up")fy--; else if(player.dir==="down")fy++; else if(player.dir==="left")fx--; else if(player.dir==="right")fx++; return {fx,fy}; }
@@ -1060,15 +1414,25 @@
 
   function updateWorld(dt){
     player.animT+=dt; cat.animT+=dt; shell.animT+=dt;
+    if(!insideKey){ maybeStartTail(); if(tail.active) updateTail(dt); }
     if(!insideKey){ updateNpcs(dt);
       if(inTown()){ updateAnimals(dt);
         for(const s of swimmers){ s.animT+=dt; s.x+=s.dir*s.sp*dt; if(s.x<=s.x0){ s.x=s.x0; s.dir=1; } else if(s.x>=s.x1){ s.x=s.x1; s.dir=-1; } }
-        for(const b of buoys) b.animT+=dt; }
+      }
+      if(holidayBeachOn()){
+        for(const s of holidaySwimmers){ s.animT+=dt; s.x+=s.dir*s.sp*dt; if(s.x<=s.x0){ s.x=s.x0; s.dir=1; } else if(s.x>=s.x1){ s.x=s.x1; s.dir=-1; } }
+        updateBeachGames(dt);
+      }
+      for(const b of currentBuoys()) b.animT+=dt;
       if(areaKey==="mountain" && season==="winter") updateSkiers(dt);
     }
 
     // fishing activity: 5-second rod animation, no input except waiting
     if(fishing.active){ fishing.t+=dt; if(fishing.t>=5){ fishing.active=false; banner(t("fishing_done")); SFX.pickup(); } return; }
+    // interrogation multiple-choice
+    if(fight.active){ updateFight(dt); return; }
+    if(confront.active){ updateConfront(dt); return; }
+    if(choice.active){ updateChoice(); return; }
     // yes/no prompt
     if(prompt2.active){
       if(consumePress("left")||consumePress("right")||consumePress("up")||consumePress("down")) prompt2.sel=prompt2.sel?0:1;
@@ -1079,15 +1443,19 @@
 
     if(dialog.active){ dialog.reveal+=dt*48; if(consumePress("a")||consumePress("start")||consumePress("b")) advanceDialog(); return; }
     if(consumePress("start")){ openMenu(); return; }     // START opens menu
-    if(consumePress("select")) cycleSeason();            // SELECT quick season cheat
+    // SELECT no longer changes season: time advances with the story only.
 
     if(consumePress("a")){
       const {fx,fy}=facingTile();
       const n=npcAt(fx,fy);
-      if(n){ if(n.dir!==undefined) n.dir=opposite(player.dir); openDialog(n); return; }
+      if(n){ if(n.dir!==undefined) n.dir=opposite(player.dir);
+        const sqm = (typeof sqNpcMission==="function") ? sqNpcMission(n.id) : null;
+        const storyActive = (typeof caseActiveFor==="function" && caseActiveFor(n.id)) || (typeof introActiveFor==="function" && introActiveFor(n.id)) || npcHasQuest(n);
+        if(sqm && !storyActive){ showExamine((sqm.giver&&sqm.giver[lang])||["..."], ()=>sqStart(sqm)); return; }
+        openDialog(n); return; }
       const fc=tileAt(fx,fy);
-      // board the ship: standing on the promenade above the SE pier, facing the pier/ship
-      if(inTown() && !insideKey && !player.swimming && (fc==="~"||fc==="s") && Math.abs(fx-ship.tx)<=2 && fy>=SWIM_TOP-1){ banner(t("ship_msg")); SFX.confirm(); return; }
+      // board the ship: standing at the end of the pier, facing the moored ferry
+      if(inTown() && !insideKey && Math.abs(fx-ship.tx)<=2 && Math.abs(fy-ship.ty)<=2){ banner(t("ship_msg")); SFX.confirm(); return; }
       if(!insideKey && inTown() && DOORS[fc]){ enterInterior(DOORS[fc].interior, DOORS[fc].outX, DOORS[fc].outY); return; }
       if(!insideKey && !inTown() && (/[1-9]/.test(fc)) && AREA_INTERIOR[areaKey]){ enterInterior(AREA_INTERIOR[areaKey], player.tx, player.ty); return; }
       if(insideKey && fc==="e"){ exitInterior(); return; }
@@ -1097,6 +1465,7 @@
       if(!insideKey && !ball.taken && QUESTS.kids.status==="active" && QUESTS.kids.step>=1 && fx===ball.tx && fy===ball.ty){ ball.taken=true; SFX.pickup(); QUESTS.kids.step=2; banner(t("ball_found")); saveGame(); return; }
       if(!insideKey && !keyring.taken && QUESTS.oldfriend.status==="active" && fx===keyring.tx && fy===keyring.ty){ keyring.taken=true; setFlag("keyring"); SFX.pickup(); banner(t("keyring_found")); saveGame(); return; }
       if(!insideKey && (QUESTS.photos.status==="active"||QUESTS.photos.status==="available")){ for(const ph of photos){ if(!ph.taken && fx===ph.tx && fy===ph.ty){ ph.taken=true; SFX.pickup(); if(QUESTS.photos.status==="available") qStart("photos"); banner(t("photo_found")); if(photosFound()>=3){ qComplete("photos"); banner(t("photos_msg")); } saveGame(); return; } } }
+      if(!insideKey && typeof tryPickupClue==="function" && tryPickupClue(fx,fy)){ return; }
     }
 
     if(!player.moving){
@@ -1130,23 +1499,18 @@
   // Handle a step attempt; returns true if the move starts. Manages swimming + buoys + messages.
   function tryMove(ntx,nty){
     const target=tileAt(ntx,nty);
-    const blockedByCat=(!insideKey && !cat.found && ntx===cat.tx && nty===cat.ty);
+    const blockedByCat=(!insideKey && !cat.found && questState>=1 && ntx===cat.tx && nty===cat.ty);
     const blockedByShell=(!insideKey && !shell.found && shellQuest>=1 && ntx===shell.tx && nty===shell.ty);
     if(npcAt(ntx,nty)||blockedByCat||blockedByShell) return false;
 
-    if(inTown() && !insideKey && target==="~"){
-      // trying to enter / stay in the sea
+    // ---- SEA / SWIMMING (town & holiday use '~', industrial uses 'q') ----
+    const seaChar = (areaKey==="industrial") ? "q" : "~";
+    const isSeaArea = (areaKey==="town"||areaKey==="holiday"||areaKey==="industrial");
+    if(isSeaArea && !insideKey && target===seaChar){
       if(season==="winter"){ banner(t("sea_winter")); return false; }   // no swimming in winter
-      if(nty>SWIM_BOTTOM){ banner(t("buoy_msg")); return false; }        // past the buoy line
-      if(!inSwimZone(ntx,nty)){ banner(t("buoy_msg")); return false; }    // outside allowed area
-      // enter water: seasonal message on first entry
-      if(!player.swimming){ player.swimming=true; banner(t("sea_"+season)); }
-      player.tx=ntx; player.ty=nty; SFX.step(); return true;
-    }
-    // Industrial polluted sea: swimmable (not in winter), with a disgust message.
-    if(areaKey==="industrial" && !insideKey && target==="q"){
-      if(season==="winter"){ banner(t("sea_winter")); return false; }
-      if(!player.swimming){ player.swimming=true; banner(t("sea_polluted")); }
+      if(nty>SWIM_BOTTOM){ banner(t("buoy_msg")); return false; }        // past the buoy line (south)
+      // enter water: contextual message on first entry
+      if(!player.swimming){ player.swimming=true; banner(t(areaKey==="industrial"?"sea_polluted":("sea_"+season))); }
       player.tx=ntx; player.ty=nty; SFX.step(); return true;
     }
     // moving onto land
@@ -1259,13 +1623,18 @@
     if(insideKey) drawInterior(); else drawWorld();
     if(screen==="overworld" && !insideKey && !menu.open) drawWeather();
     if(!insideKey){ const nf=nightFactor(); if(nf>0){ ctx.fillStyle="rgba(20,26,60,"+(0.55*nf).toFixed(3)+")"; ctx.fillRect(0,0,W,H); drawNightLights(nf); } }
+    if(screen==="overworld" && !insideKey && !menu.open) drawFog();
     drawHUD();
     if(dialog.active) drawDialog();
     if(seasonPopup>0) drawSeasonPopup();
     if(bannerT>0) drawBanner(bannerMsg, (questState>=3||shellQuest>=3)?"#7ae06a":pal().accent);
     else if(questPopT>0) drawBanner(questPop, "#f0d840");
-    if(menu.open){ if(menu.showMap) drawMinimap(); else if(menu.showJournal) drawJournal(); else drawMenu(); }
+    if(menu.open){ if(menu.showMap) drawMinimap(); else if(menu.showJournal) drawJournal(); else if(menu.showNotebook) drawNotebook(); else drawMenu(); }
     if(prompt2.active) drawPrompt();
+    if(choice.active) drawChoice();
+    if(confront.active) drawConfront();
+    if(fight.active) drawFight();
+    if(tail.active) drawTailUI();
     if(fishing.active){ panelBox(W/2-72,H-20,144,16); textCenter(t("fishing_msg"),W/2,H-16,pal().accent); }
   }
   function drawPrompt(){
@@ -1286,21 +1655,53 @@
   }
 
   function drawTitle(){
-    const p=SEASON_PAL.spring;
-    const g=ctx.createLinearGradient(0,0,0,H); g.addColorStop(0,p.sky); g.addColorStop(0.7,p.grass); g.addColorStop(0.7,p.water); g.addColorStop(1,p.waterDk);
+    // ---- NOIR TITLE SCREEN: night harbour, fog, a lone detective under a lamp ----
+    // night sky gradient
+    const g=ctx.createLinearGradient(0,0,0,H); g.addColorStop(0,"#0a1020"); g.addColorStop(0.55,"#141b2e"); g.addColorStop(0.72,"#0e1524"); g.addColorStop(1,"#060a12");
     ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
-    // sea band + a boat
-    ctx.fillStyle=p.water; ctx.fillRect(0,118,W,H-118);
-    ctx.fillStyle=p.sand; ctx.fillRect(0,112,W,6);
-    drawBoat(120,120);
-    drawHouseRoof(24,84,p); drawHouseWall(24,100,p,true); drawHouseWall(40,100,p,false);
-    drawTree(150,84,p); drawPlayer(W/2-8,92,"down",0);
-    ctx.font="bold 20px monospace"; ctx.textAlign="center"; ctx.fillStyle="#000"; ctx.fillText("CRUDO RPG",W/2+1,25); ctx.fillStyle="#f0d840"; ctx.fillText("CRUDO RPG",W/2,24);
-    ctx.textAlign="left"; textCenter(t("title_sub"),W/2,48,"#20303a");
+    // stars
+    for(let i=0;i<40;i++){ const sx=(i*53)%W, sy=(i*29)%70; const tw=(Math.floor(performance.now()/500)+i)%5===0; ctx.fillStyle=tw?"#5a6a8a":"#8a9ac0"; ctx.fillRect(sx,sy,1,1); }
+    // moon with soft glow
+    ctx.fillStyle="rgba(200,210,230,0.10)"; ctx.fillRect(W-56,8,40,40);
+    ctx.fillStyle="#c8d0e0"; ctx.fillRect(W-46,14,22,22); ctx.fillStyle="#0e1524"; ctx.fillRect(W-40,12,14,18);
+    // distant town silhouette
+    ctx.fillStyle="#0c1220";
+    for(let i=0;i<7;i++){ const bx=8+i*26, bh=18+((i*37)%16); ctx.fillRect(bx,86-bh,20,bh); }
+    // lit windows
+    for(let i=0;i<7;i++){ if((i*7)%3===0){ ctx.fillStyle="#e0a83a"; ctx.fillRect(8+i*26+4,86-14,3,3); ctx.fillRect(8+i*26+11,86-9,3,3);} }
+    // dark sea with faint reflections
+    ctx.fillStyle="#0a1626"; ctx.fillRect(0,96,W,H-96);
+    ctx.fillStyle="#16324e"; for(let i=0;i<W;i+=8){ const yy=104+((i*13)%40); ctx.fillRect(i,yy,4,1); }
+    // moon reflection
+    ctx.fillStyle="rgba(180,190,210,0.10)"; ctx.fillRect(W-40,98,10,H-98);
+    // a pier
+    ctx.fillStyle="#2a1e14"; ctx.fillRect(30,110,10,H-110);
+    // street lamp
+    const lx=52;
+    ctx.fillStyle="#1a1a22"; ctx.fillRect(lx,70,3,44); ctx.fillStyle="#2a2a34"; ctx.fillRect(lx-3,66,9,5);
+    ctx.fillStyle="#ffe070"; ctx.fillRect(lx-1,67,5,3);
+    // warm light pool on the detective
+    const pool=ctx.createRadialGradient(lx+1,120,4, lx+1,120,60); pool.addColorStop(0,"rgba(255,224,150,0.28)"); pool.addColorStop(1,"rgba(255,224,150,0)");
+    ctx.fillStyle=pool; ctx.fillRect(0,80,120,H-80);
+    // the detective under the lamp: long grey coat + red beanie
+    drawHuman(lx-7,104,"down",false,0,{skin:"#f0c890",hair:"#2a2018",shirt:"#1a1a1e",shirtDk:"#0e0e12",pants:"#2f4d78",kind:"ym",outfit:"pcoat"});
+    // drifting fog band
+    ctx.fillStyle="rgba(150,165,180,0.10)"; ctx.fillRect(0,100,W,26);
+    const fx=(performance.now()/60)%(W+60);
+    ctx.fillStyle="rgba(180,192,204,0.08)"; ctx.fillRect(fx-60,104,70,14); ctx.fillRect(((fx+90)%(W+60))-60,112,60,12);
+    // ---- TITLE ----
+    ctx.font="bold 22px monospace"; ctx.textAlign="center";
+    ctx.fillStyle="#000"; ctx.fillText("CRUDO",W/2+1,37);
+    ctx.fillStyle="#e8b24a"; ctx.fillText("CRUDO",W/2,36);
+    ctx.font="bold 14px monospace";
+    ctx.fillStyle="#000"; ctx.fillText("DETECTIVE",W/2+1,53);
+    ctx.fillStyle="#c8d0e0"; ctx.fillText("DETECTIVE",W/2,52);
+    ctx.textAlign="left";
+    // menu options
     const opts=hasSave()?[t("continue"),t("newgame")]:[t("newgame")];
-    opts.forEach((o,i)=>{ const y=126+i*12; if(i===titleIndex) textCenter("> "+o+" <",W/2,y,"#fff"); else textCenter(o,W/2,y,"#20303a"); });
-    textCenter(t("hint_lang"),W/2,H-22,"#20303a");
-    if(Math.floor(performance.now()/500)%2===0) textCenter(t("press_ab")+"  ["+lang.toUpperCase()+"]",W/2,H-12,"#20303a");
+    opts.forEach((o,i)=>{ const y=128+i*12; if(i===titleIndex) textCenter("> "+o+" <",W/2,y,"#ffe070"); else textCenter(o,W/2,y,"#8a94a8"); });
+    textCenter(t("hint_lang"),W/2,H-22,"#6a7488");
+    if(Math.floor(performance.now()/500)%2===0) textCenter(t("press_ab")+"  ["+lang.toUpperCase()+"]",W/2,H-12,"#8a94a8");
   }
 
   // ---- WORLD RENDER ----
@@ -1325,6 +1726,8 @@
       photos.forEach(ph=>{ if(!ph.taken && (QUESTS.photos.status==="active"||QUESTS.photos.status==="available")) push(ph.ty, ()=>drawPhoto(ph.tx*TILE-cam.x, ph.ty*TILE-cam.y)); });
       animals.forEach(a=> push(Math.round(a.py/TILE), ()=>drawAnimal(a, a.px-cam.x, a.py-cam.y)));
     }
+    if(typeof currentClues==="function"){ currentClues().forEach(({c})=> push(c.ty, ()=>drawClue(c.tx*TILE-cam.x, c.ty*TILE-cam.y))); }
+    if(tail.active && tail.target){ push(Math.round(tail.target.py/TILE), ()=>drawTail()); }
     currentNpcs().forEach(n=> push(Math.round(n.py/TILE), ()=>drawNpc(n, n.px-cam.x, n.py-cam.y)));
     if(areaKey==="mountain" && season==="winter") skiers.forEach(s=> push(Math.round(s.y/TILE), ()=>drawSkier(s)));
     push(Math.round(player.py/TILE), ()=>drawPlayer(player.px-cam.x, player.py-cam.y, player.dir, player.animT));
@@ -1341,7 +1744,23 @@
       decor.forEach(d=> drawDecor(d, d.tx*TILE-cam.x, d.ty*TILE-cam.y));
       streetLamps.forEach(L=> drawLamp(L[0]*TILE-cam.x, L[1]*TILE-cam.y));
       drawShip(ship.tx*TILE-cam.x, ship.ty*TILE-cam.y);
-      buoys.forEach(b=> drawBuoy(b.tx*TILE-cam.x, b.ty*TILE-cam.y, b.animT));
+    }
+    if(areaKey==="holiday"){
+      if(holidayBeachOn()){
+        holidayBeachProps.forEach(bp=> drawBeachProp(bp, bp.tx*TILE-cam.x, bp.ty*TILE-cam.y));
+        holidaySwimmers.forEach(s=> drawSwimmer(s.x-cam.x, s.y-cam.y, s.animT, s.dir));
+        beachGames.forEach(g=>{
+          // two kids facing each other + the ball
+          drawBeachKid(g.kids[0][0]*TILE-cam.x, g.kids[0][1]*TILE-cam.y, 1, g.kind);
+          drawBeachKid(g.kids[1][0]*TILE-cam.x, g.kids[1][1]*TILE-cam.y, -1, g.kind);
+          drawBeachBall(g.ball.x-cam.x, g.ball.y-cam.y);
+        });
+      }
+      // lighthouse drawn LAST so anything passing near it goes behind the tower
+      drawLighthouse(21*TILE-cam.x, 31*TILE-cam.y);
+    }
+    currentBuoys().forEach(b=> drawBuoy(b.tx*TILE-cam.x, b.ty*TILE-cam.y, b.animT));
+    if(inTown()){
       if(season==="summer"){
         beachProps.forEach(bp=> drawBeachProp(bp, bp.tx*TILE-cam.x, bp.ty*TILE-cam.y));
         swimmers.forEach(s=> drawSwimmer(s.x-cam.x, s.y-cam.y, s.animT, s.dir));
@@ -1358,7 +1777,7 @@
     const onBall=(!insideKey && QUESTS.kids.status==="active" && QUESTS.kids.step>=1 && !ball.taken && fx===ball.tx && fy===ball.ty);
     const onKey=(!insideKey && QUESTS.oldfriend.status==="active" && !keyring.taken && fx===keyring.tx && fy===keyring.ty);
     const onPhoto=(!insideKey && (QUESTS.photos.status==="active"||QUESTS.photos.status==="available") && photos.some(ph=>!ph.taken && fx===ph.tx && fy===ph.ty));
-    const onShip=(!insideKey && !player.swimming && (fc==="~"||fc==="s") && Math.abs(fx-ship.tx)<=2 && fy>=SWIM_TOP-1);
+    const onShip=(!insideKey && inTown() && Math.abs(fx-ship.tx)<=2 && Math.abs(fy-ship.ty)<=2);
     const onDoor=(!insideKey && ((inTown() && !!DOORS[fc]) || (!inTown() && /[1-9]/.test(fc) && AREA_INTERIOR[areaKey]))) || (insideKey && fc==="e");
     if(n||onCat||onShell||onBike||onBall||onKey||onPhoto||onShip||onDoor){ const bx=player.px-cam.x, by=player.py-cam.y; textOutlined("A",bx+6,by-8,"#fff","#000"); }
   }
@@ -1370,6 +1789,14 @@
       ctx.fillStyle=p.waterDk; const w=(Math.floor(performance.now()/350)%2)*2;
       ctx.fillRect(x+2+w,y+5,6,1); ctx.fillRect(x+8-w,y+11,5,1);
       ctx.fillStyle="#ffffff28"; ctx.fillRect(x+3,y+3,3,1);
+      return;
+    }
+    if(c==="g"){ // rocky cliff (in the sea): water base + grey rock with foam
+      ctx.fillStyle=p.water; ctx.fillRect(x,y,TILE,TILE);
+      ctx.fillStyle="#6a6e76"; ctx.fillRect(x+1,y+1,TILE-2,TILE-2);
+      ctx.fillStyle="#565a62"; ctx.fillRect(x+2,y+9,TILE-4,4);
+      ctx.fillStyle="#8a8e96"; ctx.fillRect(x+3,y+2,5,3); ctx.fillRect(x+9,y+4,4,3);
+      ctx.fillStyle="#ffffff55"; ctx.fillRect(x+1,y+TILE-2,TILE-2,1);
       return;
     }
     if(c==="s"){ // beach sand
@@ -1416,14 +1843,14 @@
       ctx.fillRect(x+2+w,y+5,6,1); ctx.fillRect(x+8-w,y+11,5,1); ctx.fillStyle="#ffffff30"; ctx.fillRect(x+3,y+3,3,1);
       if(season==="winter"){ ctx.fillStyle="#d6e4ee"; ctx.fillRect(x,y,TILE,TILE); ctx.fillStyle="#bcd0de"; ctx.fillRect(x+3,y+6,6,1); }
       return; }
-    if(c==="q"){ // polluted sea (industrial): dark blue + grey scum patches
-      ctx.fillStyle="#243a52"; ctx.fillRect(x,y,TILE,TILE);                 // dark blue base
-      ctx.fillStyle="#1c3044"; const w=(Math.floor(performance.now()/400)%2)*2;
+    if(c==="q"){ // polluted sea (industrial): deep dark-blue + sparse grey scum patches
+      ctx.fillStyle="#1c3450"; ctx.fillRect(x,y,TILE,TILE);                 // deep dark blue base
+      ctx.fillStyle="#16283e"; const w=(Math.floor(performance.now()/400)%2)*2;
       ctx.fillRect(x+2+w,y+5,6,1); ctx.fillRect(x+8-w,y+11,5,1);            // dark ripples
-      // greasy grey scum blotches (deterministic per tile so they don't flicker)
+      // sparse greasy grey scum blotches (deterministic per tile so they don't flicker)
       const h=((x*31+y*17)>>>0);
-      ctx.fillStyle="#6a6e70"; if(h%3===0) ctx.fillRect(x+3,y+3,4,2); if(h%4===0) ctx.fillRect(x+9,y+8,3,2);
-      ctx.fillStyle="#8a8e88"; if(h%5===0) ctx.fillRect(x+5,y+10,2,1);
+      if(h%11===0){ ctx.fillStyle="#6a6e70"; ctx.fillRect(x+4,y+4,4,2); }
+      if(h%17===0){ ctx.fillStyle="#7e8284"; ctx.fillRect(x+9,y+9,3,2); }
       return; }
     if(c==="Y"){ // concrete pavement
       ctx.fillStyle="#9a9a9e"; ctx.fillRect(x,y,TILE,TILE); ctx.fillStyle="#8a8a8e"; ctx.fillRect(x,y+7,TILE,1); ctx.fillRect(x+7,y,1,TILE);
@@ -1875,11 +2302,12 @@
       ctx.fillStyle=skinc; ctx.fillRect(x+5,y+1,6,5); ctx.fillStyle=tint(skinc,18); ctx.fillRect(x+5,y+1,3,1);
       ctx.fillStyle=hairc; ctx.fillRect(x+5,y+1,6,2);
       if(girlc){ ctx.fillRect(x+4,y+1,1,5); ctx.fillRect(x+11,y+1,1,5); } else { ctx.fillRect(x+5,y+1,1,2); ctx.fillRect(x+10,y+1,1,2); }
-      ctx.fillStyle="#0a0a12";
-      if(dir==="down"){ ctx.fillRect(x+6,y+3,1,1); ctx.fillRect(x+9,y+3,1,1); }
-      else if(dir==="up"){ ctx.fillStyle=hairc; ctx.fillRect(x+5,y+1,6,3); }
-      else if(dir==="left"){ ctx.fillRect(x+6,y+3,1,1); }
-      else if(dir==="right"){ ctx.fillRect(x+9,y+3,1,1); }
+      if(dir==="up"){ ctx.fillStyle=hairc; ctx.fillRect(x+5,y+1,6,3); }
+      else if(dir==="down"){
+        ctx.fillStyle="#0a0a12"; ctx.fillRect(x+6,y+4,1,1); ctx.fillRect(x+9,y+4,1,1);
+        ctx.fillStyle="#a85050"; ctx.fillRect(x+7,y+5,2,1);   // little mouth
+      } else if(dir==="left"){ ctx.fillStyle="#0a0a12"; ctx.fillRect(x+6,y+4,1,1); ctx.fillStyle="#a85050"; ctx.fillRect(x+5,y+5,2,1); }
+      else if(dir==="right"){ ctx.fillStyle="#0a0a12"; ctx.fillRect(x+9,y+4,1,1); ctx.fillStyle="#a85050"; ctx.fillRect(x+9,y+5,2,1); }
       if(o.outfit==="coat"){ // small kid coat with sleeves
         ctx.fillStyle="#5a4a6a"; ctx.fillRect(x+5,y+6,6,6); ctx.fillStyle="#4a3a58"; ctx.fillRect(x+5,y+10,6,2);
         ctx.fillStyle="#5a4a6a"; if(dir==="left"||dir==="right"){ ctx.fillRect(x+(dir==="left"?4:10),y+7,2,4); } else { ctx.fillRect(x+4,y+7,1,4); ctx.fillRect(x+11,y+7,1,4); }
@@ -1962,17 +2390,54 @@
     }
     // old man: white beard on the lower face
     if(kind==="om" && dir!=="up"){ ctx.fillStyle="#e8e8ec"; ctx.fillRect(x+5,y+5,6,2); ctx.fillRect(x+6,y+6,4,1); }
-    // face by direction
-    ctx.fillStyle="#0a0a12";
-    if(dir==="down"){ ctx.fillRect(x+6,y+4,1,1); ctx.fillRect(x+9,y+4,1,1); if(kind!=="om"){ ctx.fillStyle="#c08"; ctx.fillRect(x+7,y+5,2,1);} }
-    else if(dir==="up"){ ctx.fillStyle=hair; ctx.fillRect(x+5,y+1,6,4); }
-    else if(dir==="left"){ ctx.fillRect(x+6,y+4,1,1); }
-    else if(dir==="right"){ ctx.fillRect(x+9,y+4,1,1); }
+    // face by direction: readable eyes (dark) + small mouth
+    if(dir==="up"){ ctx.fillStyle=hair; ctx.fillRect(x+5,y+1,6,4); }
+    else if(dir==="down"){
+      ctx.fillStyle="#0a0a12"; ctx.fillRect(x+6,y+4,1,1); ctx.fillRect(x+9,y+4,1,1);     // two eyes
+      if(kind!=="om"){ ctx.fillStyle="#a85050"; ctx.fillRect(x+7,y+6,2,1); }             // mouth
+    } else if(dir==="left"){
+      ctx.fillStyle="#0a0a12"; ctx.fillRect(x+6,y+4,1,1);
+      if(kind!=="om"){ ctx.fillStyle="#a85050"; ctx.fillRect(x+5,y+6,2,1); }
+    } else if(dir==="right"){
+      ctx.fillStyle="#0a0a12"; ctx.fillRect(x+9,y+4,1,1);
+      if(kind!=="om"){ ctx.fillStyle="#a85050"; ctx.fillRect(x+9,y+6,2,1); }
+    }
     if(o.outfit) drawOutfit(x,y,dir,walking,frame,o.outfit,o);
   }
   // draw clothing/gear overlay on top of the base human
   function drawOutfit(x,y,dir,walking,frame,outfit,o){
     const female=(o.kind==="yw"||o.kind==="ow");
+    if(outfit==="pcoat"){
+      // Detective look: long grey coat + red wool beanie
+      ctx.fillStyle="#6a6e76"; ctx.fillRect(x+4,y+7,8,8);              // long grey coat body
+      ctx.fillStyle="#565a62"; ctx.fillRect(x+4,y+13,8,2);            // coat hem shadow
+      ctx.fillStyle="#7c818a"; ctx.fillRect(x+4,y+7,8,1);             // collar highlight
+      ctx.fillStyle="#484c54"; ctx.fillRect(x+7,y+8,2,6);            // button placket
+      ctx.fillStyle="#484c54"; ctx.fillRect(x+4,y+7,2,7);            // left lapel edge
+      // long sleeves covering the arms (match base arm swing so no bare skin shows)
+      ctx.fillStyle="#6a6e76";
+      if(dir==="left"||dir==="right"){
+        const sw = walking ? (frame?2:-1) : 0;
+        ctx.fillRect(x+(dir==="left"?3:11), y+8+sw, 2, 5);
+      } else {
+        const a = walking ? (frame?2:-2) : 0;
+        ctx.fillRect(x+3, y+8+a, 2, 6); ctx.fillRect(x+11, y+8-a, 2, 6);
+      }
+      ctx.fillStyle="#565a62"; // cuffs
+      if(dir==="left"||dir==="right"){ const sw=walking?(frame?2:-1):0; ctx.fillRect(x+(dir==="left"?3:11), y+12+sw, 2, 1); }
+      else { const a=walking?(frame?2:-2):0; ctx.fillRect(x+3,y+13+a,2,1); ctx.fillRect(x+11,y+13-a,2,1); }
+      // red wool beanie on the head (covers the hair line)
+      if(dir!=="up"){
+        ctx.fillStyle="#b83028"; ctx.fillRect(x+4,y+0,8,3);          // beanie body
+        ctx.fillStyle="#8f2018"; ctx.fillRect(x+4,y+2,8,1);         // brim/fold shadow
+        ctx.fillStyle="#d85048"; ctx.fillRect(x+4,y+0,8,1);         // knit highlight
+        ctx.fillStyle="#e06058"; ctx.fillRect(x+7,y-1,2,2);         // pom-pom
+      } else {
+        ctx.fillStyle="#b83028"; ctx.fillRect(x+4,y+0,8,4);          // beanie from behind
+        ctx.fillStyle="#8f2018"; ctx.fillRect(x+4,y+3,8,1);
+      }
+      return;
+    }
     if(outfit==="coat"){
       ctx.fillStyle="#5a4a6a"; ctx.fillRect(x+4,y+7,8,8);              // long coat body
       ctx.fillStyle="#4a3a58"; ctx.fillRect(x+4,y+13,8,2);
@@ -2030,10 +2495,13 @@
 
   function drawPlayer(x,y,dir,animT){
     if(player.swimming){ drawSwimmingPlayer(x,y,dir,animT); return; }
-    if(fishing.active){ drawHuman(x, y, "left", false, 0, {skin:"#f0c890",hair:"#3a2a1a",shirt:"#e0483a",shirtDk:"#c0382c",pants:"#2a3a6a"}); drawRod(x,y,fishing.t*2,"left"); return; }
+    // Sober outfit: black shirt + jeans in all seasons; long grey coat + red wool beanie in winter.
+    const pOutfit = (season==="winter") ? "pcoat" : "";
+    const pOpt={skin:"#f0c890",hair:"#2a2018",shirt:"#1a1a1e",shirtDk:"#0e0e12",pants:"#2f4d78",outfit:pOutfit};
+    if(fishing.active){ drawHuman(x, y, "left", false, 0, pOpt); drawRod(x,y,fishing.t*2,"left"); return; }
     const walking=player.moving, frame=Math.floor(animT*8)%2;
     const bob=(walking&&frame===0)?1:0;
-    drawHuman(x, y-bob, dir, walking, frame, {skin:"#f0c890",hair:"#3a2a1a",shirt:"#e0483a",shirtDk:"#c0382c",pants:"#2a3a6a"});
+    drawHuman(x, y-bob, dir, walking, frame, pOpt);
   }
 
   // Swimming: head at water level, arms doing strokes around the face, body hidden by water.
@@ -2070,7 +2538,7 @@
     }
     drawHuman(x, y, n.dir||"down", walking, frame, opt);
     if(n.fishing) drawRod(x,y,n.animT||0, n.dir||"down");
-    if(npcHasQuest(n)) drawQuestMark(x, y);
+    const qk=npcQuestKind(n); if(qk) drawQuestMark(x, y, qk);
   }
   // Decide an NPC's outfit from its base role + current area + season.
   function outfitFor(n){
@@ -2090,12 +2558,15 @@
     return season==="winter" ? "coat" : "";
   }
   // bobbing "!" marker over a quest NPC
-  function drawQuestMark(x,y){
+  function drawQuestMark(x,y,kind){
     const bob=Math.floor(performance.now()/300)%2;
     const mx=x+6, my=y-9-bob;
+    const isCase=(kind==="case");
+    const body=isCase?"#ff2a2a":"#ffd020";        // vibrant red for the case, yellow for casual
+    const hi=isCase?"#ff9a8a":"#fff2a0";
     ctx.fillStyle="#0a0a12"; ctx.fillRect(mx-1,my-1,5,9);          // outline
-    ctx.fillStyle="#ffd020"; ctx.fillRect(mx,my,3,5); ctx.fillRect(mx,my+6,3,2);  // ! body + dot
-    ctx.fillStyle="#fff2a0"; ctx.fillRect(mx,my,1,4);             // highlight
+    ctx.fillStyle=body; ctx.fillRect(mx,my,3,5); ctx.fillRect(mx,my+6,3,2);  // ! body + dot
+    ctx.fillStyle=hi; ctx.fillRect(mx,my,1,4);             // highlight
   }
   // fishing rod + line into the water, pointing in the given direction ('left'=west, else 'down'=south)
   function drawRod(x,y,animT,dir){
@@ -2163,6 +2634,39 @@
     // mooring line to pier
     ctx.fillStyle="#3a2a1a"; ctx.fillRect(hx+40,hy+8,4,1);
   }
+  // Lighthouse on the SE cliff of Lighthouse Village; rotating beam, brighter at night.
+  function drawLighthouse(x,y){
+    x=Math.round(x); y=Math.round(y);
+    const bx=x-4, by=y-30;
+    // warm halo around the lantern, like the street lamps (stronger at night)
+    const nf0=(typeof nightFactor==="function")?nightFactor():0;
+    const halo=0.14+0.5*nf0;
+    const lampx=bx+7, lampy=by-7;
+    ctx.fillStyle="rgba(255,224,150,"+(0.10*halo).toFixed(3)+")"; ctx.fillRect(lampx-22,lampy-18,44,44);
+    ctx.fillStyle="rgba(255,224,150,"+(0.16*halo).toFixed(3)+")"; ctx.fillRect(lampx-13,lampy-10,26,26);
+    ctx.fillStyle="rgba(255,240,190,"+(0.28*halo).toFixed(3)+")"; ctx.fillRect(lampx-6,lampy-5,12,12);
+    // tower body (white with red bands)
+    ctx.fillStyle="#0a0a12"; ctx.fillRect(bx-1,by-1,16,34);
+    ctx.fillStyle="#e6e6ea"; ctx.fillRect(bx,by,14,32);
+    ctx.fillStyle="#c83a3a"; ctx.fillRect(bx,by+6,14,4); ctx.fillRect(bx,by+16,14,4); ctx.fillRect(bx,by+26,14,4);
+    ctx.fillStyle="#b0b0b8"; ctx.fillRect(bx,by,2,32);            // shading
+    // gallery + lantern room
+    ctx.fillStyle="#3a3a44"; ctx.fillRect(bx-2,by-4,18,4);
+    ctx.fillStyle="#2a2a34"; ctx.fillRect(bx+1,by-12,12,8);
+    // lamp
+    const nf=(typeof nightFactor==="function")?nightFactor():0;
+    const on = nf>0.2 || (Math.floor(performance.now()/700)%2===0);
+    ctx.fillStyle=on?"#fff2b0":"#8a8a6a"; ctx.fillRect(bx+4,by-10,6,5);
+    // rotating beam (sweeps), stronger at night
+    const t2=performance.now()/900; const dir=Math.sin(t2);
+    const beamAlpha=(0.10+0.35*nf).toFixed(3);
+    ctx.fillStyle="rgba(255,240,170,"+beamAlpha+")";
+    const cxp=bx+7, cyp=by-7;
+    if(dir>0){ ctx.beginPath(); ctx.moveTo(cxp,cyp); ctx.lineTo(cxp+40, cyp-8+dir*20); ctx.lineTo(cxp+40, cyp+8+dir*20); ctx.closePath(); ctx.fill(); }
+    else { ctx.beginPath(); ctx.moveTo(cxp,cyp); ctx.lineTo(cxp-40, cyp-8-dir*20); ctx.lineTo(cxp-40, cyp+8-dir*20); ctx.closePath(); ctx.fill(); }
+    // roof
+    ctx.fillStyle="#c83a3a"; ctx.fillRect(bx+2,by-14,10,3); ctx.fillStyle="#902828"; ctx.fillRect(bx+5,by-17,4,3);
+  }
   function drawBuoy(x,y,animT){ x=Math.round(x); y=Math.round(y);
     const bob=Math.floor((animT||0)*2)%2; y+=bob;
     ctx.fillStyle="#0a0a12"; ctx.fillRect(x+5,y+5,6,8);
@@ -2186,6 +2690,28 @@
       ctx.fillStyle="#f0c890"; ctx.fillRect(x+11,y+10,3,3);    // head
       ctx.fillStyle="#3a2a1a"; ctx.fillRect(x+12,y+9,2,1);     // hair
     }
+  }
+  // a small kid playing on the beach: 'face' = facing dir (+1 right / -1 left); kind ball|paddle
+  function drawBeachKid(x,y,face,kind){ x=Math.round(x); y=Math.round(y);
+    const bob=Math.floor(performance.now()/220)%2;   // little hop
+    y-=bob;
+    ctx.fillStyle="rgba(0,0,0,0.22)"; ctx.fillRect(x+5,y+15,6,2);
+    // legs (bare)
+    ctx.fillStyle="#f0c890"; ctx.fillRect(x+5,y+12,2,3); ctx.fillRect(x+9,y+12,2,3);
+    // swimsuit torso
+    ctx.fillStyle=(face>0?"#e05088":"#3a8ad0"); ctx.fillRect(x+5,y+7,6,5);
+    // head
+    ctx.fillStyle="#f0c890"; ctx.fillRect(x+5,y+2,6,5); ctx.fillStyle="#3a2a1a"; ctx.fillRect(x+5,y+2,6,2);
+    // arms raised toward the ball
+    ctx.fillStyle="#f0c890";
+    if(kind==="paddle"){ ctx.fillStyle="#c8a060"; ctx.fillRect(x+(face>0?11:3),y+4,2,4); ctx.fillStyle="#8a5a2a"; ctx.fillRect(x+(face>0?12:2),y+3,1,2); } // paddle in hand
+    else { ctx.fillRect(x+(face>0?11:3),y+6,2,3); }
+  }
+  function drawBeachBall(x,y){ x=Math.round(x); y=Math.round(y);
+    ctx.fillStyle="#ffffff"; ctx.fillRect(x+6,y+4,5,5);
+    ctx.fillStyle="#e04040"; ctx.fillRect(x+6,y+4,2,2);
+    ctx.fillStyle="#3a8ad0"; ctx.fillRect(x+9,y+7,2,2);
+    ctx.fillStyle="#0a0a12"; ctx.fillRect(x+5,y+3,7,1); ctx.fillRect(x+5,y+9,7,1); ctx.fillRect(x+5,y+3,1,7); ctx.fillRect(x+11,y+3,1,7);
   }
   function drawSwimmer(x,y,animT,dir){ x=Math.round(x); y=Math.round(y); const s=Math.floor(animT*5)%2; dir=dir||1;
     const p=pal();
@@ -2220,19 +2746,44 @@
     for(const k of QORDER){ const qq=QUESTS[k]; if(qq.status==="available"&&qq.type==="main") return t(qq.nameK); }
     return t("q_none");
   }
-  function drawHUD(){ panelBox(2,2,90,12);
-    if(insideKey){ text(t(INTERIORS[insideKey].nameKey).substring(0,12),6,4,pal().accent); }
-    else { text(seasonLabel().substring(0,3),6,4,pal().accent); text(clockLabel(),40,4,"#dfe8f2"); }
-    panelBox(W-98,2,96,12); text(t("quest_label"),W-94,4,"#a8a8b8"); text(activeQuestText().substring(0,14),W-94+(lang==="it"?46:38),4, "#f0f0e0"); }
+  function drawHUD(){ panelBox(2,2,88,12);
+    if(insideKey){ text(t(INTERIORS[insideKey].nameKey).substring(0,14),6,4,pal().accent); }
+    else { text(seasonLabel(),6,4,pal().accent);
+      ctx.font="8px monospace"; ctx.textAlign="right"; ctx.textBaseline="top"; ctx.fillStyle="#dfe8f2"; ctx.fillText(clockLabel(),86,4); ctx.textAlign="left"; }
+    // quest box (top-right): no "Missione:" label; wrap the text to fit, box grows in height
+    ctx.font="8px monospace";
+    const qbw=96, qbx=W-qbw-2, maxW=qbw-8;
+    const qtxt=activeQuestText();
+    const words=String(qtxt).split(" "); const lines=[]; let line="";
+    for(const w of words){ const test=line?line+" "+w:w; if(ctx.measureText(test).width>maxW){ if(line) lines.push(line); line=w; } else line=test; }
+    if(line) lines.push(line);
+    const shown=lines.slice(0,3);
+    const qbh=6+shown.length*10;
+    panelBox(qbx,2,qbw,qbh);
+    shown.forEach((l,i)=> text(l, qbx+4, 5+i*10, "#f0f0e0"));
+  }
   function drawDialog(){ const bx=6,by=H-46,bw=W-12,bh=40; panelBox(bx,by,bw,bh);
     if(dialog.npc) text(t(dialog.npc.nameKey),bx+6,by+3,pal().accent);
     const full=dialog.lines[dialog.idx]||"";
     const shown=full.substring(0,Math.floor(dialog.reveal));
-    // word-wrap within the box width
-    ctx.font="8px monospace"; const maxW=bw-14; const words=shown.split(" ");
-    let line="", ly=by+15;
-    for(const w of words){ const test=line?line+" "+w:w; if(ctx.measureText(test).width>maxW){ text(line,bx+6,ly,"#f0f0e0"); ly+=10; line=w; } else line=test; }
-    if(line) text(line,bx+6,ly,"#f0f0e0");
+    ctx.font="8px monospace"; const maxW=bw-16;   // safe inner width
+    // word-wrap; if a single word is still too wide, break it by characters
+    function fitWords(str){
+      const out=[]; let line="";
+      const push=()=>{ if(line){ out.push(line); line=""; } };
+      str.split(" ").forEach(w=>{
+        // break overly long words
+        while(ctx.measureText(w).width>maxW){ let cut=w.length; while(cut>1 && ctx.measureText(w.slice(0,cut)).width>maxW) cut--;
+          const part=w.slice(0,cut); if(line){ push(); } out.push(part); w=w.slice(cut); }
+        const test=line?line+" "+w:w;
+        if(ctx.measureText(test).width>maxW){ push(); line=w; } else line=test;
+      });
+      if(line) out.push(line);
+      return out;
+    }
+    const lines=fitWords(shown);
+    const maxRows=3; let ly=by+15;
+    lines.slice(0,maxRows).forEach(l=>{ text(l,bx+6,ly,"#f0f0e0"); ly+=10; });
     if(dialog.reveal>=full.length && Math.floor(performance.now()/400)%2===0) text((dialog.idx<dialog.lines.length-1)?"\u25BC":"\u25A0",bx+bw-14,by+bh-12,pal().accent); }
   function drawSeasonPopup(){ ctx.globalAlpha=Math.min(1,seasonPopup); panelBox(W/2-46,58,92,24); textCenter("~ "+seasonLabel()+" ~",W/2,66,pal().accent); ctx.globalAlpha=1; }
 
@@ -2251,31 +2802,65 @@
     };
     text(t("journal_main"),14,y,"#f0d840"); y+=10;
     QORDER.forEach(k=>{ const q=QUESTS[k]; if(q.type==="main" && q.status!=="locked") draw1(q); });
+    // central story (the case): show current investigation step
+    const caseVisible = QORDER.filter(k=>QUESTS[k].type==="case" && QUESTS[k].status!=="locked");
+    if(caseVisible.length){ y+=4; text(t("journal_case"),14,y,"#ff6a5a"); y+=10;
+      caseVisible.forEach(k=>{ const q=QUESTS[k];
+        let mark=q.status==="done"?"[x]":"[>]"; let col=q.status==="done"?"#7ae06a":"#f0f0e0";
+        text(mark+" "+t(q.nameK),14,y,col); y+=9;
+        if(q.status==="active"){ text("    "+t(q.steps[q.step]),14,y,"#c8c8d0"); y+=9; } }); }
     y+=4; text(t("journal_side"),14,y,"#f0d840"); y+=10;
     QORDER.forEach(k=>{ const q=QUESTS[k]; if(q.type==="side" && q.status!=="locked") draw1(q); });
     textCenter(t("map_hint"),W/2,H-18,"#c8c8d0");
   }
+  // ---- DETECTIVE NOTEBOOK: list of clues collected in the central story ----
+  function drawNotebook(){
+    ctx.fillStyle="#0e0e18"; ctx.fillRect(8,14,W-16,H-28);
+    ctx.strokeStyle="#f0f0e0"; ctx.lineWidth=1; ctx.strokeRect(9.5,15.5,W-19,H-31);
+    textCenter(t("notebook_title"),W/2,18,"#ff6a5a");
+    let y=30;
+    // collect taken clues in story order
+    const found=[];
+    if(window.CASE_REF){ (window.CASE_REF.order||[]).forEach(id=>{ const c=window.CASE_REF.clues[id]; if(c&&c.taken){ const d=t("cs_"+id+"_clue"); found.push(d==="cs_"+id+"_clue"?"?":d); } }); }
+    if(found.length===0){ text(t("notebook_empty"),14,y,"#7a7a88"); textCenter(t("map_hint"),W/2,H-18,"#c8c8d0"); return; }
+    text(t("notebook_hint"),14,y,"#f0d840"); y+=11;
+    found.forEach((d,i)=>{
+      // wrap each clue to the panel width
+      ctx.font="8px monospace"; const words=String(d).split(" "); const maxW=W-34; let line="";
+      const push=(s)=>{ text("- "+s, 14, y, "#d8d0b0"); y+=9; };
+      let first=true;
+      words.forEach(w=>{ const test=line?line+" "+w:w; if(ctx.measureText((first?"- ":"  ")+test).width>maxW){ if(first){push(line);first=false;} else { text("  "+line,14,y,"#d8d0b0"); y+=9; } line=w; } else line=test; });
+      if(line){ if(first) push(line); else { text("  "+line,14,y,"#d8d0b0"); y+=9; } }
+      y+=2;
+    });
+    textCenter(t("map_hint"),W/2,H-18,"#c8c8d0");
+  }
   function drawMenu(){
-    panelBox(W/2-52,34,104,100);
-    textCenter(t("menu_title"),W/2,42,pal().accent);
+    panelBox(W/2-52,26,104,132);
+    textCenter(t("menu_title"),W/2,34,pal().accent);
     MENU_KEYS.forEach((k,i)=>{
       let label=t(k);
       if(k==="menu_lang") label+=" ["+lang.toUpperCase()+"]";
-      if(k==="menu_season") label+=" ("+seasonLabel().substring(0,3)+")";
-      const y=60+i*15; const sel=i===menu.index;
+      const y=52+i*13; const sel=i===menu.index;
       textCenter((sel?"> ":"")+label+(sel?" <":""), W/2, y, sel?"#fff":"#a8a8b8");
     });
-    textCenter("A: ok  B: chiudi", W/2, 122, "#8a8a9a");
+    textCenter(t("menu_hint"), W/2, 146, "#8a8a9a");
   }
 
   // ---- MINIMAP (whole town in miniature) ----
   const MINI_COL = {
-    "T":"#2c5a1c","b":"#3f7a2c","'":"#c86",",":"#5e8e40",".":"#6a9a4a",
-    "=":"#c2a878","m":"#b09070","x":"#c8c4b8","s":"#e6d29a","~":"#3a8ad8",
+    "T":"#2c5a1c","b":"#3f7a2c","'":"#caa46a",",":"#5e8e40",".":"#6a9a4a",
+    "=":"#8a8e96","m":"#a89a82","x":"#b8bcc4","s":"#e6d29a","~":"#3a8ad8",
     "H":"#b09070","W":"#7ab0e0","R":"#c0504a","C":"#902c28","D":"#5a3a1e",
     "A":"#8a8f9a","B":"#c0c2cc","V":"#7ab0e0","S":"#d84040",
     "G":"#8a7458","J":"#5a6470","c":"#a87838","w":"#7a5230","o":"#c85040",
-    "L":"#ffe070","N":"#6a4a2a","P":"#8a6a3a","Q":"#8a8f9a","K":"#c85030"
+    "L":"#ffe070","N":"#6a4a2a","P":"#8a6a3a","Q":"#8a8f9a","K":"#c85030",
+    // enriched palette (previously fell back to generic green)
+    "M":"#b8483a","O":"#7a8290","E":"#c0c2cc","Z":"#8a5a3a","U":"#a86838","+":"#9a9aa4",
+    "F":"#4a4e56","Y":"#9a9aa2","I":"#356a24","i":"#2c5a1c","^":"#3f7a2c",
+    "l":"#8a5a2e","q":"#1c3450","k":"#5a5e66","e":"#8a8f9a","z":"#7a6a4a",
+    "h":"#b8a070","p":"#c8b070","d":"#dcc890","v":"#2c6ab0","g":"#7a7e86",
+    "1":"#ffd860","2":"#ffd860","3":"#ffd860","4":"#ffd860","5":"#ffd860","6":"#ffd860","7":"#ffd860","8":"#ffd860","9":"#ffd860","/":"#6a9a4a"
   };
   function drawNightLights(nf){
     const t0x=Math.floor(cam.x/TILE)-2, t0y=Math.floor(cam.y/TILE)-3;
@@ -2303,31 +2888,497 @@
     }
   }
   function drawMinimap(){
-    const mw=cur.w, mh=cur.h;
-    const availW=W-14, availH=H-32;
-    let s=Math.max(2, Math.floor(Math.min(availW/mw, availH/mh)));  // min 2px per tile = crisper
-    const bw=mw*s, bh=mh*s;
-    const ox=Math.floor((W-bw)/2), oy=20+Math.floor((availH-bh)/2);
-    // opaque dark frame (no see-through fog)
-    ctx.fillStyle="#0e0e18"; ctx.fillRect(ox-5,oy-13,bw+10,bh+22);
-    ctx.strokeStyle="#f0f0e0"; ctx.lineWidth=1; ctx.strokeRect(ox-4.5,oy-12.5,bw+9,bh+21);
-    textCenter(t("map_title"),W/2,oy-11,"#f0d840");
-    for(let ty=0;ty<mh;ty++){ const row=cur.rows[ty]; for(let tx=0;tx<mw;tx++){
-      const c=row[tx];
-      let col = c.match(/[1-9]/)?"#ffd860":(MINI_COL[c]||"#6a9a4a");
-      ctx.fillStyle=col; ctx.fillRect(ox+tx*s, oy+ty*s, s, s);
-    }}
-    // quest markers: blinking yellow "!" dots on NPCs with an actionable quest
-    if(inTown() && Math.floor(performance.now()/350)%2===0){
-      npcs.forEach(n=>{ if(npcHasQuest(n)){ const qx=ox+Math.round(n.px/TILE)*s, qy=oy+Math.round(n.py/TILE)*s;
-        ctx.fillStyle="#0a0a12"; ctx.fillRect(qx-1,qy-1,s+2,s+2); ctx.fillStyle="#ffd020"; ctx.fillRect(qx,qy,s,s); } });
+    ctx.fillStyle="#0e0e18"; ctx.fillRect(6,14,W-12,H-26);
+    ctx.strokeStyle="#f0f0e0"; ctx.lineWidth=1; ctx.strokeRect(7.5,15.5,W-15,H-29);
+    // draws one area's tiles into a rect; 'big' adds building outlines for readability
+    function drawAreaTiles(rows, px0, py0, aw, ah, big){
+      const mw=rows[0].length, mh=rows.length; const sx=aw/mw, sy=ah/mh;
+      const solidish="THRWCDABVSGJKMOZEFYilk";
+      for(let ty=0;ty<mh;ty++){ const row=rows[ty]; for(let tx=0;tx<mw;tx++){ const c=row[tx];
+        let col = c.match(/[1-9]/)?"#ffd860":(MINI_COL[c]||"#6a9a4a");
+        ctx.fillStyle=col; ctx.fillRect(px0+tx*sx, py0+ty*sy, Math.ceil(sx), Math.ceil(sy));
+        // detail: darken edges of buildings/structures for readability when zoomed
+        if(big && solidish.indexOf(c)>=0){ ctx.fillStyle="rgba(0,0,0,0.28)"; ctx.fillRect(px0+tx*sx, py0+ty*sy+Math.max(1,sy-1), Math.ceil(sx), 1); }
+      } }
     }
-    // player blip: crisp white-bordered red dot
-    const px=ox+player.tx*s, py=oy+player.ty*s;
-    ctx.fillStyle="#fff"; ctx.fillRect(px-1,py-1,s+2,s+2);
-    if(Math.floor(performance.now()/300)%2===0){ ctx.fillStyle="#ff3030"; ctx.fillRect(px,py,s,s); }
-    textCenter(t("map_hint"),W/2,oy+bh+4,"#c8c8d0");
+    function drawMarkers(areaKey2, px0, py0, aw, ah){
+      const rows=AREAS[areaKey2]; const sx=aw/rows[0].length, sy=ah/rows.length;
+      if(Math.floor(performance.now()/350)%2===0){
+        const list = areaKey2==="town" ? npcs : (AREA_NPCS[areaKey2]||[]);
+        list.forEach(n=>{ const qk=npcQuestKind(n); if(qk){ const qx=px0+Math.round(n.px/TILE)*sx, qy=py0+Math.round(n.py/TILE)*sy;
+          ctx.fillStyle=(qk==="case")?"#ff2a2a":"#ffd020"; ctx.fillRect(qx-1,qy-1,3,3); } });
+      }
+      if(areaKey2===areaKey && Math.floor(performance.now()/300)%2===0){ ctx.fillStyle="#fff"; ctx.fillRect(px0+player.tx*sx-1,py0+player.ty*sy-1,3,3); ctx.fillStyle="#ff3030"; ctx.fillRect(px0+player.tx*sx,py0+player.ty*sy,1,1); }
+    }
+    if(mapNav.zoom){
+      // ---- ZOOM: single area rendered with the REAL world tiles, scaled to fit ----
+      const rows=AREAS[mapNav.zoom];
+      textCenter((t("area_"+mapNav.zoom)||mapNav.zoom),W/2,18,"#ffd840");
+      const mw=rows[0].length, mh=rows.length;
+      const aw=W-16, ah=H-46; const px0=8, py0=26;
+      const s=Math.min(aw/(mw*TILE), ah/(mh*TILE));   // uniform scale to fit
+      const dw=mw*TILE*s, dh=mh*TILE*s;
+      const ox=px0+(aw-dw)/2, oy=py0+(ah-dh)/2;
+      // clip to the map rect
+      ctx.save(); ctx.beginPath(); ctx.rect(ox,oy,dw,dh); ctx.clip();
+      ctx.translate(ox,oy); ctx.scale(s,s);
+      // temporarily point cur + camera at this area so drawGround/drawObject read the right tiles
+      const savRows=cur.rows, savW=cur.w, savH=cur.h, savCamX=cam.x, savCamY=cam.y;
+      cur.rows=rows; cur.w=mw; cur.h=mh; cam.x=0; cam.y=0;
+      const p=pal();
+      for(let ty=0;ty<mh;ty++) for(let tx=0;tx<mw;tx++) drawGround(rows[ty][tx], tx*TILE, ty*TILE, tx, ty, p);
+      for(let ty=0;ty<mh;ty++) for(let tx=0;tx<mw;tx++) drawObject(rows[ty][tx], tx*TILE, ty*TILE, tx, ty, p);
+      cur.rows=savRows; cur.w=savW; cur.h=savH; cam.x=savCamX; cam.y=savCamY;
+      ctx.restore();
+      // markers + player blip in map space (on top of the scaled render)
+      (function(){ const sx=dw/mw, sy=dh/mh;
+        if(Math.floor(performance.now()/350)%2===0){ const list=mapNav.zoom==="town"?npcs:(AREA_NPCS[mapNav.zoom]||[]);
+          list.forEach(n=>{ const qk=npcQuestKind(n); if(qk){ ctx.fillStyle=(qk==="case")?"#ff2a2a":"#ffd020"; ctx.fillRect(ox+Math.round(n.px/TILE)*sx-1, oy+Math.round(n.py/TILE)*sy-1,3,3); } }); }
+        if(mapNav.zoom===areaKey && Math.floor(performance.now()/300)%2===0){ ctx.fillStyle="#fff"; ctx.fillRect(ox+player.tx*sx-1,oy+player.ty*sy-1,3,3); ctx.fillStyle="#ff3030"; ctx.fillRect(ox+player.tx*sx,oy+player.ty*sy,1,1); }
+      })();
+      ctx.strokeStyle="#4a4a58"; ctx.lineWidth=1; ctx.strokeRect(ox-0.5,oy-0.5,dw+1,dh+1);
+      textCenter(t("map_back"),W/2,H-22,"#c8c8d0");
+      return;
+    }
+    // ---- GRID: 3x2 of all areas ----
+    const gap=4, originX=12, originY=28;
+    const cellW=Math.floor((W-24-2*gap)/3), cellH=40;
+    for(const k in AREA_GRID){ const p=k.split(","); const cx=parseInt(p[0]), cy=parseInt(p[1]); const areaKey2=AREA_GRID[k];
+      const rows=AREAS[areaKey2]; if(!rows) continue;
+      const px0=originX+cx*(cellW+gap), py0=originY+cy*(cellH+gap);
+      drawAreaTiles(rows, px0, py0, cellW, cellH, false);
+      const isCur=(areaKey2===areaKey), isSel=(cx===mapNav.col && cy===mapNav.row);
+      ctx.strokeStyle=isSel?"#ffffff":(isCur?"#ffd840":"#4a4a58"); ctx.lineWidth=1; ctx.strokeRect(px0+0.5,py0+0.5,cellW-1,cellH-1);
+      if(isSel){ ctx.strokeStyle="#ffffff"; ctx.strokeRect(px0-0.5,py0-0.5,cellW+1,cellH+1); }
+      ctx.font="6px monospace"; ctx.textBaseline="top"; ctx.fillStyle=isSel?"#fff":(isCur?"#ffd840":"#8a8a9a");
+      ctx.fillText((t("area_"+areaKey2)||areaKey2).substring(0,11), px0+1, py0+1);
+      drawMarkers(areaKey2, px0, py0, cellW, cellH);
+    }
+    // full name of the area under the cursor
+    const selKey=AREA_GRID[mapNav.col+","+mapNav.row];
+    if(selKey) textCenter(t("area_"+selKey)||selKey, W/2, 18, "#ffd840");
+    textCenter(t("map_nav"),W/2,H-22,"#c8c8d0");
   }
+
+  // ================= CENTRAL STORY LOADER (data-driven, from window.STORY_DATA) =================
+  // Builds the detective case: quests (red markers), clue pickups, new NPCs and i18n strings
+  // from the JSON produced offline. Casual quests stay untouched and separate.
+  const CASE = { data:null, quests:[], byId:{}, order:[], clues:{}, closedUntil:{}, deduced:{}, reconstructed:{}, morals:{}, fought:{}, started:false, introDone:false };
+  window.CASE_REF = CASE;
+  (function loadStory(){
+    const S = window.STORY_DATA, P = window.STORY_POS;
+    if(!S || !S.quests){ return; }
+    CASE.data = S;
+    // 1) inject i18n strings for case quests + dialogues (keys namespaced with "cs_")
+    function put(key, val){ if(val && val.it!==undefined) STR.it[key]=val.it; if(val && val.en!==undefined) STR.en[key]=val.en; }
+    S.quests.forEach(q=>{
+      put("cs_"+q.id+"_t", q.title);
+      (q.steps||[]).forEach((st,i)=> put("cs_"+q.id+"_s"+i, st));
+      put("cs_"+q.id+"_startb", q.start_banner);
+      put("cs_"+q.id+"_doneb", q.done_banner);
+      if(q.pickup && q.pickup.what) put("cs_"+q.id+"_clue", q.pickup.what);
+      if(q.pickup && q.pickup.hint) put("cs_"+q.id+"_hint", q.pickup.hint);
+    });
+    // dialogues: key = cs_dlg_<npc>_<questId>_<state>
+    S.dialogues.forEach(dl=>{ put("cs_dlg_"+dl.npc_id+"_"+dl.quest_id+"_"+dl.state, dl.lines); });
+    // names for new npcs
+    (S.new_npcs||[]).forEach(n=>{ if(n.name) put("cs_name_"+n.id, n.name); });
+
+    // 2) build case quests into the engine (chained by order), mark them as CASE
+    const sorted = S.quests.slice().sort((a,b)=>(a.order||0)-(b.order||0));
+    sorted.forEach((q,idx)=>{
+      const prev = idx>0 ? sorted[idx-1].id : null;
+      QUESTS[q.id] = { chap:1, type:"case", nameK:"cs_"+q.id+"_t",
+        steps:[ "cs_"+q.id+"_s0", "cs_"+q.id+"_s1" ], status:"locked", step:0, needs:prev,
+        season:q.season, startNpc:q.start_npc, completeNpc:q.complete_npc,
+        hasPickup: !!q.pickup };
+      QORDER.push(q.id);
+      CASE_QUESTS.add(q.id);
+      CASE.order.push(q.id);
+      CASE.byId[q.id] = q;
+      // clue pickup state
+      const pos = P && P.pickups && P.pickups[q.id];
+      if(q.pickup && pos){ CASE.clues[q.id] = { area:pos[0], tx:pos[1], ty:pos[2], taken:false, animT:0 }; }
+    });
+
+    // 3) create the 3 new NPCs and place them
+    const NPC_KIND = (look)=> look.age==="child" ? (look.sex==="f"?"girl":"boy") : (look.sex==="f"? (look.age==="old"?"ow":"yw") : (look.age==="old"?"om":"ym"));
+    (S.new_npcs||[]).forEach(n=>{
+      const pos = P && P.npc && P.npc[n.id];
+      if(!pos) return;
+      const [area,tx,ty]=pos;
+      const npc = { id:n.id, tx:tx, ty:ty, dir:"down",
+        color:"#7a8290", colorDk:"#4a5058", kind:NPC_KIND(n.look||{}), hairCol:"#3a2a1a",
+        pants:"#3a3a44", nameKey:"cs_name_"+n.id, caseNpc:true,
+        lines:()=>{ const cl=caseLines(n.id); return cl || t("passerby_l"); }, onTalk:()=>caseOnTalk(n.id) };
+      npc.px=npc.tx*TILE; npc.py=npc.ty*TILE;
+      if(area==="town") npcs.push(npc);
+      else { (AREA_NPCS[area]=AREA_NPCS[area]||[]).push(npc); }
+    });
+
+    // 4) attach a case hook to EXISTING npcs involved in the story (without breaking casual lines)
+    const involved = new Set();
+    sorted.forEach(q=>{ involved.add(q.start_npc); involved.add(q.complete_npc); });
+    function hook(list){ list.forEach(npc=>{ if(!involved.has(npc.id) || npc.caseNpc) return;
+      const casualLines = npc.lines, casualTalk = npc.onTalk;
+      npc.lines = ()=>{ const cl=caseLines(npc.id); return cl || (casualLines?casualLines():[""]); };
+      npc.onTalk = (nn)=>{ if(introActiveFor(npc.id) || caseActiveFor(npc.id)){ caseOnTalk(npc.id); } else if(casualTalk){ casualTalk(nn); } };
+    }); }
+    hook(npcs); Object.values(AREA_NPCS).forEach(hook);
+  })();
+
+  // Which case quest (if any) this npc can act on right now (start available or ready-to-complete).
+  function caseClosed(id){ const u=CASE.closedUntil[id]; return (u!=null && dayCount < u); }
+  function caseActiveFor(npcId){
+    for(const id of CASE.order){ const q=QUESTS[id]; if(!q) continue;
+      if(q.startNpc===npcId && (q.status==="available")) return {id, mode:"start"};
+      if(q.completeNpc===npcId && q.status==="active" && caseClueReady(id)){
+        return { id, mode: caseClosed(id) ? "closed" : "complete" };
+      }
+      if(q.startNpc===npcId && q.status==="active" && !caseClueReady(id)) return {id, mode:"active"};
+    }
+    return null;
+  }
+  function caseClueReady(id){ const q=QUESTS[id]; if(!q||!q.hasPickup) return true; const c=CASE.clues[id]; return c? c.taken : true; }
+  // A red "!" is shown to start or to complete; a "closed until tomorrow" witness shows no marker.
+  function caseNpcHasQuest(npc){ const a=caseActiveFor(npc.id); return !!a && (a.mode==="start"||a.mode==="complete"); }
+  function caseLines(npcId){
+    const il=introLines(npcId); if(il) return il;
+    const a=caseActiveFor(npcId); if(!a) return null;
+    if(a.mode==="closed"){ return vpick("interro_wait"); }
+    const st = a.mode==="complete" ? "done" : (a.mode==="active"?"active":"start");
+    const key="cs_dlg_"+npcId+"_"+a.id+"_"+st;
+    const v=t(key); return (v===key)? null : v;
+  }
+  function caseOnTalk(npcId){
+    if(introActiveFor(npcId)){ introOnTalk(npcId); return; }
+    const a=caseActiveFor(npcId); if(!a) return;
+    const q=QUESTS[a.id];
+    if(a.mode==="start"){ if(q.season && season!==q.season) setSeason(q.season); qStart(a.id); saveGame(); }
+    else if(a.mode==="closed"){ banner(vpick("interro_wait_b")); }
+    else if(a.mode==="complete"){
+      if(q.hasPickup){
+        // climax beats use the phased CONFRONT; others use the simple interrogation
+        const finishBeat = ()=>{
+          if(CONFRONT_SNODI[a.id]){ startCaseConfront(a.id); }
+          else { startInterrogation(a.id); }
+        };
+        // gate chain on key beats: reconstruction -> deduction -> confront/interrogation
+        const runDeductionThen = ()=>{
+          if(DEDUCTION_SNODI[a.id] && !CASE.deduced[a.id]){ startDeduction(a.id, finishBeat); }
+          else { finishBeat(); }
+        };
+        const runReconThen = ()=>{
+          if(RECON_SNODI[a.id] && !CASE.reconstructed[a.id]){ startReconstruction(a.id, runDeductionThen); }
+          else { runDeductionThen(); }
+        };
+        // scripted fight first (rare, only on FIGHT_SNODI), if not already won
+        if(FIGHT_SNODI[a.id] && !CASE.fought[a.id]){ startFight(a.id, ()=>{ CASE.fought[a.id]=true; saveGame(); runReconThen(); }); }
+        else { runReconThen(); }
+      }
+      else { qComplete(a.id); banner(t("cs_"+a.id+"_doneb")); saveGame(); afterCaseComplete(a.id); }
+    }
+  }
+  // ---- MORAL CHOICES + ENDING: called after a case quest completes ----
+  const MORAL_SNODI = { case5:1, case10:1 };   // intermediate moral dilemmas (recorded, affect the ending)
+  const FINAL_ID = "case14";
+  function afterCaseComplete(id){
+    if(MORAL_SNODI[id] && !(CASE.morals && CASE.morals[id])){ moralChoice(id); return; }
+    if(id===FINAL_ID){ showEnding(); return; }
+  }
+  // ---- CONFRONT beats (verbal boss): climax quests ----
+  const CONFRONT_SNODI = { case4:1, case9:1, case14:1 };
+  // ---- FIGHT beats (rare scripted Zelda-like duels) ----
+  const FIGHT_SNODI = { case3:1, case12:1 };
+  function startCaseConfront(id){
+    // good proofs = this quest's clue + the deduction-linked clue (if any)
+    const good=[id]; if(DEDUCTION_SNODI[id]) good.push(DEDUCTION_SNODI[id]);
+    startConfront(id, good,
+      ()=>{ qComplete(id); banner(t("cs_"+id+"_doneb")); saveGame(); afterCaseComplete(id); },   // win
+      ()=>{ CASE.closedUntil[id]=dayCount+1; showExamine(vpick("interro_fail")); saveGame(); }     // lose -> tomorrow
+    );
+  }
+  function moralChoice(id){
+    // a themed detective dilemma; the specific pick is recorded and read by the ending
+    const opts=[
+      { label:t("moral_"+id+"_a"), key:"A" },
+      { label:t("moral_"+id+"_b"), key:"B" }
+    ];
+    askChoice(t("moral_"+id+"_q"), opts, (i,opt)=>{
+      if(!CASE.morals) CASE.morals={}; CASE.morals[id]=opt.key;
+      showExamine(vpick("moral_after")); saveGame();
+    });
+  }
+  function showEnding(){
+    // ending variant based on accumulated moral choices (justice-leaning vs mercy-leaning)
+    const m=CASE.morals||{};
+    let score=0; Object.keys(MORAL_SNODI).forEach(k=>{ if(m[k]==="A") score++; else if(m[k]==="B") score--; });
+    const variant = score>0 ? "just" : (score<0 ? "mercy" : "grey");
+    const lines=[].concat(t("ending_"+variant+"_0"),t("ending_"+variant+"_1"),t("ending_"+variant+"_2"));
+    showExamine(lines);
+  }
+  // ---- SCENE RECONSTRUCTION: order the last few clues chronologically before proceeding ----
+  const RECON_SNODI = { case6:3, case11:3 };   // value = how many previous clues to include (plus this one)
+  function startReconstruction(id, after){
+    const idx=CASE.order.indexOf(id);
+    const n=RECON_SNODI[id]||3;
+    // chronology = the ids from (idx-n) .. idx that have a collected clue, in true order
+    const chrono=[];
+    for(let j=Math.max(0,idx-n); j<=idx; j++){ const k=CASE.order[j]; const c=CASE.clues[k]; if(c&&c.taken){ const d=t("cs_"+k+"_clue"); if(d!=="cs_"+k+"_clue") chrono.push({key:k,label:trim(d)}); } }
+    runReconstruction(chrono, ()=>{ CASE.reconstructed[id]=true; if(after) after(); }, null);
+  }
+  // Generic reconstruction core. items = [{key,label}] IN THE CORRECT chronological order.
+  function runReconstruction(items, onWin, onFail){
+    const correctOrder=items.map(x=>x.key);
+    const picked=[];
+    function step(){
+      const remaining=items.filter(x=>!picked.includes(x.key));
+      if(remaining.length===0){
+        if(picked.join(",")===correctOrder.join(",")){ showExamine(vpick("recon_ok"), ()=>{ if(onWin) onWin(); }); saveGame(); }
+        else { picked.length=0; showExamine(vpick("recon_no"), ()=>{ if(onFail) onFail(); }); }
+        return;
+      }
+      const title = picked.length===0 ? vpick("recon_first") : vpick("recon_next");
+      askChoice(title, remaining.map(x=>({label:x.label, key:x.key})), (i,opt)=>{ picked.push(opt.key); step(); });
+    }
+    step();
+  }
+  // ---- DEDUCTIONS: on 3 key beats, connect two clues before interrogating ----
+  // For each snodo: the correct pair is [this quest's clue, the previous quest's clue].
+  const DEDUCTION_SNODI = { case4:"case3", case9:"case8", case14:"case13" };
+  function startDeduction(id, after){
+    const prev = DEDUCTION_SNODI[id];
+    const clueA = t("cs_"+id+"_clue");     // just collected for this beat
+    const clueB = t("cs_"+prev+"_clue");   // collected earlier
+    // build the pool of collected clues as options
+    const pool=[];
+    (CASE.order||[]).forEach(k=>{ const c=CASE.clues[k]; if(c&&c.taken){ const d=t("cs_"+k+"_clue"); if(d!=="cs_"+k+"_clue") pool.push({id:k,label:trim(d)}); } });
+    // step 1: pick the first clue
+    askChoice(vpick("deduce_q1"), pool.map(p=>({label:p.label, key:p.id})), (i1,o1)=>{
+      // step 2: pick the second clue (exclude the first)
+      const pool2=pool.filter(p=>p.id!==o1.key);
+      askChoice(vpick("deduce_q2"), pool2.map(p=>({label:p.label, key:p.id})), (i2,o2)=>{
+        const picked=[o1.key,o2.key].sort().join(",");
+        const correct=[id,prev].sort().join(",");
+        if(picked===correct){ CASE.deduced[id]=true; showExamine(vpick("deduce_ok"), ()=>{ if(after) after(); }); saveGame(); }
+        else { showExamine(vpick("deduce_no")); }
+      });
+    });
+  }
+  // Interrogation: show the witness the right clue from the notebook to make them talk.
+  function startInterrogation(id){
+    const correctLabel = t("cs_"+id+"_clue");
+    const others=[];
+    (CASE.order||[]).forEach(k=>{ if(k===id) return; const c=CASE.clues[k]; if(c&&c.taken){ const d=t("cs_"+k+"_clue"); if(d!=="cs_"+k+"_clue") others.push(d); } });
+    for(let i=others.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [others[i],others[j]]=[others[j],others[i]]; }
+    const distract=others.slice(0,2);
+    let opts=[{label:trim(correctLabel),correct:true}].concat(distract.map(d=>({label:trim(d),correct:false})));
+    for(let i=opts.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [opts[i],opts[j]]=[opts[j],opts[i]]; }
+    askChoice(vpick("interro_q"), opts, (idx,opt)=>{
+      if(opt.correct){ banner(vpick("interro_ok")); qComplete(id); banner(t("cs_"+id+"_doneb")); saveGame(); afterCaseComplete(id); }
+      else {
+        // wrong clue: the witness clams up until the next day -> must let a night pass
+        CASE.closedUntil[id]=dayCount+1;
+        showExamine(vpick("interro_fail"));
+        saveGame();
+      }
+    });
+  }
+  function trim(s){ s=String(s); return s.length>26? s.slice(0,25)+"\u2026" : s; }
+  // clue pickups: draw + collect
+  function currentClues(){ const out=[]; for(const id of CASE.order){ const q=QUESTS[id]; const c=CASE.clues[id];
+    if(TAIL_SNODI[id]) continue;   // tail beats: clue obtained by shadowing, not by pickup
+    if(c && !c.taken && q.status==="active" && c.area===areaKey) out.push({id,c}); } return out; }
+  function tryPickupClue(fx,fy){
+    for(const {id,c} of currentClues()){
+      if(fx===c.tx && fy===c.ty){
+        c.taken=true; SFX.pickup();
+        const d=t("cs_"+id+"_clue"); const desc=(d==="cs_"+id+"_clue")?"...":d;
+        // examine the scene: a short detective note, then log it in the notebook
+        const lines=[vpick("examine")].concat(wrapLines(desc,22));
+        showExamine(lines, ()=>{ banner(t("clue_logged")+" "+desc); saveGame(); });
+        return true;
+      }
+    }
+    return false;
+  }
+  // wrap a string into short lines of at most maxChars characters (word-aware)
+  function wrapLines(str, maxChars){
+    const words=String(str).split(" "); const out=[]; let line="";
+    words.forEach(w=>{ const test=line?line+" "+w:w; if(test.length>maxChars){ if(line) out.push(line); line=w; } else line=test; });
+    if(line) out.push(line);
+    return out.length?out:[""];
+  }
+  // ---- SHADOWING / TAIL (light stealth): follow a suspect without being noticed ----
+  const TAIL_SNODI = { case7: { area:"holiday", from:[1,0], to:[43,31], speed:16 } };
+  const tail = { active:false, id:null, target:null, suspicion:0, msg:"", msgT:0 };
+  const TAIL_MIN=2, TAIL_MAX=6;   // keep between 2 and 6 tiles
+  function tailPossibleFor(id){ return !!TAIL_SNODI[id] && QUESTS[id] && QUESTS[id].status==="active" && CASE.clues[id] && !CASE.clues[id].taken; }
+  function maybeStartTail(){
+    if(tail.active) return;
+    for(const id of CASE.order){ if(tailPossibleFor(id)){ const cfg=TAIL_SNODI[id]; if(areaKey===cfg.area){ startTail(id); return; } } }
+  }
+  function startTail(id){
+    const cfg=TAIL_SNODI[id];
+    tail.active=true; tail.id=id; tail.suspicion=0; tail.msg=t("tail_intro"); tail.msgT=2.4;
+    tail.target={ px:cfg.from[0]*TILE, py:cfg.from[1]*TILE, dir:"down", animT:0,
+                  dest:cfg.to.slice(), speed:cfg.speed||16, path:null, replan:0, tgt:null };
+  }
+  function endTail(win){
+    const id=tail.id;
+    const cbWin=tail._onWin, cbFail=tail._onFail;
+    tail.active=false; tail.target=null; tail._onWin=null; tail._onFail=null;
+    if(id===null){   // casual side-quest tail (self-contained)
+      if(win){ showExamine([t("tail_ok")], cbWin||null); } else { showExamine(vpick("interro_fail"), cbFail||null); }
+      return;
+    }
+    if(win){ if(CASE.clues[id]) CASE.clues[id].taken=true; const d=t("cs_"+id+"_clue"); showExamine([t("tail_ok")].concat(wrapLines((d==="cs_"+id+"_clue"?"...":d),22)), ()=>{ banner(t("clue_logged")+" "+d); saveGame(); }); }
+    else { CASE.closedUntil[id]=dayCount+1; showExamine(vpick("interro_fail")); saveGame(); }
+  }
+  function updateTail(dt){
+    const tg=tail.target; if(!tg) return;
+    if(tail.msgT>0) tail.msgT-=dt;
+    const cx=Math.round(tg.px/TILE), cy=Math.round(tg.py/TILE);
+    if(tg.tgt && !(Math.abs(tg.px-tg.tgt[0]*TILE)<0.6 && Math.abs(tg.py-tg.tgt[1]*TILE)<0.6)){
+      const tX=tg.tgt[0]*TILE, tY=tg.tgt[1]*TILE, sp=tg.speed*dt;
+      if(tg.px<tX){tg.px=Math.min(tX,tg.px+sp);tg.dir="right";} else if(tg.px>tX){tg.px=Math.max(tX,tg.px-sp);tg.dir="left";}
+      if(tg.py<tY){tg.py=Math.min(tY,tg.py+sp);tg.dir="down";} else if(tg.py>tY){tg.py=Math.max(tY,tg.py-sp);tg.dir="up";}
+      tg.animT+=dt;
+    } else {
+      tg.px=cx*TILE; tg.py=cy*TILE; tg.tgt=null;
+      if(cx===tg.dest[0] && cy===tg.dest[1]){ endTail(tail.suspicion<100); return; }
+      tg.replan-=dt;
+      if(!tg.path || tg.path.length===0 || tg.replan<=0){ tg.path=bfsPath(cx,cy,tg.dest[0],tg.dest[1]); tg.replan=2.0; }
+      if(tg.path && tg.path.length){ tg.tgt=tg.path.shift(); }
+      else { endTail(tail.suspicion<100); return; }
+    }
+    const dist=Math.abs(cx-player.tx)+Math.abs(cy-player.ty);
+    if(dist<TAIL_MIN){ tail.suspicion=Math.min(100, tail.suspicion+dt*40); }
+    else if(dist>TAIL_MAX){ tail.suspicion=Math.min(100, tail.suspicion+dt*22); }
+    else { tail.suspicion=Math.max(0, tail.suspicion-dt*18); }
+    if(tail.suspicion>=100){ endTail(false); }
+  }
+  function drawTail(){
+    const tg=tail.target; if(!tg) return;
+    drawHuman(tg.px-cam.x, tg.py-cam.y, tg.dir, true, Math.floor(tg.animT*6)%2, {skin:"#f0c890",hair:"#2a2018",shirt:"#3a3a44",shirtDk:"#26262e",pants:"#22222a",kind:"ym"});
+  }
+  function drawTailUI(){
+    text(t("tail_label"), 8, 6, "#ff8a6a");
+    ctx.fillStyle="#0a0a12"; ctx.fillRect(7,15,W-12,8); ctx.fillStyle="#3a1e1e"; ctx.fillRect(8,16,W-16,6);
+    ctx.fillStyle="#d83a3a"; ctx.fillRect(8,16,Math.round((W-16)*tail.suspicion/100),6);
+    if(tail.msgT>0){ panelBox(6,H-22,W-12,18); textCenter(tail.msg,W/2,H-18,pal().accent); }
+  }
+  function drawClue(x,y){
+    // small glowing evidence marker (folded paper / object)
+    ctx.fillStyle="#0a0a12"; ctx.fillRect(x+4,y+6,8,7);
+    ctx.fillStyle="#d8d0b0"; ctx.fillRect(x+5,y+7,6,5);
+    ctx.fillStyle="#b83028"; ctx.fillRect(x+5,y+7,6,1);
+    if(Math.floor(performance.now()/300)%2===0){ ctx.fillStyle="#ffcf50"; ctx.fillRect(x+7,y+4,2,2); }
+  }
+
+  // ---- INTRO (casual, yellow): Crudo arrives; marinaio sends him to the widow; talking to her
+  //      completes the intro and unlocks the case + the casual quests. ----
+  const INTRO = { startNpc:"marinaio", endNpc:"vedova" };
+  function introActiveFor(npcId){
+    const q=QUESTS.intro; if(!q) return null;
+    if(npcId===INTRO.startNpc && q.status==="available") return "start";
+    if(npcId===INTRO.startNpc && q.status==="active") return "active";
+    if(npcId===INTRO.endNpc && q.status==="active") return "end";
+    return null;
+  }
+  function introLines(npcId){
+    const m=introActiveFor(npcId); if(!m) return null;
+    const key = m==="end" ? "intro_end" : (m==="active" ? "intro_wait" : "intro_start");
+    const v=t(key); return (v===key)? null : v;
+  }
+  function introOnTalk(npcId){
+    const m=introActiveFor(npcId); if(!m) return false;
+    if(m==="start"){ qStart("intro"); saveGame(); return true; }
+    if(m==="end"){ qComplete("intro"); unlockCasualQuests(); unlockAfterIntro(); banner(t("intro_done")); saveGame(); return true; }
+    return true; // "active": marinaio just repeats, no state change
+  }
+  function introNpcHasMark(npcId){ const m=introActiveFor(npcId); return m==="start"||m==="end"; }
+  function unlockAfterIntro(){
+    if(CASE.introDone) return; CASE.introDone=true;
+    const first = CASE.order[0]; if(first && QUESTS[first]) QUESTS[first].status="available";
+    if(typeof sqActivate==="function") sqActivate();   // unlock casual side-quests now
+    saveGame();
+  }
+
+  // ================= SIDE-QUEST SLOT ENGINE (casual yellow quests, self-contained) =================
+  const SQ_KINDS = ["recon","morale","confront","tail","fight"];
+  const SLOTS_PER_KIND = 2;
+  const SQ = { pool:{}, queueIdx:{}, active:[], done:{}, byNpc:{} };
+  SQ_KINDS.forEach(k=>{ SQ.pool[k]=[]; SQ.queueIdx[k]=0; });
+  function sqLoadPool(){
+    const src = window.SIDEQUESTS || null;
+    if(src){ SQ_KINDS.forEach(k=>{ SQ.pool[k] = (src[k]||[]).slice(); }); return; }
+    SQ_KINDS.forEach(k=>{ SQ.pool[k]=[]; for(let i=0;i<4;i++){ SQ.pool[k].push({ id:k+"_ph"+i, kind:k, title:{it:k+" #"+i, en:k+" #"+i}, giver:{it:["..."],en:["..."]} }); } });
+  }
+  function sqCandidateNpcs(area){
+    const all=[];
+    if(!area || area==="town"){ npcs.forEach(n=>{ if(n) n._area="town"; all.push(n); }); }
+    for(const ak in AREA_NPCS){ (AREA_NPCS[ak]||[]).forEach(n=>{ if(n){ n._area=ak; all.push(n); } }); }
+    let list = all.filter(n=> n && n.id && !n.caseNpc && !n.fishing);
+    if(area) list = list.filter(n=> n._area===area);
+    return list;
+  }
+  function npcBusy(npcId){
+    if(typeof caseActiveFor==="function" && caseActiveFor(npcId)) return true;
+    if(typeof introActiveFor==="function" && introActiveFor(npcId)) return true;
+    if(SQ.byNpc[npcId]) return true;
+    return false;
+  }
+  function sqActivate(){
+    // casual side-quests unlock only AFTER the intro is completed
+    if(!(window.CASE_REF && window.CASE_REF.introDone)) return;
+    SQ_KINDS.forEach(kind=>{
+      let activeOfKind = SQ.active.filter(m=>m.kind===kind).length;
+      while(activeOfKind < SLOTS_PER_KIND && SQ.queueIdx[kind] < SQ.pool[kind].length){
+        const m = SQ.pool[kind][SQ.queueIdx[kind]++];
+        if(SQ.done[m.id]) continue;
+        let npcId = m.npcId;
+        if(!npcId || npcBusy(npcId)){
+          // prefer a free NPC in the mission's own area, else any free NPC
+          let free = sqCandidateNpcs(m.area).find(n=>!npcBusy(n.id));
+          if(!free) free = sqCandidateNpcs().find(n=>!npcBusy(n.id));
+          if(!free){ SQ.queueIdx[kind]--; break; }
+          npcId = free.id;
+        }
+        m._npc = npcId; SQ.byNpc[npcId]=m; SQ.active.push(m); activeOfKind++;
+      }
+    });
+  }
+  function sqNpcMission(npcId){ return SQ.byNpc[npcId] || null; }
+  function sqComplete(m){
+    SQ.done[m.id]=true; SQ.active = SQ.active.filter(x=>x!==m); if(m._npc) delete SQ.byNpc[m._npc];
+    saveGame(); sqActivate();
+  }
+  function sqStart(m){
+    const win = ()=>{ banner(t("sq_done")); sqComplete(m); };
+    if(m.kind==="morale"){
+      askChoice((m.q&&m.q[lang])||"...", [ {label:(m.a&&m.a[lang])||"A",key:"A"}, {label:(m.b&&m.b[lang])||"B",key:"B"} ], ()=>{ showExamine(vpick("moral_after"), win); });
+    } else if(m.kind==="recon"){
+      const items=(m.events||[]).map((e,i)=>({key:"e"+i, label:trim((e[lang]||e.it||"")) }));
+      runReconstruction(items, win, null);
+    } else if(m.kind==="confront"){
+      const opts=(m.args||[]).map(a=>({label:trim((a.t&&a.t[lang])||""), good:!!a.good}));
+      runConfront(opts, win, ()=>{ banner(t("sq_fail")); }, (m.intro&&m.intro[lang]));
+    } else if(m.kind==="tail"){
+      runTailCfg(m.tail, win, ()=>{ banner(t("sq_fail")); });
+    } else if(m.kind==="fight"){
+      startFight("sq_"+m.id, win);
+    } else { win(); }
+  }
+  function runTailCfg(cfg, onWin, onFail){
+    tail.active=true; tail.id=null; tail.suspicion=0; tail.msg=t("tail_intro"); tail.msgT=2.4;
+    tail._onWin=onWin; tail._onFail=onFail;
+    tail.target={ px:cfg.from[0]*TILE, py:cfg.from[1]*TILE, dir:"down", animT:0, dest:cfg.to.slice(), speed:cfg.speed||16, path:null, replan:0, tgt:null };
+  }
+  function serializeSQ(){ return { done:SQ.done, qi:SQ.queueIdx }; }
+  function restoreSQ(o){ if(!o) return; if(o.done) SQ.done=o.done; if(o.qi) SQ.queueIdx=o.qi; }
+  function sqInit(){ sqLoadPool(); SQ.active=[]; SQ.byNpc={}; sqActivate(); }
+  window.SQ_REF = SQ;
 
   // ================= LOOP =================
   let last=performance.now();
