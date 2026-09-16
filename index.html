@@ -159,6 +159,7 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
       ending_just_0:"Chiudo il caso con la legge in pugno.", ending_just_1:"Qualcuno paghera'. Tutto e' a verbale.", ending_just_2:"La citta' non mi ringraziera'. Non importa.",
       ending_mercy_0:"Chiudo il caso, ma non tutto finisce in un verbale.", ending_mercy_1:"Ho scelto le persone, non solo le regole.", ending_mercy_2:"Dormiro'? Non lo so. Ma potevo guardarmi allo specchio.",
       ending_grey_0:"Il caso e' chiuso. La verita' resta grigia.", ending_grey_1:"Un po' di legge, un po' di pieta'.", ending_grey_2:"Come sempre, a Crudo, nessuno esce pulito.",
+      case_solved_0:"Complimenti: hai risolto il caso!", case_solved_1:"Ma non e' tempo di riposare, detective.", case_solved_2:"C'e' sempre qualcuno, in citta', che ha bisogno del tuo aiuto.",
       deduce_ok0:"I pezzi combaciano.", deduce_ok1:"Ora ho la mia teoria.",
       deduce_no0:"Questi due non c'entrano.", deduce_no1:"Ragionaci ancora.",
       area_town:"BAIA DEL SUD", area_mountain:"ALTURE DEL NORD", area_forestNW:"CONTEA DEGLI ALTIPIANI", area_forestNE:"BOSCO DEGLI OLMI", area_holiday:"BORGO DEL FARO", area_industrial:"RIONE DELLE OFFICINE", area_opensea:"MARE APERTO",
@@ -295,6 +296,7 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
       ending_just_0:"I close the case with the law in hand.", ending_just_1:"Someone will pay. It's all on record.", ending_just_2:"The town won't thank me. It doesn't matter.",
       ending_mercy_0:"I close the case, but not all of it goes on record.", ending_mercy_1:"I chose people over rules.", ending_mercy_2:"Will I sleep? I don't know. But I can face the mirror.",
       ending_grey_0:"The case is closed. The truth stays grey.", ending_grey_1:"A little law, a little mercy.", ending_grey_2:"As always, in Crudo, no one walks away clean.",
+      case_solved_0:"Congratulations: you solved the case!", case_solved_1:"But it's no time to rest, detective.", case_solved_2:"There's always someone in town who needs your help.",
       deduce_ok0:"The pieces fit.", deduce_ok1:"Now I have my theory.",
       deduce_no0:"These two don't connect.", deduce_no1:"Think it over again.",
       area_town:"SOUTHERN BAY", area_mountain:"NORTH HEIGHTS", area_forestNW:"HIGHLAND COUNTY", area_forestNE:"ELM WOOD", area_holiday:"LIGHTHOUSE VILLAGE", area_industrial:"INDUSTRY DISTRICT", area_opensea:"OPEN SEA",
@@ -4032,7 +4034,8 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
     let score=0; Object.keys(MORAL_SNODI).forEach(k=>{ if(m[k]==="A") score++; else if(m[k]==="B") score--; });
     const variant = score>0 ? "just" : (score<0 ? "mercy" : "grey");
     const lines=[].concat(t("ending_"+variant+"_0"),t("ending_"+variant+"_1"),t("ending_"+variant+"_2"));
-    showExamine(lines);
+    // after the ending, a closing message: the case is solved, but the town always needs Crudo (yellow quests go on)
+    showExamine(lines, ()=>{ showExamine([t("case_solved_0"),t("case_solved_1"),t("case_solved_2")]); });
   }
   // ---- SCENE RECONSTRUCTION: order the last few clues chronologically before proceeding ----
   const RECON_SNODI = { case2:2, case6:3, case11:3, case9b:3, case_cape1:2 };   // value = how many previous clues to include (plus this one)
