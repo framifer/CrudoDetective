@@ -20,14 +20,14 @@
   #screen-bezel { background:#25303a; border-radius:6px; padding:6px 5px; position:relative; }
   canvas { display:block; width:100%; height:auto; image-rendering:pixelated; image-rendering:crisp-edges; border-radius:2px; background:#101820; }
   #controls { flex:1 1 auto; position:relative; margin-top:4%; }
-  #dpad { position:absolute; left:7%; top:8%; width:140px; height:140px; }
-  .dbtn { position:absolute; background:#2c2c3a; border:none; box-shadow:0 3px 0 #16161e; display:flex; align-items:center; justify-content:center; color:#6b6b80; font-size:15px; }
+  #dpad { position:absolute; left:6%; top:7%; width:176px; height:176px; }
+  .dbtn { position:absolute; background:#2c2c3a; border:none; box-shadow:0 3px 0 #16161e; display:flex; align-items:center; justify-content:center; color:#6b6b80; font-size:19px; }
   .dbtn:active, .dbtn.pressed { background:#1c1c28; box-shadow:0 1px 0 #16161e; transform:translateY(2px); }
-  #d-up { left:47px; top:0; width:46px; height:49px; border-radius:6px 6px 0 0; }
-  #d-down { left:47px; top:91px; width:46px; height:49px; border-radius:0 0 6px 6px; }
-  #d-left { left:0; top:47px; width:49px; height:46px; border-radius:6px 0 0 6px; }
-  #d-right { left:91px; top:47px; width:49px; height:46px; border-radius:0 6px 6px 0; }
-  #d-center { left:47px; top:47px; width:46px; height:46px; background:#2c2c3a; }
+  #d-up { left:59px; top:0; width:58px; height:61px; border-radius:6px 6px 0 0; }
+  #d-down { left:59px; top:115px; width:58px; height:61px; border-radius:0 0 6px 6px; }
+  #d-left { left:0; top:59px; width:61px; height:58px; border-radius:6px 0 0 6px; }
+  #d-right { left:115px; top:59px; width:61px; height:58px; border-radius:0 6px 6px 0; }
+  #d-center { left:59px; top:59px; width:58px; height:58px; background:#2c2c3a; }
   #ab { position:absolute; right:5%; top:6%; width:170px; height:140px; transform:rotate(-20deg); }
   .rbtn { position:absolute; width:74px; height:74px; border-radius:50%; background:#2c6f9b; border:none; box-shadow:0 4px 0 #1a445e; color:#d9eeff; font-size:25px; font-weight:bold; }
   .rbtn:active, .rbtn.pressed { background:#22577a; box-shadow:0 1px 0 #1a445e; transform:translateY(3px); }
@@ -2160,12 +2160,29 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
     updateCamera();
   }
 
+  // A collectible item sitting on a tile blocks movement (you bump into it and pick it up with A),
+  // instead of walking over it. Covers story clues + the original micro-quest items.
+  function isCollectibleBlocking(tx,ty){
+    if(insideKey) return false;
+    // story clues currently active in this area (tail beats have no physical pickup -> excluded)
+    if(typeof currentClues==="function"){
+      for(const {c} of currentClues()){ if(c.tx===tx && c.ty===ty) return true; }
+    }
+    // micro-quest items
+    if(!cat.found && questState>=1 && tx===cat.tx && ty===cat.ty) return true;
+    if(!shell.found && shellQuest>=1 && tx===shell.tx && ty===shell.ty) return true;
+    if(typeof ball!=="undefined" && !ball.taken && QUESTS.kids && QUESTS.kids.status==="active" && QUESTS.kids.step>=1 && tx===ball.tx && ty===ball.ty) return true;
+    if(typeof keyring!=="undefined" && !keyring.taken && QUESTS.oldfriend && QUESTS.oldfriend.status==="active" && tx===keyring.tx && ty===keyring.ty) return true;
+    if(typeof photos!=="undefined" && QUESTS.photos && (QUESTS.photos.status==="active"||QUESTS.photos.status==="available")){
+      for(const ph of photos){ if(!ph.taken && tx===ph.tx && ty===ph.ty) return true; }
+    }
+    return false;
+  }
+
   // Handle a step attempt; returns true if the move starts. Manages swimming + buoys + messages.
   function tryMove(ntx,nty){
     const target=tileAt(ntx,nty);
-    const blockedByCat=(!insideKey && !cat.found && questState>=1 && ntx===cat.tx && nty===cat.ty);
-    const blockedByShell=(!insideKey && !shell.found && shellQuest>=1 && ntx===shell.tx && nty===shell.ty);
-    if(npcAt(ntx,nty)||blockedByCat||blockedByShell) return false;
+    if(npcAt(ntx,nty) || (!insideKey && isCollectibleBlocking(ntx,nty))) return false;   // bump into pickups, don't walk over them
 
     // ---- OPEN SEA: free boat navigation over water ----
     if(areaKey==="opensea" && !insideKey){
@@ -2304,6 +2321,7 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
     if(screen==="overworld" && !insideKey && !menu.open) drawWeather();
     if(!insideKey){ const nf=nightFactor(); if(nf>0){ ctx.fillStyle="rgba(20,26,60,"+(0.55*nf).toFixed(3)+")"; ctx.fillRect(0,0,W,H); drawNightLights(nf); } }
     if(screen==="overworld" && !insideKey && !menu.open) drawFog();
+    if(screen==="overworld" && !insideKey && !menu.open) drawQuestMarksOverlay();   // markers stay bright over night/fog
     drawHUD();
     if(screen==="overworld" && !insideKey && areaKey==="island" && !menu.open) drawIslandDockHint();
     if(screen==="overworld" && !insideKey && areaKey==="industrial" && !menu.open) drawRaftHint();
@@ -3375,7 +3393,7 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
     }
     drawHuman(x, y, n.dir||"down", walking, frame, opt);
     if(n.fishing) drawRod(x,y,n.animT||0, n.dir||"down");
-    const qk=npcQuestKind(n); if(qk) drawQuestMark(x, y, qk);
+    // quest "!" marker is drawn in drawQuestMarksOverlay() (on top of night/fog, always bright)
   }
   // Decide an NPC's outfit from its base role + current area + season.
   function outfitFor(n){
@@ -3405,6 +3423,20 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
     ctx.fillStyle="#0a0a12"; ctx.fillRect(mx-1,my-1,5,9);          // outline
     ctx.fillStyle=body; ctx.fillRect(mx,my,3,5); ctx.fillRect(mx,my+6,3,2);  // ! body + dot
     ctx.fillStyle=hi; ctx.fillRect(mx,my,1,4);             // highlight
+  }
+  // Redraw all quest "!" markers ON TOP of the night overlay + fog, so they stay bright/legible
+  // at any time of day (they are UI guidance, not part of the lit scene).
+  function drawQuestMarksOverlay(){
+    if(insideKey) return;
+    const list = currentNpcs();
+    for(const n of list){
+      if(!n) continue;
+      const qk = npcQuestKind(n); if(!qk) continue;
+      const x = Math.round(n.px - cam.x), y = Math.round(n.py - cam.y);
+      // skip if clearly off-screen
+      if(x < -TILE || x > W+TILE || y < -TILE || y > H+TILE) continue;
+      drawQuestMark(x, y, qk);
+    }
   }
   // fishing rod + line into the water, pointing in the given direction ('left'=west, else 'down'=south)
   function drawRod(x,y,animT,dir){
@@ -3686,7 +3718,28 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
   }
   function activeQuestText(){
     const q=firstActiveQuest();
-    if(q) return t(q.steps[q.step]);
+    if(q){
+      let base=t(q.steps[q.step]);
+      // For a red case quest whose clue isn't collected yet, add rich guidance:
+      // destination area (with an arrow if you're elsewhere) + the pickup's location hint.
+      if(q.type==="case" && typeof CASE_QUESTS!=="undefined" && CASE_QUESTS.has(q.id) && window.CASE_REF){
+        const cq=window.CASE_REF.byId[q.id];
+        const clue=window.CASE_REF.clues[q.id];
+        const needClue = cq && cq.pickup && clue && !clue.taken;
+        if(needClue){
+          const destArea=cq.pickup.area;
+          const hintKey="cs_"+q.id+"_hint"; const hint=t(hintKey);
+          const parts=[base];
+          if(destArea && destArea!==areaKey && !insideKey){
+            const an=(t("area_"+destArea)||destArea);
+            parts.push("\u25B6 "+an);   // ▶ go to this area
+          }
+          if(hint && hint!==hintKey) parts.push("("+hint+")");
+          return parts.join("  ");
+        }
+      }
+      return base;
+    }
     // any available (not yet started) main quest?
     for(const k of QORDER){ const qq=QUESTS[k]; if(qq.status==="available"&&qq.type==="main") return t(qq.nameK); }
     return t("q_none");
@@ -3702,7 +3755,7 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
     const words=String(qtxt).split(" "); const lines=[]; let line="";
     for(const w of words){ const test=line?line+" "+w:w; if(ctx.measureText(test).width>maxW){ if(line) lines.push(line); line=w; } else line=test; }
     if(line) lines.push(line);
-    const shown=lines.slice(0,3);
+    const shown=lines.slice(0,4);
     const qbh=6+shown.length*10;
     panelBox(qbx,2,qbw,qbh);
     shown.forEach((l,i)=> text(l, qbx+4, 5+i*10, "#f0f0e0"));
@@ -4017,7 +4070,7 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
     const sorted = S.quests.slice().sort((a,b)=>(a.order||0)-(b.order||0));
     sorted.forEach((q,idx)=>{
       const prev = idx>0 ? sorted[idx-1].id : null;
-      QUESTS[q.id] = { chap:1, type:"case", nameK:"cs_"+q.id+"_t",
+      QUESTS[q.id] = { id:q.id, chap:1, type:"case", nameK:"cs_"+q.id+"_t",
         steps:[ "cs_"+q.id+"_s0", "cs_"+q.id+"_s1" ], status:"locked", step:0, needs:prev,
         season:q.season, startNpc:q.start_npc, completeNpc:q.complete_npc,
         hasPickup: !!q.pickup, chase: !!q.chase };
