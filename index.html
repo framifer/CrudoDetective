@@ -1427,7 +1427,16 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
     const yellowLocked = microRunning || sqRunning;
     // the single NPC allowed to keep its yellow "!" while locked (the one that advances/closes the running quest)
     const allowedNpc = microRunning ? microNpc : SQ.acceptedNpc;
-    if(yellowLocked){ return (allowedNpc && n.id===allowedNpc) ? "casual" : null; }
+    if(yellowLocked){
+      if(!allowedNpc || n.id!==allowedNpc) return null;
+      // even the allowed NPC only shows a "!" if it has an action available RIGHT NOW, of the SAME
+      // kind as the running quest: during a micro-quest only its own giver-action counts (not a
+      // concurrent SQ); during an SQ only that SQ counts. (e.g. while the cat is being searched,
+      // nonna has nothing to do -> no marker, even if she also holds a side-quest.)
+      const hasAction = microRunning ? npcHasQuest(n)
+                                     : (typeof sqNpcMission==="function" && !!sqNpcMission(n.id));
+      return hasAction ? "casual" : null;
+    }
     // nothing running: show every available yellow marker (SQ side-quests + micro-quests)
     if(typeof sqNpcMission==="function" && sqNpcMission(n.id)) return "casual";
     if(!npcHasQuest(n)) return null;
