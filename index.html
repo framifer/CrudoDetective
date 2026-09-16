@@ -223,6 +223,7 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
       ship_menu_q:"Alla nave - cosa fai?", ship_free:"Naviga il mare aperto", ship_cancel:"Resta a terra", seaq_done:"Incarico di mare completato!", seaq_fail:"Fallito. Riprova dalla nave.",
       ship_island:"Vai all'isola del culto", area_island:"ISOLA DEL CULTO", island_entered:"Acque isola. Molo:A  Nord:torna", island_left:"Torni al molo delle Officine.", island_land:"Attracchi al molo. Scendi a terra.", island_board:"Risali in barca.", raft_locked:"Una zattera. Non sai ancora dove porti.", hint_dock:"A: sbarca sul molo", hint_board:"A: risali in barca", hint_raft:"A: prendi la zattera per l'isola", hint_sea_east:"Vai a EST -> Isola del Culto", hint_sea_island:"Continua a EST per l'isola ->", hint_sea_pier:"A NORD torni al molo",
       sign_island:["Insegna corrosa dal sale:","'IL MARE PRENDE.","IL CERVO DECIDE.","ESTRANEI, TORNATE INDIETRO.'"],
+      sign_cape:["Cartello sbiadito dal vento:","'PUNTA DEL FARO","Fine della terra, inizio del mare.","Il faro veglia. Tieni la rotta.'"],
       hint_island_north:"A NORD: torni alle Officine",
       hint_island_exits:"NORD: Officine   OVEST: mare",
       hint_cape_exits:"EST: mare aperto",
@@ -232,6 +233,18 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
       hospital_wake:"Ti risvegli in ospedale, di notte.", in_hospital_t:"OSPEDALE", in_hospital_npc:"Infermiera",
       in_hospital:["Sei sveglio, detective.","Ti hanno trovato ferito","sui monti. Riposa.","E' notte fonda a Crudo."],
       in_temple_t:"TEMPIO DEL CULTO", in_temple_npc:"Adepto", in_temple:["L'aria sa di sale e cera.","Sull'altare, corna di cervo","e un trono vuoto.","'Il Re torna sempre","dal mare', sussurra l'adepto."],
+      in_county_a_t:"CASA SULL'ALTIPIANO", in_county_a_npc:"Il Pensatore", in_county_a:["Cos'e' il tempo, detective?","Un fiume, dicono.","Ma un fiume non sa","di scorrere.","Forse siamo noi il fiume."],
+      in_county_b_t:"CASOLARE", in_county_b_npc:"La Solitaria", in_county_b:["Guarda le montagne.","Erano qui prima di noi,","resteranno dopo.","Eppure crediamo che","il mondo ci appartenga."],
+      in_county_c_t:"VECCHIA DIMORA", in_county_c_npc:"Il Vecchio", in_county_c:["La verita' e' come","l'orizzonte: cammini,","e resta sempre lontana.","Ma senza, non sapresti","nemmeno da che parte andare."],
+      in_holiday_b_t:"CASA DEL BORGO", in_holiday_b_npc:"Il Pescatore Saggio", in_holiday_b:["Non contare le onde,","ragazzo. Impara a","stare a galla.","Il mare non premia","chi lotta, ma chi ascolta."],
+      in_holiday_c_t:"VILLETTA SUL MARE", in_holiday_c_npc:"La Locandiera", in_holiday_c:["Chi ha fretta arriva","stanco. Chi va piano","arriva sereno.","Ma arrivano entrambi.","Scegli tu come."],
+      in_bay_scooter_t:"OFFICINA DEL MOTORINO", in_bay_scooter_npc:"Il Meccanico", in_bay_scooter:["Hai un motorino?","Premi SELECT per salire","e scendere.","Corre piu' della corsa!","Ma non in acqua, eh."],
+      in_bay_map_t:"UFFICIO MAPPE", in_bay_map_npc:"Il Cartografo", in_bay_map:["Ti perdi, detective?","Premi START e apri","la Mappa dal menu.","Le aree '???' si svelano","visitandole. Comodo, no?"],
+      in_bay_save_t:"ARCHIVIO", in_bay_save_npc:"L'Archivista", in_bay_save:["Tranquillo: qui a Crudo","il tuo caso si salva","da solo, di continuo.","Non devi fare nulla.","Il ricordo resta."],
+      in_works_a_t:"BARACCA OPERAIA", in_works_a_npc:"L'Operaio Stanco", in_works_a:["Lavori, lavori, lavori.","E per cosa? Per pagare","il posto dove dormi","quando non lavori.","Un cerchio, detective."],
+      in_works_b_t:"MENSA OFFICINE", in_works_b_npc:"Il Turnista", in_works_b:["La sirena suona,","entri. La sirena suona,","esci. In mezzo,","niente che ricordi.","Cosi' per trent'anni."],
+      in_forest_refuge_t:"RIFUGIO DEL BOSCO", in_forest_refuge_npc:"L'Eremita Confuso", in_forest_refuge:["Le rane martedi'","non pagano l'affitto","al vento azzurro.","Percio' il formaggio","canta sottovoce. Chiaro?"],
+      in_heights_refuge_t:"RIFUGIO DELLE ALTURE", in_heights_refuge_npc:"La Voce", in_heights_refuge:["Sette scale di lana","salgono nel cucchiaio","quando la domenica","dorme al contrario.","Ovvio, no?"],
       fs_label:"PESCA", fs_intro:"Premi A nella zona verde!", fs_hint:"A: tira su  B: molla", fs_ok:"Presa! Bel colpo.", fs_miss:"Mancato! Riprova.", fs_fail:"Il pesce e' scappato.",
       rg_label:"BOA", rg_intro:"Attraversa le boe in ordine!", rg_next:"Prossima boa!", rg_ok:"Regata completata!", rg_fail:"Tempo scaduto!",
       rc_label:"RECUPERO", rc_intro:"Raggiungi l'oggetto alla deriva!", rc_ok:"Recuperato!", rc_fail:"Andato alla deriva...",
@@ -360,6 +373,7 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
       ship_menu_q:"At the ship - what do you do?", ship_free:"Sail the open sea", ship_cancel:"Stay ashore", seaq_done:"Sea task complete!", seaq_fail:"Failed. Try again from the ship.",
       ship_island:"Sail to the cult island", area_island:"CULT ISLAND", island_entered:"Island waters. Dock:A  North:back", island_left:"Back at the works' pier.", island_land:"You dock and step ashore.", island_board:"You climb back into the boat.", raft_locked:"A raft. You don't know where it leads yet.", hint_dock:"A: land on the dock", hint_board:"A: board the boat", hint_raft:"A: take the raft to the island", hint_sea_east:"Head EAST -> Cult Island", hint_sea_island:"Keep EAST for the island ->", hint_sea_pier:"NORTH goes back to the pier",
       sign_island:["A salt-worn sign:","'THE SEA TAKES.","THE STAG DECIDES.","OUTSIDERS, TURN BACK.'"],
+      sign_cape:["A wind-faded sign:","'LIGHTHOUSE POINT","Land's end, the sea's beginning.","The lamp keeps watch. Hold your course.'"],
       hint_island_north:"NORTH: back to the Works",
       hint_island_exits:"NORTH: Works   WEST: open sea",
       hint_cape_exits:"EAST: open sea",
@@ -369,6 +383,18 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
       hospital_wake:"You wake in the hospital, at night.", in_hospital_t:"HOSPITAL", in_hospital_npc:"Nurse",
       in_hospital:["You're awake, detective.","They found you hurt","up in the mountains. Rest.","It's deep night in Crudo."],
       in_temple_t:"CULT TEMPLE", in_temple_npc:"Cultist", in_temple:["Air of salt and wax.","On the altar, stag antlers","and an empty throne.","'The King always returns","from the sea', the cultist whispers."],
+      in_county_a_t:"HIGHLAND HOUSE", in_county_a_npc:"The Thinker", in_county_a:["What is time, detective?","A river, they say.","But a river doesn't know","that it flows.","Perhaps we are the river."],
+      in_county_b_t:"FARMSTEAD", in_county_b_npc:"The Solitary", in_county_b:["Look at the mountains.","They were here before us,","and will stay after.","Yet we believe the world","belongs to us."],
+      in_county_c_t:"OLD DWELLING", in_county_c_npc:"The Old One", in_county_c:["Truth is like the","horizon: you walk,","and it stays far away.","But without it, you'd not","even know which way to go."],
+      in_holiday_b_t:"VILLAGE HOUSE", in_holiday_b_npc:"The Wise Fisher", in_holiday_b:["Don't count the waves,","lad. Learn to","stay afloat.","The sea rewards not those","who fight, but who listen."],
+      in_holiday_c_t:"SEASIDE COTTAGE", in_holiday_c_npc:"The Innkeeper", in_holiday_c:["Who hurries arrives tired.","Who goes slow arrives","at peace.","But both arrive.","You choose how."],
+      in_bay_scooter_t:"SCOOTER WORKSHOP", in_bay_scooter_npc:"The Mechanic", in_bay_scooter:["Got a scooter?","Press SELECT to hop on","and off.","Faster than running!","But not on water, mind you."],
+      in_bay_map_t:"MAP OFFICE", in_bay_map_npc:"The Cartographer", in_bay_map:["Lost, detective?","Press START and open","the Map from the menu.","'???' areas reveal","as you visit them. Handy!"],
+      in_bay_save_t:"ARCHIVE", in_bay_save_npc:"The Archivist", in_bay_save:["Easy: here in Crudo","your case saves","itself, all the time.","You need do nothing.","The memory stays."],
+      in_works_a_t:"WORKERS' SHACK", in_works_a_npc:"The Weary Worker", in_works_a:["You work, work, work.","And for what? To pay","for the place you sleep","when you're not working.","A circle, detective."],
+      in_works_b_t:"WORKS CANTEEN", in_works_b_npc:"The Shift Worker", in_works_b:["The siren sounds,","you clock in. It sounds,","you clock out. In between,","nothing worth recalling.","Thirty years like this."],
+      in_forest_refuge_t:"FOREST REFUGE", in_forest_refuge_npc:"The Confused Hermit", in_forest_refuge:["On Tuesdays the frogs","don't pay their rent","to the blue wind.","That's why the cheese","hums quietly. Clear?"],
+      in_heights_refuge_t:"HEIGHTS REFUGE", in_heights_refuge_npc:"The Voice", in_heights_refuge:["Seven wool staircases","climb into the spoon","when Sunday sleeps","the wrong way round.","Obvious, isn't it?"],
       fs_label:"FISHING", fs_intro:"Press A in the green zone!", fs_hint:"A: reel  B: drop", fs_ok:"Caught it! Nice.", fs_miss:"Missed! Try again.", fs_fail:"The fish got away.",
       rg_label:"BUOY", rg_intro:"Pass the buoys in order!", rg_next:"Next buoy!", rg_ok:"Regatta complete!", rg_fail:"Time's up!",
       rc_label:"RECOVERY", rc_intro:"Reach the drifting object!", rc_ok:"Recovered!", rc_fail:"It drifted away...",
@@ -1015,7 +1041,7 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
     "Y..T'....Y..Y.YYJkJkJkJYYJkJkJkJYYYJkJkJJYYi",
     "Y.RRRR....YYY.YYFFFFFFFYYFFFFFFFYcYFFFFFFYYi",
     "Y.HHHH.....YY.YYFFFFFFFYYFFFFFFFeYYFFFFFFYei",
-    "Y.HHDH......YYYYFFFFFFFYYFFFFFFFYYYFFFFFFYYi",
+    "Y.HH7H......YYYYFFFFFFFYYFFFFFFFYYYFFFFFFYYi",
     "Y.......TYeYYYYYcYYcYYYYYFFFFFFFYYYYYYYYYYYi",
     "Y.......JJJYTYYYYYYYYYYYYYYYYeYYYYYYYYeYYYYi",
     "Y.......zzzY.YYYYYYeYYYYYYYYeYcYYYYYYYYYYYYi",
@@ -1023,7 +1049,7 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
     "Y..........Y.YYYFFFFFFFcYFFFFFFFFYYYFFFFFYYi",
     "Y.RRRR...YYY.'YYFFFFFFFYYFFFFFFFFYYYFFFFFYYi",
     "Y.HHHH...TY..YYYFFFFFFFYYFFFFFFFFYYYFFFFFYYi",
-    "Y.HHDH.....Y.YYYYYYYYYYcYYYYYYYYYYYYYYYecYYi",
+    "Y.HH8H.....Y.YYYYYYYYYYcYYYYYYYYYYYYYYYecYYi",
     "Y........YYT.YYYYYYYYYYYYYYYYYYYYYYeYYYYYYYi",
     "YT...T.......'YYYYYYYYYYYYYYYYYYYYYYYYYYYYYi",
     "Y.....T...Y.YceYJkJkJJYYJkJkJkJYYJkJkJJJJYYi",
@@ -1202,15 +1228,55 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
     temple:{ nameKey:"in_temple_t", rows:["#########","#b.....b#","#..t.t..#","#...r...#","#..rrr..#","#..t.t..#","####e####"], spawn:{tx:4,ty:5},
       npc:{ tx:4, ty:3, color:"#6a5a8a", colorDk:"#443c5a", kind:"om", hairCol:"#2a2038", pants:"#3a3050", nameKey:"in_temple_npc", lines:()=>t("in_temple") } },
     hospital:{ nameKey:"in_hospital_t", rows:["#########","#bb...bb#","#.......#","#.rr.rr.#","#.......#","#..t.t..#","####e####"], spawn:{tx:4,ty:5},
-      npc:{ tx:2, ty:3, color:"#e8ecf2", colorDk:"#b8c0cc", kind:"yw", hairCol:"#c8a060", pants:"#d8dde4", nameKey:"in_hospital_npc", lines:()=>t("in_hospital") } }
+      npc:{ tx:2, ty:3, color:"#e8ecf2", colorDk:"#b8c0cc", kind:"yw", hairCol:"#c8a060", pants:"#d8dde4", nameKey:"in_hospital_npc", lines:()=>t("in_hospital") } },
+    // ---- Contea degli Altipiani (forestNW): 3 filosofi ----
+    county_a:{ nameKey:"in_county_a_t", rows:["#########","#f.....s#","#.......#","#..t.b..#","#.......#","####e####"], spawn:{tx:4,ty:4},
+      npc:{ tx:2, ty:3, color:"#7a6a9a", colorDk:"#4a3e64", kind:"om", hairCol:"#d8d8e0", pants:"#3a3450", nameKey:"in_county_a_npc", lines:()=>t("in_county_a") } },
+    county_b:{ nameKey:"in_county_b_t", rows:["#########","#s.....f#","#.......#","#..b.t..#","#.......#","####e####"], spawn:{tx:4,ty:4},
+      npc:{ tx:6, ty:3, color:"#4a7a6a", colorDk:"#2c4e44", kind:"ow", hairCol:"#e8e8ec", pants:"#2c4e44", nameKey:"in_county_b_npc", lines:()=>t("in_county_b") } },
+    county_c:{ nameKey:"in_county_c_t", rows:["#########","#f..t..s#","#.......#","#..c.b..#","#.......#","####e####"], spawn:{tx:4,ty:4},
+      npc:{ tx:4, ty:3, color:"#6a5a3a", colorDk:"#443a24", kind:"om", hairCol:"#c8b088", pants:"#3a3020", nameKey:"in_county_c_npc", lines:()=>t("in_county_c") } },
+    // ---- Borgo del Faro (holiday): 3 perle di saggezza ----
+    holiday_b:{ nameKey:"in_holiday_b_t", rows:["#########","#s.....p#","#.......#","#..t.b..#","#.......#","####e####"], spawn:{tx:4,ty:4},
+      npc:{ tx:2, ty:3, color:"#c07048", colorDk:"#8a4828", kind:"om", hairCol:"#e8e0d0", pants:"#4a3a2a", nameKey:"in_holiday_b_npc", lines:()=>t("in_holiday_b") } },
+    holiday_c:{ nameKey:"in_holiday_c_t", rows:["#########","#p.....s#","#.......#","#..b.t..#","#.......#","####e####"], spawn:{tx:4,ty:4},
+      npc:{ tx:6, ty:3, color:"#4088b0", colorDk:"#2c5e7a", kind:"yw", hairCol:"#e0c040", pants:"#2c5e7a", nameKey:"in_holiday_c_npc", lines:()=>t("in_holiday_c") } },
+    // ---- Baia del Sud (town): 3 tutorial ----
+    bay_scooter:{ nameKey:"in_bay_scooter_t", rows:["#########","#p.....s#","#.......#","#..b.t..#","#.......#","####e####"], spawn:{tx:4,ty:4},
+      npc:{ tx:2, ty:3, color:"#c8443a", colorDk:"#8a2820", kind:"ym", hairCol:"#3a2a1a", pants:"#3a3a4a", nameKey:"in_bay_scooter_npc", lines:()=>t("in_bay_scooter") } },
+    bay_map:{ nameKey:"in_bay_map_t", rows:["#########","#s.....p#","#.......#","#..t.b..#","#.......#","####e####"], spawn:{tx:4,ty:4},
+      npc:{ tx:6, ty:3, color:"#3a8a5a", colorDk:"#245e3c", kind:"yw", hairCol:"#6a4a2a", pants:"#245e3c", nameKey:"in_bay_map_npc", lines:()=>t("in_bay_map") } },
+    bay_save:{ nameKey:"in_bay_save_t", rows:["#########","#p.....s#","#.......#","#..b.t..#","#.......#","####e####"], spawn:{tx:4,ty:4},
+      npc:{ tx:4, ty:3, color:"#8a7a3a", colorDk:"#5e5424", kind:"om", hairCol:"#c8c0a0", pants:"#3a3420", nameKey:"in_bay_save_npc", lines:()=>t("in_bay_save") } },
+    // ---- Rione delle Officine (industrial): 2 pessimisti ----
+    works_a:{ nameKey:"in_works_a_t", rows:["#########","#b.....t#","#.......#","#..t.b..#","#.......#","####e####"], spawn:{tx:4,ty:4},
+      npc:{ tx:2, ty:3, color:"#6a6a72", colorDk:"#42424a", kind:"om", hairCol:"#3a3a3a", pants:"#2a2a30", nameKey:"in_works_a_npc", lines:()=>t("in_works_a") } },
+    works_b:{ nameKey:"in_works_b_t", rows:["#########","#t.....b#","#.......#","#..b.t..#","#.......#","####e####"], spawn:{tx:4,ty:4},
+      npc:{ tx:6, ty:3, color:"#5a6a5a", colorDk:"#3a463a", kind:"ym", hairCol:"#4a3a2a", pants:"#2a3230", nameKey:"in_works_b_npc", lines:()=>t("in_works_b") } },
+    // ---- Rifugi (forestNE / mountain): frasi senza senso ----
+    forest_refuge:{ nameKey:"in_forest_refuge_t", rows:["#########","#f.....b#","#.......#","#..t.b..#","#.......#","####e####"], spawn:{tx:4,ty:4},
+      npc:{ tx:2, ty:3, color:"#7a9a4a", colorDk:"#4e6a2c", kind:"om", hairCol:"#c8b060", pants:"#3a4a2a", nameKey:"in_forest_refuge_npc", lines:()=>t("in_forest_refuge") } },
+    heights_refuge:{ nameKey:"in_heights_refuge_t", rows:["#########","#b.....f#","#.......#","#..b.t..#","#.......#","####e####"], spawn:{tx:4,ty:4},
+      npc:{ tx:6, ty:3, color:"#9aa0aa", colorDk:"#6a707a", kind:"ow", hairCol:"#e8ecf2", pants:"#5a6068", nameKey:"in_heights_refuge_npc", lines:()=>t("in_heights_refuge") } }
   };
   // town doors (fixed interiors); other areas use a per-area default interior for door chars 7/8/9
   const DOORS = {
     "1": { interior:"nonna", outX:4, outY:5 },
     "2": { interior:"store", outX:17, outY:10 },
-    "4": { interior:"townhall", outX:19, outY:17 }
+    "4": { interior:"townhall", outX:19, outY:17 },
+    "3": { interior:"bay_scooter", outX:6, outY:17 },   // tutorial: how to use the scooter
+    "5": { interior:"bay_map",     outX:33, outY:17 },  // tutorial: how to use the Start map
+    "6": { interior:"bay_save",    outX:34, outY:5 }    // tutorial: autosave
   };
-  const AREA_INTERIOR={ holiday:"bungalow", forestNE:"cabin", forestNW:"chalet", mountain:"cabin" };
+  // Per-area interiors keyed by the door char. A plain string means "any door 1-9 -> that interior"
+  // (kept for back-compat); an object maps each door char to a distinct interior.
+  const AREA_INTERIOR={
+    holiday:  { "7":"bungalow", "8":"holiday_b", "9":"holiday_c" },   // Borgo del Faro: 3 interiors
+    forestNE: { "7":"cabin",    "8":"forest_refuge" },                // Bosco: keep cabin + a refuge
+    forestNW: { "7":"county_a", "8":"county_b",  "9":"county_c" },    // Contea: 3 interiors (filosofi)
+    mountain: { "7":"cabin",    "8":"heights_refuge" },               // Alture: keep cabin + a refuge
+    industrial:{ "7":"works_a", "8":"works_b" }                       // Rione Officine: 2 interiors
+  };
   let insideKey=null, outsideReturn=null, returnArea="town";
   const cur={ rows:TOWN, w:TOWN[0].length, h:TOWN.length };
   function useMap(rows){ cur.rows=rows; cur.w=rows[0].length; cur.h=rows.length; }
@@ -1235,7 +1301,7 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
     return cur.rows[ty][tx]; }
 
   // Walkable outside: . , ' = s(sand) m(promenade) x(plaza). Structural tiles solid.
-  const OUT_SOLID=new Set(["T","H","R","W","C","Q","~","L","N","D","A","B","V","S","K","w","o","G","J","c","P","^","l","q","F","k","e","z","p","u","v","i","g"]);
+  const OUT_SOLID=new Set(["T","H","R","W","C","Q","~","L","N","D","A","B","V","S","K","w","o","G","J","c","P","^","l","q","F","k","e","z","p","u","v","i","g","X","Z"]);
   const INSIDE_SOLID=new Set(["#","s","t","b","f","p","V","k"]);
   // Both piers are walkable (you can stroll onto them): central (21-22) and east (36-37).
   function isCentralPier(tx,ty){ return ((tx===21||tx===22)||(tx===36||tx===37)) && ty>=32 && ty<=35; }
@@ -1318,6 +1384,19 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
       default: return false;
     }
   }
+  // ---- ORIGINAL micro-quests (cat/shell/parcel/kids/oldfriend/photos): are we mid-quest, and who closes it? ----
+  // These live OUTSIDE the SQ slot engine, so they need their own "one yellow at a time" gate.
+  // Returns the id of the NPC that will COMPLETE the in-progress micro-quest, or null if none is running.
+  // (A micro-quest whose completion is a field pickup and not an NPC returns "" = running but no giver marker.)
+  function microQuestActiveNpc(){
+    if(questState===1 || questState===2) return "nonna";                 // cat: find it, then hand back to nonna
+    if(shellQuest===1 || shellQuest===2) return "pino";                  // shell: find it, then back to pino
+    if(QUESTS.kids && QUESTS.kids.status==="active") return "girl";       // kids: reconcile with the girl
+    if(QUESTS.parcel && QUESTS.parcel.status==="active") return "marinaio"; // parcel: deliver to the sailor
+    if(QUESTS.oldfriend && QUESTS.oldfriend.status==="active") return "nico"; // oldfriend: return to nico
+    if(QUESTS.photos && QUESTS.photos.status==="active") return "";       // photos: field pickups only, no giver marker
+    return null;
+  }
   // serialize/restore quest engine for saves
   function serializeQuests(){ const o={}; QORDER.forEach(k=>o[k]=[QUESTS[k].status,QUESTS[k].step]); return o; }
   function restoreQuests(o){ if(!o) return; QORDER.forEach(k=>{ if(o[k]&&QUESTS[k]){ QUESTS[k].status=o[k][0]; QUESTS[k].step=o[k][1]; } }); }
@@ -1337,14 +1416,20 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
     if(!n) return null;
     if(typeof introNpcHasMark==="function" && introNpcHasMark(n.id)) return "casual";  // intro is yellow
     if(typeof caseNpcHasQuest==="function" && caseNpcHasQuest(n)) return "case";
-    // casual side-quest marker: while one yellow quest is accepted/in progress, hide EVERY other
-    // yellow marker (both the in-game "!" and the map dots). They reappear once it's resolved.
-    const yellowLocked = (SQ.acceptedNpc!=null) || (typeof sqBusy==="function" && sqBusy());
-    if(typeof sqNpcMission==="function" && sqNpcMission(n.id)){
-      if(!yellowLocked) return "casual";                 // nothing accepted: all yellows visible
-      return (SQ.acceptedNpc===n.id) ? "casual" : null;  // accepted: only the accepted giver stays
-    }
-    if(yellowLocked) return null;                        // hide other casual (non-SQ) yellow markers too
+    // ---- "ONE YELLOW AT A TIME": while any casual quest is accepted/in progress, hide EVERY other
+    // yellow marker (both the in-game "!" and the map dots). Covers BOTH systems:
+    //   1) SQ slot-engine side-quests (SQ.acceptedNpc / sqBusy)
+    //   2) the original micro-quests cat/shell/parcel/kids/oldfriend/photos (microQuestActiveNpc)
+    // They reappear once the running one is resolved.
+    const microNpc = (typeof microQuestActiveNpc==="function") ? microQuestActiveNpc() : null;
+    const microRunning = (microNpc!==null);
+    const sqRunning = (SQ.acceptedNpc!=null) || (typeof sqBusy==="function" && sqBusy());
+    const yellowLocked = microRunning || sqRunning;
+    // the single NPC allowed to keep its yellow "!" while locked (the one that advances/closes the running quest)
+    const allowedNpc = microRunning ? microNpc : SQ.acceptedNpc;
+    if(yellowLocked){ return (allowedNpc && n.id===allowedNpc) ? "casual" : null; }
+    // nothing running: show every available yellow marker (SQ side-quests + micro-quests)
+    if(typeof sqNpcMission==="function" && sqNpcMission(n.id)) return "casual";
     if(!npcHasQuest(n)) return null;
     return "casual";
   }
@@ -2002,6 +2087,7 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
       }
       // island signpost: read a warning about the cult
       if(areaKey==="island" && !insideKey && fc==="P"){ showExamine(t("sign_island")); SFX.confirm&&SFX.confirm(); return; }
+      if(areaKey==="cape" && !insideKey && fc==="P"){ showExamine(t("sign_cape")); SFX.confirm&&SFX.confirm(); return; }
       // island temple: enter through the door
       if(areaKey==="island" && !insideKey && !player.boat && fc==="D"){ enterInterior("temple", player.tx, player.ty); return; }
       if(areaKey==="island" && !insideKey){
@@ -2014,7 +2100,11 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
         if(!player.boat && tileAt(player.tx,player.ty)==="w" && fc==="~"){ player.boat=true; player.tx=fx; player.ty=fy; player.px=fx*TILE; player.py=fy*TILE; SFX.door&&SFX.door(); banner(t("island_board")); saveGame(); return; }
       }
       if(!insideKey && inTown() && DOORS[fc]){ enterInterior(DOORS[fc].interior, DOORS[fc].outX, DOORS[fc].outY); return; }
-      if(!insideKey && !inTown() && (/[1-9]/.test(fc)) && AREA_INTERIOR[areaKey]){ enterInterior(AREA_INTERIOR[areaKey], player.tx, player.ty); return; }
+      if(!insideKey && !inTown() && (/[1-9]/.test(fc)) && AREA_INTERIOR[areaKey]){
+        const ai=AREA_INTERIOR[areaKey];
+        const interior = (typeof ai==="string") ? ai : ai[fc];
+        if(interior){ enterInterior(interior, player.tx, player.ty); return; }
+      }
       if(insideKey && fc==="e"){ exitInterior(); return; }
       if(!insideKey && !cat.found && questState>=1 && fx===cat.tx && fy===cat.ty){ cat.found=true; questState=2; SFX.meow(); SFX.pickup(); banner(t("found_cat")); saveGame(); return; }
       if(!insideKey && !shell.found && shellQuest>=1 && fx===shell.tx && fy===shell.ty){ shell.found=true; shellQuest=2; SFX.pickup(); banner(t("found_shell")); saveGame(); return; }
@@ -3364,10 +3454,27 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
   function drawFaunaCritter(a,x,y){ x=Math.round(x); y=Math.round(y); const step=Math.floor(a.animT*5)%2; const c=a.col||"#999"; const left=(a.dir==="left");
     const sh=()=>{ ctx.fillStyle="rgba(0,0,0,0.22)"; ctx.fillRect(x+3,y+13,10,2); };
     if(a.kind==="cat"){ drawCat(x,y,a.animT); return; }
-    if(a.kind==="deer"){ sh(); ctx.fillStyle=c; ctx.fillRect(x+4,y+6,8,5); ctx.fillRect(x+(left?2:11),y+3,3,4); // body+head
-      ctx.fillStyle="#5a3a1a"; ctx.fillRect(x+(left?2:12),y+1,1,2); ctx.fillRect(x+(left?4:10),y+1,1,2); // antlers
-      ctx.fillStyle="#3a2a1a"; if(step){ctx.fillRect(x+4,y+11,2,3);ctx.fillRect(x+10,y+11,2,3);}else{ctx.fillRect(x+5,y+11,2,3);ctx.fillRect(x+9,y+11,2,3);}
-      ctx.fillStyle="#0a0a12"; ctx.fillRect(x+(left?3:12),y+4,1,1); return; }
+    if(a.kind==="deer"){ sh();
+      const bodyC=c, darkC=tint(c,-22), lightC=tint(c,16);
+      const bob=step?0:1;   // subtle head/body bob with the stride
+      // body
+      ctx.fillStyle=bodyC; ctx.fillRect(x+4,y+6,8,5);
+      ctx.fillStyle=lightC; ctx.fillRect(x+4,y+6,8,1);           // lit back
+      ctx.fillStyle=darkC;  ctx.fillRect(x+4,y+10,8,1);          // belly shade
+      ctx.fillStyle="#fff"; ctx.fillRect(x+(left?10:4),y+9,2,2); // white rump/tail patch
+      // neck + head (raise/lower slightly with the stride)
+      ctx.fillStyle=bodyC; ctx.fillRect(x+(left?3:11),y+4+bob,2,3);   // neck
+      ctx.fillStyle=bodyC; ctx.fillRect(x+(left?1:11),y+2+bob,4,4);   // head
+      ctx.fillStyle=lightC; ctx.fillRect(x+(left?1:11),y+2+bob,4,1);  // muzzle top light
+      ctx.fillStyle="#2a1c10"; ctx.fillRect(x+(left?0:14),y+4+bob,2,1); // muzzle
+      // antlers (branched)
+      ctx.fillStyle="#6a4a24";
+      ctx.fillRect(x+(left?1:12),y+bob,1,3); ctx.fillRect(x+(left?3:10),y+bob,1,3);
+      ctx.fillRect(x+(left?0:11),y+bob,1,1); ctx.fillRect(x+(left?4:13),y+bob,1,1); // side tines
+      // legs (trot)
+      ctx.fillStyle=darkC; if(step){ ctx.fillRect(x+4,y+11,2,4); ctx.fillRect(x+10,y+11,2,4); }
+                           else     { ctx.fillRect(x+5,y+11,2,4); ctx.fillRect(x+9,y+11,2,4); }
+      ctx.fillStyle="#0a0a12"; ctx.fillRect(x+(left?2:12),y+4+bob,1,1); return; } // eye
     if(a.kind==="rabbit"){ sh(); ctx.fillStyle=c; ctx.fillRect(x+5,y+8,6,4); ctx.fillRect(x+(left?4:9),y+6,3,3); // body+head
       ctx.fillStyle=c; ctx.fillRect(x+(left?4:10),y+3,1,3); ctx.fillRect(x+(left?6:8),y+3,1,3); // ears
       ctx.fillStyle="#fff"; ctx.fillRect(x+(left?11:5),y+9,1,1); // tail
@@ -3394,6 +3501,23 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
       ctx.fillStyle=tint(c,-24); ctx.fillRect(x+(left?11:2),y+8,3,2); // tail
       ctx.fillStyle="#2a2830"; if(step){ctx.fillRect(x+4,y+12,2,2);ctx.fillRect(x+9,y+12,2,2);}else{ctx.fillRect(x+5,y+12,2,2);ctx.fillRect(x+8,y+12,2,2);}
       ctx.fillStyle="#e0c020"; ctx.fillRect(x+(left?2:12),y+6,1,1); return; }   // yellow eye
+    if(a.kind==="dog"){ sh();
+      const bodyC=c, darkC=tint(c,-22), lightC=tint(c,18);
+      // body
+      ctx.fillStyle=bodyC; ctx.fillRect(x+4,y+7,8,4);
+      ctx.fillStyle=lightC; ctx.fillRect(x+4,y+7,8,1);           // lit back
+      ctx.fillStyle=darkC;  ctx.fillRect(x+4,y+10,8,1);          // belly shade
+      // head (facing left/right)
+      ctx.fillStyle=bodyC; ctx.fillRect(x+(left?1:11),y+5,4,4);
+      ctx.fillStyle=darkC; ctx.fillRect(x+(left?0:13),y+4,2,2);  // floppy ear
+      ctx.fillStyle="#2a2028"; ctx.fillRect(x+(left?0:14),y+7,2,1); // snout/nose
+      // tail (wags with the step)
+      ctx.fillStyle=bodyC; if(step) ctx.fillRect(x+(left?12:2),y+5,2,2); else ctx.fillRect(x+(left?12:2),y+6,2,2);
+      // legs (trot)
+      ctx.fillStyle=darkC; if(step){ ctx.fillRect(x+5,y+11,2,3); ctx.fillRect(x+9,y+11,2,3); }
+                           else     { ctx.fillRect(x+4,y+11,2,3); ctx.fillRect(x+10,y+11,2,3); }
+      ctx.fillStyle="#0a0a12"; ctx.fillRect(x+(left?2:12),y+6,1,1); // eye
+      return; }
     // FLYERS
     const flap=Math.floor(a.animT*8)%2;
     if(a.kind==="eagle"||a.kind==="gull"||a.kind==="parrot"){
