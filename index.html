@@ -198,6 +198,8 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
       keyring_found:"Hai ritrovato il portachiavi di Nico.",
       photo_found:"Una vecchia foto. I volti sono quasi svaniti.",
       photos_msg:"Hai ricomposto le 3 foto. Adesso li riconosci.",
+      mamma_photos:["Detective, un favore.","Ho perso 3 vecchie foto","in giro per la citta'.","Me le ritrovi?"],
+      photos_start:"Cerca le 3 vecchie foto in citta'.",
       ball_found:"Hai recuperato la palla, dove nessuno guarda mai.",
       teo:"Teo", capo:"Capo Officina", mamma:"Mamma",
       teo0:["Ma... sei proprio tu?!","Quanto tempo!","Fatti valere e vedrai","che i ragazzi ti","riaccolgono."],
@@ -255,6 +257,7 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
       fisher_ask:["Bella giornata di pesca!","Il mare oggi e' pescoso...","ne vuoi sapere?"],
       fisher_ask2:["Shhh, non spaventare","i pesci! Vuoi provare","anche tu?"],
       fisher_join_q:"Ti va di pescare con noi?",
+      accept_quest_q:"Accetti questo incarico?",
       yes:"SI'", no:"NO",
       fishing_msg:"Stai pescando dal molo...",
       fishing_done:"Che pace, pescare in riva al mare!",
@@ -348,6 +351,8 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
       keyring_found:"You found Nico's keyring.",
       photo_found:"An old photo. The faces are almost gone.",
       photos_msg:"You pieced the 3 photos together. Now you recognize them.",
+      mamma_photos:["Detective, a favour.","I lost 3 old photos","around the town.","Would you find them?"],
+      photos_start:"Find the 3 old photos in town.",
       ball_found:"You recovered the ball, where no one ever looks.",
       teo:"Teo", capo:"Workshop Boss", mamma:"Mom",
       teo0:["Wait... is that really you?!","Long time!","Show us what you've got","and the crew will","take you back."],
@@ -405,6 +410,7 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
       fisher_ask:["Nice day for fishing!","The sea's full today...","want in?"],
       fisher_ask2:["Shhh, don't scare","the fish! Want to","give it a try too?"],
       fisher_join_q:"Fancy fishing with us?",
+      accept_quest_q:"Take on this task?",
       yes:"YES", no:"NO",
       fishing_msg:"You're fishing off the pier...",
       fishing_done:"So peaceful, fishing by the sea!",
@@ -1370,19 +1376,30 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
     if(!n||!n.id) return false;
     const av=(id)=>QUESTS[id]&&QUESTS[id].status==="available";
     const act=(id)=>QUESTS[id]&&QUESTS[id].status==="active";
+    // ---- MICRO-QUEST ROTATION + GLOBAL LOCK: a micro-quest is "offered" (start marker) only if it's
+    // the current rotation slot AND available AND nothing else yellow is running (canStartMicro).
+    // This keeps npcHasQuest, npcQuestKind and canStartMicro perfectly in sync.
+    const startOffered=(id)=> av(id) && currentMicroSlot()===id && (typeof canStartMicro!=="function" || canStartMicro(null,id));
     switch(n.id){
-      case "nonna":   return (av("cat")&&questState===0) || (act("cat")&&questState===2); // cat: give / hand back
-      case "pino":    return (av("shell")&&shellQuest===0) || (act("shell")&&shellQuest===2); // shell
-      case "mamma":   return false;                                    // mamma: solo dialogo, nessuna quest
+      case "nonna":   return (startOffered("cat")&&questState===0) || (act("cat")&&questState===2); // cat: give / hand back
+      case "pino":    return (startOffered("shell")&&shellQuest===0) || (act("shell")&&shellQuest===2); // shell
+      case "mamma":   return startOffered("photos");                   // mamma gives the photos quest
       case "capo":    return false;                                    // capo: dialoghi gestiti dalla storia (case-loader)
       case "teo":     return false;                                    // teo: dialoghi gestiti dalla storia (case-loader)
-      case "fornaio": return av("parcel");                             // gives the parcel
+      case "fornaio": return startOffered("parcel");                   // gives the parcel
       case "marinaio":return act("parcel")&&hasFlag("hasParcel");      // receives it
-      case "nico":    return av("oldfriend")||(act("oldfriend")&&hasFlag("keyring"));
-      case "boy":     return av("kids");                               // starts the quarrel quest
+      case "nico":    return startOffered("oldfriend")||(act("oldfriend")&&hasFlag("keyring"));
+      case "boy":     return startOffered("kids");                     // starts the quarrel quest
       case "girl":    return act("kids")&&QUESTS.kids.step>=2;         // make up (after ball)
       default: return false;
     }
+  }
+  // Micro-quest rotation order: only the FIRST not-yet-done micro-quest is offered at a time.
+  const MICRO_ORDER = ["cat","shell","parcel","kids","oldfriend","photos"];
+  function microDone(id){ return QUESTS[id] && QUESTS[id].status==="done"; }
+  function currentMicroSlot(){
+    for(const id of MICRO_ORDER){ if(!microDone(id)) return id; }
+    return null;   // all micro-quests completed
   }
   // ---- ORIGINAL micro-quests (cat/shell/parcel/kids/oldfriend/photos): are we mid-quest, and who closes it? ----
   // These live OUTSIDE the SQ slot engine, so they need their own "one yellow at a time" gate.
@@ -1442,16 +1459,26 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
     if(!npcHasQuest(n)) return null;
     return "casual";
   }
+  // Can this NPC START a NEW micro-quest right now? Only if its yellow "!" is actually visible
+  // (i.e. no other yellow quest is running). This keeps interaction in sync with the marker, so an
+  // NPC never hands you a quest while its "!" is hidden by the one-yellow-at-a-time rule.
+  function canStartMicro(npcId, questId){
+    const microNpc = (typeof microQuestActiveNpc==="function") ? microQuestActiveNpc() : null;
+    const sqRunning = (SQ.acceptedNpc!=null) || (typeof sqBusy==="function" && sqBusy());
+    if(microNpc!==null || sqRunning) return false;          // something else running -> not free
+    if(questId && currentMicroSlot()!==questId) return false; // only the current rotation slot may start
+    return true;
+  }
 
   // ================= NPCs =================
   const npcs = [
     { id:"nonna", tx:2, ty:5, dir:"down", color:"#d060a0", colorDk:"#902c68", kind:"ow", hairCol:"#e8e8ec", pants:"#7a4a6a", nameKey:"nonna",
       lines:()=>{ if(questState===0) return t("nonna0"); if(questState===1) return t("nonna1"); if(questState===2) return t("nonna2"); return t("nonna3"); },
-      onTalk:()=>{ if(questState===0 && QUESTS.cat.status==="available"){questState=1;qStart("cat");saveGame();} else if(questState===2){questState=3;qComplete("cat");saveGame();} } },
+      onTalk:()=>{ if(questState===0 && QUESTS.cat.status==="available" && canStartMicro("nonna","cat")){ askYesNo(t("accept_quest_q"), ()=>{ questState=1; qStart("cat"); saveGame(); }); } else if(questState===2){questState=3;qComplete("cat");saveGame();} } },
     { id:"vito", tx:35, ty:19, dir:"down", color:"#5088d0", colorDk:"#2c5490", kind:"om", pants:"#5a5040", nameKey:"vito", lines:()=>t("vito_l"), onTalk:()=>{} },
     { id:"pino", tx:28, ty:24, dir:"down", color:"#40a0a0", colorDk:"#2c7070", kind:"ym", hairCol:"#6a4a2a", pants:"#3a4a6a", nameKey:"pino",
       lines:()=>{ if(shellQuest===0) return t("pino0"); if(shellQuest===1) return t("pino1"); if(shellQuest===2) return t("pino2"); return t("pino3"); },
-      onTalk:()=>{ if(shellQuest===0 && QUESTS.shell.status==="available"){shellQuest=1;qStart("shell");saveGame();} else if(shellQuest===2){shellQuest=3;qComplete("shell");saveGame();} } },
+      onTalk:()=>{ if(shellQuest===0 && QUESTS.shell.status==="available" && canStartMicro("pino","shell")){ askYesNo(t("accept_quest_q"), ()=>{ shellQuest=1; qStart("shell"); saveGame(); }); } else if(shellQuest===2){shellQuest=3;qComplete("shell");saveGame();} } },
     { id:"lena", tx:8, ty:19, dir:"down", color:"#50b070", colorDk:"#2c7048", kind:"yw", hairCol:"#e0c040", pants:"#3a6a48", nameKey:"lena", lines:()=>t("lena_l"), onTalk:()=>{}, speed:24,
       home:[2,20], routine:[ {h:[7,9],go:[17,10]}, {h:[9,13],go:[30,8]}, {h:[13,15],go:[9,23]}, {h:[15,19],go:[8,29]}, {h:[19,24],go:[2,20]}, {h:[0,7],go:[2,20]} ] },
     { id:"marinaio", tx:28, ty:29, dir:"down", color:"#4060a0", colorDk:"#243c68", kind:"om", pants:"#2a3a4a", nameKey:"marinaio",
@@ -1471,7 +1498,7 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
     // ---- Children ----
     { id:"boy", tx:9, ty:18, dir:"right", color:"#e05030", colorDk:"#a02c18", kind:"boy", pants:"#2a4a7a", nameKey:"bimbo",
       lines:()=>{ if(QUESTS.kids.status==="done") return t("bimbo_l"); return t("kid_a0"); },
-      onTalk:()=>{ const q=QUESTS.kids; if(q.status==="available"){ qStart("kids"); q.step=1; } }, speed:30,
+      onTalk:()=>{ const q=QUESTS.kids; if(q.status==="available" && canStartMicro("boy","kids")){ askYesNo(t("accept_quest_q"), ()=>{ qStart("kids"); q.step=1; saveGame(); }); } }, speed:30,
       home:[9,18], routine:[ {h:[0,6],go:[9,18]},{h:[6,12],go:[13,18]},{h:[12,18],go:[9,18]},{h:[18,24],go:[13,18]} ] },
     { id:"girl", tx:24, ty:20, dir:"down", color:"#e0a0c0", colorDk:"#a05888", kind:"girl", hairCol:"#6a4a2a", pants:"#c04888", nameKey:"bimba",
       lines:()=>{ if(QUESTS.kids.status==="done") return t("bimba_l"); if(QUESTS.kids.step>=2) return t("kids_done_l0"); return t("kid_b0"); },
@@ -1480,14 +1507,14 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
     // ---- side-quest NPCs ----
     { id:"fornaio", tx:30, ty:7, dir:"down", color:"#e0c080", colorDk:"#a88848", kind:"om", nameKey:"fornaio",
       lines:()=>{ return hasFlag("parcelDone")? t("fornaio1") : t("fornaio0"); },
-      onTalk:()=>{ const q=QUESTS.parcel; if(q.status==="available"){ qStart("parcel"); setFlag("hasParcel"); banner(t("parcel_got")); } } },
+      onTalk:()=>{ const q=QUESTS.parcel; if(q.status==="available" && canStartMicro("fornaio","parcel")){ askYesNo(t("accept_quest_q"), ()=>{ qStart("parcel"); setFlag("hasParcel"); banner(t("parcel_got")); saveGame(); }); } } },
     { id:"nico", tx:12, ty:25, dir:"down", color:"#40b0a0", colorDk:"#2c7a70", kind:"ym", hairCol:"#3a2a1a", pants:"#3a4a5a", nameKey:"nico",
       lines:()=>{ return QUESTS.oldfriend.status==="done"? t("nico1") : t("nico0"); },
-      onTalk:()=>{ const q=QUESTS.oldfriend; if(q.status==="available"){ qStart("oldfriend"); } else if(q.status==="active" && hasFlag("keyring")){ qComplete("oldfriend"); } } },
+      onTalk:()=>{ const q=QUESTS.oldfriend; if(q.status==="available" && canStartMicro("nico","oldfriend")){ askYesNo(t("accept_quest_q"), ()=>{ qStart("oldfriend"); saveGame(); }); } else if(q.status==="active" && hasFlag("keyring")){ qComplete("oldfriend"); } } },
     // ---- Chapter 1 story NPCs ----
     { id:"mamma", tx:6, ty:12, dir:"down", color:"#c060a0", colorDk:"#8a2c6a", kind:"ow", hairCol:"#e8e8ec", pants:"#7a3a6a", nameKey:"mamma",
-      lines:()=>t("mamma1"),
-      onTalk:()=>{} },
+      lines:()=>{ if(QUESTS.photos && QUESTS.photos.status==="available") return t("mamma_photos"); return t("mamma1"); },
+      onTalk:()=>{ const q=QUESTS.photos; if(q && q.status==="available" && canStartMicro("mamma","photos")){ askYesNo(t("accept_quest_q"), ()=>{ qStart("photos"); banner(t("photos_start")); saveGame(); }); } } },
     { id:"capo", tx:20, ty:24, dir:"down", color:"#5a7a3a", colorDk:"#3a5424", kind:"om", pants:"#3a3a2a", nameKey:"capo",
       lines:()=>t("capo0"),
       onTalk:()=>{} },
@@ -2084,8 +2111,11 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
       const n=npcAt(fx,fy);
       if(n){ if(n.dir!==undefined) n.dir=opposite(player.dir);
         const sqm = (typeof sqNpcMission==="function") ? sqNpcMission(n.id) : null;
+        const kind = npcQuestKind(n);   // single source of truth: matches the on-screen "!" exactly
         const storyActive = (typeof caseActiveFor==="function" && caseActiveFor(n.id)) || (typeof introActiveFor==="function" && introActiveFor(n.id)) || npcHasQuest(n);
-        if(sqm && !storyActive){ showExamine((sqm.giver&&sqm.giver[lang])||["..."], ()=>sqStart(sqm)); return; }
+        // Offer the SQ side-quest ONLY if this NPC's yellow marker is actually shown right now
+        // (kind==="casual") and it's not a micro/story NPC. Keeps interaction == marker.
+        if(sqm && kind==="casual" && !storyActive){ showExamine((sqm.giver&&sqm.giver[lang])||["..."], ()=>{ askYesNo(t("accept_quest_q"), ()=>sqStart(sqm)); }); return; }
         openDialog(n); return; }
       const fc=tileAt(fx,fy);
       // board the ship: standing at the end of the pier, facing the moored ferry
@@ -2119,7 +2149,7 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
       if(!insideKey && !shell.found && shellQuest>=1 && fx===shell.tx && fy===shell.ty){ shell.found=true; shellQuest=2; SFX.pickup(); banner(t("found_shell")); saveGame(); return; }
       if(!insideKey && !ball.taken && QUESTS.kids.status==="active" && QUESTS.kids.step>=1 && fx===ball.tx && fy===ball.ty){ ball.taken=true; SFX.pickup(); QUESTS.kids.step=2; banner(t("ball_found")); saveGame(); return; }
       if(!insideKey && !keyring.taken && QUESTS.oldfriend.status==="active" && fx===keyring.tx && fy===keyring.ty){ keyring.taken=true; setFlag("keyring"); SFX.pickup(); banner(t("keyring_found")); saveGame(); return; }
-      if(!insideKey && (QUESTS.photos.status==="active"||QUESTS.photos.status==="available")){ for(const ph of photos){ if(!ph.taken && fx===ph.tx && fy===ph.ty){ ph.taken=true; SFX.pickup(); if(QUESTS.photos.status==="available") qStart("photos"); banner(t("photo_found")); if(photosFound()>=3){ qComplete("photos"); banner(t("photos_msg")); } saveGame(); return; } } }
+      if(!insideKey && QUESTS.photos.status==="active"){ for(const ph of photos){ if(!ph.taken && fx===ph.tx && fy===ph.ty){ ph.taken=true; SFX.pickup(); banner(t("photo_found")); if(photosFound()>=3){ qComplete("photos"); banner(t("photos_msg")); } saveGame(); return; } } }
       if(!insideKey && typeof tryPickupClue==="function" && tryPickupClue(fx,fy)){ return; }
     }
 
@@ -2182,7 +2212,7 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
     if(!shell.found && shellQuest>=1 && tx===shell.tx && ty===shell.ty) return true;
     if(typeof ball!=="undefined" && !ball.taken && QUESTS.kids && QUESTS.kids.status==="active" && QUESTS.kids.step>=1 && tx===ball.tx && ty===ball.ty) return true;
     if(typeof keyring!=="undefined" && !keyring.taken && QUESTS.oldfriend && QUESTS.oldfriend.status==="active" && tx===keyring.tx && ty===keyring.ty) return true;
-    if(typeof photos!=="undefined" && QUESTS.photos && (QUESTS.photos.status==="active"||QUESTS.photos.status==="available")){
+    if(typeof photos!=="undefined" && QUESTS.photos && QUESTS.photos.status==="active"){
       for(const ph of photos){ if(!ph.taken && tx===ph.tx && ty===ph.ty) return true; }
     }
     return false;
@@ -2444,7 +2474,7 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
       if(shellQuest>=1 && !shell.found) push(shell.ty, ()=>drawShell(shell.tx*TILE-cam.x, shell.ty*TILE-cam.y, shell.animT));
       if(QUESTS.kids.status==="active" && QUESTS.kids.step>=1 && !ball.taken) push(ball.ty, ()=>drawBall(ball.tx*TILE-cam.x, ball.ty*TILE-cam.y));
       if(QUESTS.oldfriend.status==="active" && !keyring.taken) push(keyring.ty, ()=>drawKeyring(keyring.tx*TILE-cam.x, keyring.ty*TILE-cam.y));
-      photos.forEach(ph=>{ if(!ph.taken && (QUESTS.photos.status==="active"||QUESTS.photos.status==="available")) push(ph.ty, ()=>drawPhoto(ph.tx*TILE-cam.x, ph.ty*TILE-cam.y)); });
+      photos.forEach(ph=>{ if(!ph.taken && QUESTS.photos.status==="active") push(ph.ty, ()=>drawPhoto(ph.tx*TILE-cam.x, ph.ty*TILE-cam.y)); });
       animals.forEach(a=> push(Math.round(a.py/TILE), ()=>drawAnimal(a, a.px-cam.x, a.py-cam.y)));
     }
     // ambient fauna (all areas): ground critters depth-sorted; flyers/jumpers drawn on top later
@@ -2506,7 +2536,7 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
     const onShell=(!insideKey && shellQuest>=1 && !shell.found && fx===shell.tx && fy===shell.ty);
     const onBall=(!insideKey && QUESTS.kids.status==="active" && QUESTS.kids.step>=1 && !ball.taken && fx===ball.tx && fy===ball.ty);
     const onKey=(!insideKey && QUESTS.oldfriend.status==="active" && !keyring.taken && fx===keyring.tx && fy===keyring.ty);
-    const onPhoto=(!insideKey && (QUESTS.photos.status==="active"||QUESTS.photos.status==="available") && photos.some(ph=>!ph.taken && fx===ph.tx && fy===ph.ty));
+    const onPhoto=(!insideKey && QUESTS.photos.status==="active" && photos.some(ph=>!ph.taken && fx===ph.tx && fy===ph.ty));
     const onShip=(!insideKey && inTown() && Math.abs(fx-ship.tx)<=2 && Math.abs(fy-ship.ty)<=2);
     const onDoor=(!insideKey && ((inTown() && !!DOORS[fc]) || (!inTown() && /[1-9]/.test(fc) && AREA_INTERIOR[areaKey]))) || (insideKey && fc==="e");
     if(n||onCat||onShell||onBall||onKey||onPhoto||onShip||onDoor){ const bx=player.px-cam.x, by=player.py-cam.y; textOutlined("A",bx+6,by-8,"#fff","#000"); }
@@ -4471,11 +4501,14 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
     if(src){ SQ_KINDS.forEach(k=>{ SQ.pool[k] = (src[k]||[]).slice(); }); return; }
     SQ_KINDS.forEach(k=>{ SQ.pool[k]=[]; for(let i=0;i<4;i++){ SQ.pool[k].push({ id:k+"_ph"+i, kind:k, title:{it:k+" #"+i, en:k+" #"+i}, giver:{it:["..."],en:["..."]} }); } });
   }
+  // NPCs that are already dedicated micro-quest givers/receivers: they must NEVER also receive an SQ
+  // side-quest (no "double hat" -> a single yellow source per NPC).
+  const MICRO_GIVER_NPCS = new Set(["nonna","pino","boy","girl","fornaio","marinaio","nico","mamma"]);
   function sqCandidateNpcs(area){
     const all=[];
     if(!area || area==="town"){ npcs.forEach(n=>{ if(n) n._area="town"; all.push(n); }); }
     for(const ak in AREA_NPCS){ (AREA_NPCS[ak]||[]).forEach(n=>{ if(n){ n._area=ak; all.push(n); } }); }
-    let list = all.filter(n=> n && n.id && !n.caseNpc && !n.fishing);
+    let list = all.filter(n=> n && n.id && !n.caseNpc && !n.fishing && !MICRO_GIVER_NPCS.has(n.id));
     if(area) list = list.filter(n=> n._area===area);
     return list;
   }
