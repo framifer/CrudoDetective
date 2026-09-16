@@ -149,7 +149,7 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
       interro_tomorrow:["Le ho gia' detto tutto","per oggi. Torni domani."], interro_tomorrow_b:"Si e' chiuso. Riprova domani (fai passare la notte).",
       deduce_q1:"Collega un indizio...", deduce_q2:"...con quale altro?",
       confront_intro:"E' l'ora della verita'.", confront_suspect:"SOSPETTO", confront_you:"TU", confront_q:"Quale prova usi?", confront_win:"Ha ceduto. Confessa tutto.", confront_lose:"Hai perso il filo. Ti liquida.",
-      tail_label:"SOSPETTO", tail_intro:"Seguilo. Ne' troppo vicino, ne' troppo lontano.", tail_ok:"L'hai seguito senza farti notare.",
+      tail_label:"SOSPETTO", tail_intro:"Seguilo a distanza. Tieni A per andare furtivo e lento.", tail_ok:"L'hai seguito senza farti notare.",
       fight_intro:"Ti aggredisce!", fight_win:"L'hai messo al tappeto.", fight_lose:"Ti ha steso... ti rialzi.", fight_you:"CRUDO", fight_enemy:"AGGRESSORE", fight_hint:"A: colpisci  B: schiva",
       sq_done:"Incarico risolto.", sq_fail:"Non e' andata. Riprova.",
       moral_case5_q:"Un testimone ti implora di tacere. Che fai?", moral_case5_a:"Verbalizzo tutto. La legge e' legge.", moral_case5_b:"Taccio. Certe ferite non vanno riaperte.",
@@ -271,7 +271,7 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
       interro_tomorrow:["I've told you enough","for today. Come tomorrow."], interro_tomorrow_b:"They clammed up. Try tomorrow (let the night pass).",
       deduce_q1:"Connect one clue...", deduce_q2:"...with which other?",
       confront_intro:"It's the moment of truth.", confront_suspect:"SUSPECT", confront_you:"YOU", confront_q:"Which proof do you use?", confront_win:"They break. Full confession.", confront_lose:"You lost the thread. They brush you off.",
-      tail_label:"SUSPICION", tail_intro:"Follow them. Not too close, not too far.", tail_ok:"You followed them unseen.",
+      tail_label:"SUSPICION", tail_intro:"Follow at a distance. Hold A to sneak slowly.", tail_ok:"You followed them unseen.",
       fight_intro:"They attack you!", fight_win:"You put them down.", fight_lose:"They dropped you... you get back up.", fight_you:"CRUDO", fight_enemy:"ATTACKER", fight_hint:"A: strike  B: dodge",
       sq_done:"Job done.", sq_fail:"Didn't work out. Try again.",
       moral_case5_q:"A witness begs you to stay quiet. What do you do?", moral_case5_a:"I log it all. The law is the law.", moral_case5_b:"I stay quiet. Some wounds shouldn't reopen.",
@@ -613,7 +613,7 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
 
   // ---- Scooter (Vespa) toggle: faster movement + engine sound + headlight at night ----
   function toggleScooter(){
-    if(!scooterUnlocked){ scooterUnlocked=true; banner(t("scooter_cheat")); if(typeof sqActivate==="function") sqActivate(); }   // TEST CHEAT: unlock on SELECT
+    if(!scooterUnlocked){ banner(t("scooter_locked")); return; }   // scooter is granted by the foot-chase quest (case_chase)
     if(player.swimming){ banner(t("scooter_water")); return; }
     player.scooter=!player.scooter;
     if(player.scooter){ SFX.unlock(); SFX.scooterStart(); banner(t("scooter_on")); }
@@ -718,6 +718,8 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
   const MOVE_SPEED=62;
   const SCOOTER_SPEED=118;   // scooter is noticeably faster
   const BOAT_SPEED=100;      // boat cruises the open sea
+  const SNEAK_SPEED=34;      // hold A: slow, stealthy walk
+  const RUN_SPEED=92;        // hold B: run (faster than walk, slower than scooter)
   const cam={ x:0, y:0 };
 
   // ================= TOWN MAP (44x40, sea to the south) =================
@@ -1589,10 +1591,10 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
         return;
       }
       // grid view: move selection with the d-pad
-      if(consumePress("left")){ mapNav.col=(mapNav.col+2)%3; SFX.up&&SFX.up(); }
-      if(consumePress("right")){ mapNav.col=(mapNav.col+1)%3; SFX.up&&SFX.up(); }
-      if(consumePress("up")){ mapNav.row=(mapNav.row+1)%2; SFX.up&&SFX.up(); }
-      if(consumePress("down")){ mapNav.row=(mapNav.row+1)%2; SFX.up&&SFX.up(); }
+      if(consumePress("left")){ do{ mapNav.col=(mapNav.col+2)%3; }while(!AREA_GRID[mapNav.col+","+mapNav.row]); SFX.up&&SFX.up(); }
+      if(consumePress("right")){ do{ mapNav.col=(mapNav.col+1)%3; }while(!AREA_GRID[mapNav.col+","+mapNav.row]); SFX.up&&SFX.up(); }
+      if(consumePress("up")){ do{ mapNav.row=(mapNav.row+2)%3; }while(!AREA_GRID[mapNav.col+","+mapNav.row]); SFX.up&&SFX.up(); }
+      if(consumePress("down")){ do{ mapNav.row=(mapNav.row+1)%3; }while(!AREA_GRID[mapNav.col+","+mapNav.row]); SFX.up&&SFX.up(); }
       if(consumePress("a")){ const k=AREA_GRID[mapNav.col+","+mapNav.row]; if(k){ mapNav.zoom=k; SFX.confirm(); } return; }
       if(consumePress("b")||consumePress("start")){ menu.showMap=false; SFX.cancel(); }
       return;
@@ -1725,7 +1727,8 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
         if(tryMove(ntx,nty)) { player.moving=true; }
       }
     } else {
-      const tX=player.tx*TILE,tY=player.ty*TILE,st=(player.boat?BOAT_SPEED:(player.swimming?MOVE_SPEED*0.62:(player.scooter?SCOOTER_SPEED:MOVE_SPEED)))*dt;
+      const footSpeed = keys.a ? SNEAK_SPEED : (keys.b ? RUN_SPEED : MOVE_SPEED);   // hold A=sneak, B=run
+      const tX=player.tx*TILE,tY=player.ty*TILE,st=(player.boat?BOAT_SPEED:(player.swimming?MOVE_SPEED*0.62:(player.scooter?SCOOTER_SPEED:footSpeed)))*dt;
       if(player.px<tX)player.px=Math.min(tX,player.px+st); if(player.px>tX)player.px=Math.max(tX,player.px-st);
       if(player.py<tY)player.py=Math.min(tY,player.py+st); if(player.py>tY)player.py=Math.max(tY,player.py-st);
       if(player.px===tX&&player.py===tY){ player.moving=false; if(insideKey && tileAt(player.tx,player.ty)==="e"){ exitInterior(); return; } if(!insideKey && !player.swimming) saveGame(); }
@@ -3304,9 +3307,9 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
       textCenter(t("map_back"),W/2,H-22,"#c8c8d0");
       return;
     }
-    // ---- GRID: 3x2 of all areas ----
-    const gap=4, originX=12, originY=28;
-    const cellW=Math.floor((W-24-2*gap)/3), cellH=40;
+    // ---- GRID: all areas (3 cols x up to 3 rows; Open Sea sits at row 2) ----
+    const gap=3, originX=12, originY=26;
+    const cellW=Math.floor((W-24-2*gap)/3), cellH=31;
     for(const k in AREA_GRID){ const p=k.split(","); const cx=parseInt(p[0]), cy=parseInt(p[1]); const areaKey2=AREA_GRID[k];
       const rows=AREAS[areaKey2]; if(!rows) continue;
       const px0=originX+cx*(cellW+gap), py0=originY+cy*(cellH+gap);
