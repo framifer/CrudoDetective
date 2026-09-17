@@ -141,6 +141,8 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
       menu_rules:"REGOLE DI GIOCO", menu_exit:"ESCI DAL GIOCO",
       j_status:"Stato:", j_status_done:"completata", j_status_active:"in corso", j_status_open:"disponibile", j_completed:"Missione completata.",
       j_tag_red:"[STORIA - rossa]", j_tag_yellow:"[EXTRA - gialla]",
+      j_completed_title:"MISSIONI COMPLETATE", j_done_red:"CENTRALI COMPLETATE", j_done_yellow:"MICRO COMPLETATE",
+      j_none_active:"(nessuna al momento)", j_none_done:"(nessuna ancora)",
       scooter_on:"Sali sul motorino. Rombo acceso!", scooter_off:"Scendi dal motorino.", scooter_water:"Non puoi andare in motorino in acqua!", scooter_boat:"Non in barca! Prima attracca a terra.",
       scooter_locked:"Non hai (ancora) un motorino.",
       scooter_reward0:"Il sindaco: 'Ti serve un mezzo.'", scooter_reward1:"Ti presta un motorino rosso.", scooter_reward2:"Premi SELECT per salire e scendere.",
@@ -303,6 +305,8 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
       menu_rules:"GAME RULES", menu_exit:"EXIT GAME",
       j_status:"Status:", j_status_done:"completed", j_status_active:"in progress", j_status_open:"available", j_completed:"Quest completed.",
       j_tag_red:"[STORY - red]", j_tag_yellow:"[EXTRA - yellow]",
+      j_completed_title:"COMPLETED QUESTS", j_done_red:"CENTRAL COMPLETED", j_done_yellow:"MICRO COMPLETED",
+      j_none_active:"(none right now)", j_none_done:"(none yet)",
       scooter_on:"You hop on the scooter. Vroom!", scooter_off:"You get off the scooter.", scooter_water:"You can't ride a scooter in the water!", scooter_boat:"Not in the boat! Dock on land first.",
       scooter_locked:"You don't have a scooter (yet).",
       scooter_reward0:"The mayor: 'You need a ride.'", scooter_reward1:"He lends you a red scooter.", scooter_reward2:"Press SELECT to hop on and off.",
@@ -2010,21 +2014,46 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
     if(!player.boat && (areaKey==="opensea"||areaKey==="island"||areaKey==="cape") && tileAt(player.tx,player.ty)==="~"){ player.boat=true; }
     scooterUnlocked=!!d.scooterUnlocked; islandUnlocked=!!d.islandUnlocked; discovered.clear(); discovered.add("town"); (d.discovered||[]).forEach(a=>discovered.add(a)); discovered.add(areaKey); resetWeather(); return true;}catch(e){return false;} }
   function resetProgress(){ areaKey="town"; useMap(TOWN); player.tx=21; player.ty=31; player.px=21*TILE; player.py=31*TILE; player.dir="up"; player.moving=false;
-    season="spring"; dayCount=0; scooterUnlocked=false; islandUnlocked=false; discovered.clear(); discovered.add("town"); player.scooter=false; player.boat=false; if(typeof seaDone!=="undefined"){ for(const k in seaDone) delete seaDone[k]; } questState=0; cat.found=false; shellQuest=0; shell.found=false; bike.taken=false; ball.taken=false; keyring.taken=false; photos.forEach(p=>p.taken=false); insideKey=null; if(window.CASE_REF){ window.CASE_REF.closedUntil={}; window.CASE_REF.deduced={}; window.CASE_REF.reconstructed={}; window.CASE_REF.morals={}; window.CASE_REF.fought={}; window.CASE_REF.chaseCaught={}; } if(window.SQ_REF){ SQ.done={}; SQ_KINDS.forEach(k=>SQ.queueIdx[k]=0); } resetQuests(); resetWeather(); sqInit(); saveGame(); }
+    season="spring"; dayCount=0; scooterUnlocked=false; islandUnlocked=false; discovered.clear(); discovered.add("town"); player.scooter=false; player.boat=false; if(typeof seaDone!=="undefined"){ for(const k in seaDone) delete seaDone[k]; } questState=0; cat.found=false; shellQuest=0; shell.found=false; bike.taken=false; ball.taken=false; keyring.taken=false; photos.forEach(p=>p.taken=false); insideKey=null; if(window.CASE_REF){ window.CASE_REF.closedUntil={}; window.CASE_REF.deduced={}; window.CASE_REF.reconstructed={}; window.CASE_REF.morals={}; window.CASE_REF.fought={}; window.CASE_REF.chaseCaught={}; } if(window.SQ_REF){ SQ.done={}; SQ.log=[]; SQ_KINDS.forEach(k=>SQ.queueIdx[k]=0); } resetQuests(); resetWeather(); sqInit(); saveGame(); }
 
   // ================= MENU =================
-  const menu = { open:false, index:0, showMap:false, showJournal:false, showNotebook:false, showRules:false, rulesPage:0, journalSel:0, journalDetail:null };
+  const menu = { open:false, index:0, showMap:false, showJournal:false, showNotebook:false, showRules:false, rulesPage:0,
+                 jView:"main", jSel:0, jDoneMenuSel:0, jDetail:null };
   const mapNav = { zoom:null, col:1, row:1 };   // zoom=null -> grid view; else zoomed area key
   const MENU_KEYS = ["menu_map","menu_journal","menu_notebook","menu_lang","menu_rules","menu_exit"];
   // Build a flat, navigable list of quests for the Journal: central story (red) + side/micro (yellow).
-  function journalEntries(){
+  // ---- Journal data helpers ----
+  // A journal item: { kind:"red"|"yellow", id, title, status, step }
+  function jItem(kind,q,id){ return { kind:kind, id:id, title:t(q.nameK), status:q.status, step:q.steps[q.step] }; }
+  // RED story quests currently in play (not done, not locked) -> what to do now.
+  function journalActiveRed(){
     const out=[];
-    // red story quests (case)
-    QORDER.forEach(k=>{ const q=QUESTS[k]; if(q.type==="case" && q.status!=="locked"){
-      out.push({ kind:"red", id:k, title:t(q.nameK), status:q.status, step:q.steps[q.step] }); } });
-    // yellow: main-type + side-type micro-quests that are visible
-    QORDER.forEach(k=>{ const q=QUESTS[k]; if((q.type==="main"||q.type==="side"||q.type==="intro") && q.status!=="locked"){
-      out.push({ kind:"yellow", id:k, title:t(q.nameK), status:q.status, step:q.steps[q.step] }); } });
+    QORDER.forEach(k=>{ const q=QUESTS[k]; if(q.type==="case" && q.status!=="locked" && q.status!=="done") out.push(jItem("red",q,k)); });
+    return out;
+  }
+  // YELLOW quests in progress NOW: the accepted/running SQ side-quest + the current micro-quest (if active).
+  function journalActiveYellow(){
+    const out=[];
+    // micro-quests (fixed) currently active/available-in-progress
+    ["cat","shell","parcel","kids","oldfriend","photos","intro"].forEach(k=>{ const q=QUESTS[k];
+      if(q && (q.status==="active")) out.push(jItem("yellow",q,k)); });
+    // SQ side-quest currently accepted/running
+    if(SQ.acceptedNpc){ const m=SQ.byNpc[SQ.acceptedNpc]; if(m){ out.push({ kind:"yellow", id:m.id, title:(m.title&&m.title[lang])||m.id, status:"active", step:(m.giver&&m.giver[lang]?m.giver[lang].join(" "):"") }); } }
+    return out;
+  }
+  // COMPLETED red story quests, chronological (QORDER = story order).
+  function journalDoneRed(){
+    const out=[];
+    QORDER.forEach(k=>{ const q=QUESTS[k]; if(q.type==="case" && q.status==="done") out.push(jItem("red",q,k)); });
+    return out;
+  }
+  // COMPLETED yellow: fixed micro-quests done (in MICRO_ORDER) + SQ side-quests from SQ.log (chronological).
+  function journalDoneYellow(){
+    const out=[];
+    (typeof MICRO_ORDER!=="undefined"?MICRO_ORDER:["cat","shell","parcel","kids","oldfriend","photos"]).forEach(k=>{
+      const q=QUESTS[k]; if(q && q.status==="done") out.push(jItem("yellow",q,k)); });
+    (SQ.log||[]).forEach(e=>{ out.push({ kind:"yellow", id:e.id, title:(e.title&&e.title[lang])||e.id, status:"done",
+      step:(e.giver&&e.giver[lang]?e.giver[lang].join(" "):"") }); });
     return out;
   }
   // Rules pages (localized): each page = {h, lines}. Mirrors game_rules.json (inlined for offline play).
@@ -2041,8 +2070,8 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
       en:{h:"Saving",lines:["The game saves itself,","all the time.","'EXIT GAME' saves and","returns to the main menu."]} },
   ];
   const RULES_PAGES = RULES_PAGES_DATA;   // alias used by updateMenu
-  function openMenu(){ menu.open=true; menu.index=0; menu.showMap=false; menu.showJournal=false; menu.showNotebook=false; menu.showRules=false; menu.rulesPage=0; menu.journalSel=0; menu.journalDetail=null; SFX.confirm(); }
-  function closeMenu(){ menu.open=false; menu.showMap=false; menu.showJournal=false; menu.showNotebook=false; menu.showRules=false; menu.journalDetail=null; SFX.cancel(); }
+  function openMenu(){ menu.open=true; menu.index=0; menu.showMap=false; menu.showJournal=false; menu.showNotebook=false; menu.showRules=false; menu.rulesPage=0; menu.jView="main"; menu.jSel=0; menu.jDoneMenuSel=0; menu.jDetail=null; SFX.confirm(); }
+  function closeMenu(){ menu.open=false; menu.showMap=false; menu.showJournal=false; menu.showNotebook=false; menu.showRules=false; menu.jDetail=null; SFX.cancel(); }
   function updateMenu(dt){
     if(menu.showMap){
       if(mapNav.zoom){
@@ -2060,17 +2089,42 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
       return;
     }
     if(menu.showJournal){
-      const entries=journalEntries();
-      if(menu.journalDetail!==null){
-        // detail view: B goes back to the list
-        if(consumePress("b")||consumePress("start")){ menu.journalDetail=null; SFX.cancel(); }
+      // ---- JOURNAL navigation state machine ----
+      // detail view (works in any list view): B goes back to the list
+      if(menu.jDetail!==null){
+        if(consumePress("b")||consumePress("start")){ menu.jDetail=null; SFX.cancel(); }
         return;
       }
-      if(consumePress("up")){ if(entries.length){ menu.journalSel=(menu.journalSel-1+entries.length)%entries.length; SFX.up&&SFX.up(); } }
-      if(consumePress("down")){ if(entries.length){ menu.journalSel=(menu.journalSel+1)%entries.length; SFX.down&&SFX.down(); } }
-      if(consumePress("a")){ if(entries.length){ menu.journalDetail=menu.journalSel; SFX.confirm(); } }
-      if(consumePress("b")||consumePress("start")){ menu.showJournal=false; menu.journalDetail=null; SFX.cancel(); }
-      return;
+      if(menu.jView==="main"){
+        // main journal: sections + a "completed" entry that opens a submenu.
+        // Navigable items = active red + active yellow + 1 pseudo-item "completed".
+        const red=journalActiveRed(), yel=journalActiveYellow();
+        const total=red.length+yel.length+1;   // +1 for the "completed" entry
+        if(consumePress("up")){ menu.jSel=(menu.jSel-1+total)%total; SFX.up&&SFX.up(); }
+        if(consumePress("down")){ menu.jSel=(menu.jSel+1)%total; SFX.down&&SFX.down(); }
+        if(consumePress("a")){
+          if(menu.jSel<red.length+yel.length){ menu.jDetail=menu.jSel; SFX.confirm(); }
+          else { menu.jView="done_menu"; menu.jDoneMenuSel=0; SFX.confirm(); }   // open "completed" submenu
+        }
+        if(consumePress("b")||consumePress("start")){ menu.showJournal=false; menu.jDetail=null; SFX.cancel(); }
+        return;
+      }
+      if(menu.jView==="done_menu"){
+        if(consumePress("up")){ menu.jDoneMenuSel=(menu.jDoneMenuSel+1)%2; SFX.up&&SFX.up(); }
+        if(consumePress("down")){ menu.jDoneMenuSel=(menu.jDoneMenuSel+1)%2; SFX.down&&SFX.down(); }
+        if(consumePress("a")){ menu.jView=(menu.jDoneMenuSel===0)?"done_red":"done_yellow"; menu.jSel=0; SFX.confirm(); }
+        if(consumePress("b")||consumePress("start")){ menu.jView="main"; SFX.cancel(); }
+        return;
+      }
+      // done_red / done_yellow: navigable list, A = detail, B = back to submenu
+      {
+        const list=(menu.jView==="done_red")?journalDoneRed():journalDoneYellow();
+        if(consumePress("up")){ if(list.length){ menu.jSel=(menu.jSel-1+list.length)%list.length; SFX.up&&SFX.up(); } }
+        if(consumePress("down")){ if(list.length){ menu.jSel=(menu.jSel+1)%list.length; SFX.down&&SFX.down(); } }
+        if(consumePress("a")){ if(list.length){ menu.jDetail=menu.jSel; SFX.confirm(); } }
+        if(consumePress("b")||consumePress("start")){ menu.jView="done_menu"; SFX.cancel(); }
+        return;
+      }
     }
     if(menu.showNotebook){ if(consumePress("b")||consumePress("start")){ menu.showNotebook=false; SFX.cancel(); } return; }
     if(menu.showRules){
@@ -2085,7 +2139,7 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
     if(consumePress("b")||consumePress("start")){ closeMenu(); return; }
     if(consumePress("a")){
       const k=MENU_KEYS[menu.index];
-      if(k==="menu_journal"){ menu.showJournal=true; menu.journalSel=0; menu.journalDetail=null; SFX.confirm(); }
+      if(k==="menu_journal"){ menu.showJournal=true; menu.jView="main"; menu.jSel=0; menu.jDetail=null; SFX.confirm(); }
       else if(k==="menu_notebook"){ menu.showNotebook=true; SFX.confirm(); }
       else if(k==="menu_map"){ menu.showMap=true; mapNav.zoom=null; const gp=gridPosOf(areaKey); mapNav.col=gp[0]; mapNav.row=gp[1]; SFX.confirm(); }
       else if(k==="menu_lang"){ toggleLang(); }
@@ -3951,62 +4005,81 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
 
   // ---- MENU ----
   function drawJournal(){
-    ctx.fillStyle="#0e0e18"; ctx.fillRect(8,14,W-16,H-28);
-    ctx.strokeStyle="#f0f0e0"; ctx.lineWidth=1; ctx.strokeRect(9.5,15.5,W-19,H-31);
-    const entries=journalEntries();
-    // ---- DETAIL VIEW: explain the selected quest ----
-    if(menu.journalDetail!==null && entries[menu.journalDetail]){
-      const e=entries[menu.journalDetail];
-      const q=QUESTS[e.id];
+    const JBX=6, JBY=12, JBW=W-12, JBH=H-16;
+    ctx.fillStyle="#0e0e18"; ctx.fillRect(JBX,JBY,JBW,JBH);
+    ctx.strokeStyle="#f0f0e0"; ctx.lineWidth=1; ctx.strokeRect(JBX+1.5,JBY+1.5,JBW-3,JBH-3);
+    const JFOOT=JBY+JBH-11, JCOUNT=JBY+JBH-22;
+    ctx.font="8px monospace";
+    // Which list are we in? Resolve the current list + detail source.
+    let curList=null;
+    if(menu.jView==="done_red") curList=journalDoneRed();
+    else if(menu.jView==="done_yellow") curList=journalDoneYellow();
+    else if(menu.jView==="main") curList=journalActiveRed().concat(journalActiveYellow());
+    // ---- DETAIL VIEW ----
+    if(menu.jDetail!==null && curList && curList[menu.jDetail]){
+      const e=curList[menu.jDetail];
       textCenter(t("journal_title"), W/2, 18, "#f0d840");
       const col = e.kind==="red" ? "#ff6a5a" : "#f0d840";
-      // title (wrapped)
-      ctx.font="8px monospace";
-      let y=32;
-      text((e.kind==="red"? t("j_tag_red") : t("j_tag_yellow")), 14, y, col); y+=10;
-      wrapLines(e.title,26).forEach(l=>{ text(l,14,y,"#f0f0e0"); y+=10; });
+      let y=34;
+      text((e.kind==="red"? t("j_tag_red") : t("j_tag_yellow")), 12, y, col); y+=11;
+      wrapLines(e.title,28).forEach(l=>{ text(l,12,y,"#f0f0e0"); y+=10; });
       y+=4;
-      // status line
       const st = e.status==="done"? t("j_status_done") : (e.status==="active"? t("j_status_active") : t("j_status_open"));
-      text(t("j_status")+" "+st, 14, y, "#c8c8d0"); y+=12;
-      // description: current step (or done note) wrapped
+      text(t("j_status")+" "+st, 12, y, "#c8c8d0"); y+=12;
       const desc = e.status==="done" ? t("j_completed") : (e.step||"");
-      wrapLines(desc,26).forEach(l=>{ text(l,14,y,"#dfe8f2"); y+=10; });
-      textCenter(t("menu_hint"), W/2, H-18, "#c8c8d0");
+      wrapLines(desc,28).forEach(l=>{ text(l,12,y,"#dfe8f2"); y+=10; });
+      textCenter(t("menu_hint"), W/2, JFOOT, "#c8c8d0");
       return;
     }
-    // ---- LIST VIEW: navigable ----
-    textCenter(t("journal_title")+"  "+t("chapter")+" "+chapter, W/2, 18, "#f0d840");
-    if(entries.length===0){ text(t("q_none"),14,34,"#7a7a88"); textCenter(t("menu_hint"),W/2,H-18,"#c8c8d0"); return; }
-    // Build visual rows: section headers (RED / YELLOW) interleaved with the selectable entries.
-    const rows=[]; let prevKind=null;
-    entries.forEach((e,ei)=>{
-      if(e.kind!==prevKind){ rows.push({type:"header", kind:e.kind}); prevKind=e.kind; }
-      rows.push({type:"entry", ei:ei});
-    });
-    const rowH=11, top=28, visRows=11;
-    // find the visual row of the selected entry, then scroll to keep it visible
-    let selRow=rows.findIndex(r=>r.type==="entry" && r.ei===menu.journalSel);
-    if(selRow<0) selRow=0;
-    let start=0; if(selRow>=visRows) start=selRow-visRows+1;
-    for(let i=0;i<visRows && (start+i)<rows.length;i++){
-      const r=rows[start+i]; const y=top+i*rowH;
-      if(r.type==="header"){
-        const isRed=(r.kind==="red");
-        text(isRed? t("journal_case") : t("journal_side"), 12, y, isRed? "#ff6a5a" : "#f0d840");
-        continue;
-      }
-      const e=entries[r.ei]; const sel=(r.ei===menu.journalSel);
-      const dot = e.kind==="red" ? "#ff5040" : "#ffd020";
-      const mark = e.status==="done"?"[x]":(e.status==="active"?"[>]":"[ ]");
-      ctx.fillStyle=dot; ctx.fillRect(14,y+1,3,3);
-      const label=(sel?"> ":"  ")+mark+" "+e.title;
-      text(label.length>25?label.slice(0,24)+"\u2026":label, 20, y, sel?"#fff":"#a8b0bc");
+    // ---- SUBMENU: COMPLETED (two entries) ----
+    if(menu.jView==="done_menu"){
+      textCenter(t("j_completed_title"), W/2, 18, "#f0d840");
+      const opts=[{lab:t("j_done_red"),col:"#ff6a5a"},{lab:t("j_done_yellow"),col:"#f0d840"}];
+      opts.forEach((o,i)=>{ const sel=(i===menu.jDoneMenuSel); const y=48+i*16;
+        textCenter((sel?"> ":"")+o.lab+(sel?" <":""), W/2, y, sel?"#fff":o.col); });
+      textCenter(t("menu_hint"), W/2, JFOOT, "#c8c8d0");
+      return;
     }
-    if(entries.length>0){ textCenter((menu.journalSel+1)+"/"+entries.length, W/2, H-30, "#7a7a88"); }
-    textCenter(t("menu_hint"), W/2, H-18, "#c8c8d0");
+    // ---- COMPLETED LIST (red or yellow) ----
+    if(menu.jView==="done_red" || menu.jView==="done_yellow"){
+      const isRed=(menu.jView==="done_red");
+      textCenter(isRed? t("j_done_red") : t("j_done_yellow"), W/2, 18, isRed?"#ff6a5a":"#f0d840");
+      const list=curList;
+      if(!list.length){ text(t("j_none_done"),12,36,"#7a7a88"); textCenter(t("menu_hint"),W/2,JFOOT,"#c8c8d0"); return; }
+      const rowH=11, top=30, visRows=9;
+      let start=0; if(menu.jSel>=visRows) start=menu.jSel-visRows+1;
+      for(let i=0;i<visRows && (start+i)<list.length;i++){
+        const e=list[start+i]; const sel=(start+i)===menu.jSel; const y=top+i*rowH;
+        const dot=isRed?"#ff5040":"#ffd020";
+        ctx.fillStyle=dot; ctx.fillRect(12,y+1,3,3);
+        const label=(sel?"> ":"  ")+"[x] "+e.title;
+        text(label.length>25?label.slice(0,24)+"\u2026":label, 18, y, sel?"#fff":"#a8b0bc");
+      }
+      textCenter((menu.jSel+1)+"/"+list.length, W/2, JCOUNT, "#7a7a88");
+      textCenter(t("menu_hint"), W/2, JFOOT, "#c8c8d0");
+      return;
+    }
+    // ---- MAIN VIEW: active red + active yellow + "completed" entry ----
+    textCenter(t("journal_title")+"  "+t("chapter")+" "+chapter, W/2, 18, "#f0d840");
+    const red=journalActiveRed(), yel=journalActiveYellow();
+    const rowH=11; let y=30; let idx=0;
+    // section STORIA CENTRALE
+    text(t("journal_case"), 12, y, "#ff6a5a"); y+=rowH;
+    if(red.length===0){ text("   "+t("j_none_active"), 12, y, "#7a7a88"); y+=rowH; }
+    red.forEach(e=>{ const sel=(idx===menu.jSel); ctx.fillStyle="#ff5040"; ctx.fillRect(14,y+1,3,3);
+      const label=(sel?"> ":"  ")+"[>] "+e.title; text(label.length>25?label.slice(0,24)+"\u2026":label,18,y,sel?"#fff":"#a8b0bc"); y+=rowH; idx++; });
+    y+=3;
+    // section MICRO-MISSIONI
+    text(t("journal_side"), 12, y, "#f0d840"); y+=rowH;
+    if(yel.length===0){ text("   "+t("j_none_active"), 12, y, "#7a7a88"); y+=rowH; }
+    yel.forEach(e=>{ const sel=(idx===menu.jSel); ctx.fillStyle="#ffd020"; ctx.fillRect(14,y+1,3,3);
+      const label=(sel?"> ":"  ")+"[>] "+e.title; text(label.length>25?label.slice(0,24)+"\u2026":label,18,y,sel?"#fff":"#a8b0bc"); y+=rowH; idx++; });
+    y+=6;
+    // "completed" entry (opens submenu)
+    { const sel=(idx===menu.jSel); textCenter((sel?"> ":"")+t("j_completed_title")+(sel?" <":""), W/2, y, sel?"#fff":"#c8b070"); }
+    textCenter(t("menu_hint"), W/2, JFOOT, "#c8c8d0");
   }
-  // ---- RULES: paginated rules screen (localized) ----
+    // ---- RULES: paginated rules screen (localized) ----
   function drawRules(){
     // slightly taller box for the rules screen so the footer legend fits fully inside
     const bx=6, by=12, bw=W-12, bh=H-16;   // reaches closer to the screen bottom
@@ -4623,7 +4696,7 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
   const SLOTS_PER_KIND = 1;   // one active side-quest per kind at a time (6 kinds pre-scooter, 7 after unlock),
                               // rotated by the slot engine. While one yellow is ACCEPTED/in progress
                               // (SQ.acceptedNpc set) all OTHER yellow markers hide, in-game and on the map.
-  const SQ = { pool:{}, queueIdx:{}, active:[], done:{}, byNpc:{}, acceptedNpc:null };
+  const SQ = { pool:{}, queueIdx:{}, active:[], done:{}, byNpc:{}, acceptedNpc:null, log:[] };
   SQ_KINDS.forEach(k=>{ SQ.pool[k]=[]; SQ.queueIdx[k]=0; });
   function sqLoadPool(){
     const src = window.SIDEQUESTS || null;
@@ -4671,6 +4744,11 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
   function sqNpcMission(npcId){ return SQ.byNpc[npcId] || null; }
   function sqComplete(m){
     SQ.done[m.id]=true; SQ.active = SQ.active.filter(x=>x!==m); if(m._npc) delete SQ.byNpc[m._npc];
+    // chronological log for the Journal's "completed micro-quests" list
+    if(!SQ.log) SQ.log=[];
+    if(!SQ.log.some(e=>e.id===m.id)){
+      SQ.log.push({ id:m.id, kind:m.kind, title:(m.title||{it:m.id,en:m.id}), giver:(m.giver||null) });
+    }
     saveGame(); sqActivate();
   }
   // true if a casual side-quest activity is currently in progress (one yellow at a time)
@@ -4769,9 +4847,9 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
     tail._onWin=onWin; tail._onFail=onFail;
     tail.target={ px:cfg.from[0]*TILE, py:cfg.from[1]*TILE, dir:"down", animT:0, dest:cfg.to.slice(), speed:cfg.speed||16, path:null, replan:0, tgt:null };
   }
-  function serializeSQ(){ return { done:SQ.done, qi:SQ.queueIdx }; }
-  function restoreSQ(o){ if(!o) return; if(o.done) SQ.done=o.done; if(o.qi) SQ.queueIdx=o.qi; }
-  function sqInit(){ sqLoadPool(); SQ.active=[]; SQ.byNpc={}; SQ.acceptedNpc=null; sqActivate(); }
+  function serializeSQ(){ return { done:SQ.done, qi:SQ.queueIdx, log:SQ.log||[] }; }
+  function restoreSQ(o){ if(!o) return; if(o.done) SQ.done=o.done; if(o.qi) SQ.queueIdx=o.qi; SQ.log=o.log||[]; }
+  function sqInit(){ sqLoadPool(); SQ.active=[]; SQ.byNpc={}; SQ.acceptedNpc=null; if(!SQ.log) SQ.log=[]; sqActivate(); }
   window.SQ_REF = SQ;
 
   // ================= LOOP =================
