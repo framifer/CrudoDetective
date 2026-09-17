@@ -765,6 +765,7 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
     else { textCenter(t("photo_hint"), vx+vw/2, vy+vh-12, "#c8c8d0"); }
   }
 
+  const regatta={ active:false, pts:[], idx:0, msg:"", msgT:0, onWin:null, onFail:null, timer:0 };
   function startRegatta(pts,onWin,onFail){ regatta.active=true; regatta.pts=pts.slice(); regatta.idx=0; regatta.msg=t("rg_intro"); regatta.msgT=2.0; regatta.onWin=onWin; regatta.onFail=onFail; regatta.timer=pts.length*10; }
   function updateRegatta(dt){
     if(regatta.msgT>0) regatta.msgT-=dt; regatta.timer-=dt;
@@ -1443,6 +1444,9 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
   const INSIDE_SOLID=new Set(["#","s","t","b","f","p","V","k"]);
   // Both piers are walkable (you can stroll onto them): central (21-22) and east (36-37).
   function isCentralPier(tx,ty){ return ((tx===21||tx===22)||(tx===36||tx===37)) && ty>=32 && ty<=35; }
+  // The moored ferry is a physical barrier at the south end of the east pier (South Bay): the player
+  // bumps into it (and presses A to board) instead of diving past it into the open water.
+  function isShipBlock(tx,ty){ return inTown() && !insideKey && tx>=35 && tx<=39 && ty>=36 && ty<=37; }
   function currentInteriorNpc(){ return insideKey ? INTERIORS[insideKey].npc : null; }
   function isSolid(tx,ty){ const c=tileAt(tx,ty);
     if(insideKey){ const inpc=currentInteriorNpc(); if(inpc && inpc.tx===tx && inpc.ty===ty) return true; return INSIDE_SOLID.has(c); }
@@ -2474,6 +2478,8 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
     // ---- SEA / SWIMMING (town & holiday use '~', industrial uses 'q') ----
     const seaChar = (areaKey==="industrial") ? "q" : "~";
     const isSeaArea = (areaKey==="town"||areaKey==="holiday"||areaKey==="industrial");
+    // the moored ferry blocks the water south of the east pier: bump into it, don't dive past it
+    if(isSeaArea && !insideKey && isShipBlock(ntx,nty)){ return false; }
     if(isSeaArea && !insideKey && target===seaChar){
       if(season==="winter"){ banner(t("sea_winter")); return false; }   // no swimming in winter
       // past the buoy line (south): block going further south, but always allow swimming back north toward the beach
