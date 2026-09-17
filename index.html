@@ -116,6 +116,7 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
       season_spring:"PRIMAVERA", season_summer:"ESTATE", season_autumn:"AUTUNNO", season_winter:"INVERNO",
       quest_label:"Missione:", q_none:"Parla in giro", q_find:"Trova Micio", q_return:"Riporta Micio", q_done:"Fatto!",
       hud_find_red:"Cerca il (!) rosso per continuare a indagare sul caso.",
+      hud_report_clue:"Torna dal (!) rosso per riferire cosa hai scoperto.",
       new_quest:"NUOVA MISSIONE!", quest_done:"MISSIONE COMPLETATA!", found_cat:"Hai ritrovato il gatto. Ti fissa, poi il mare.",
       hint_lang:"START: Menu",
       nonna:"Nonna Rosa", vito:"Vito", lena:"Lena", marinaio:"Marinaio", ciclista:"Ciclista", pino:"Pino",
@@ -277,6 +278,7 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
       season_spring:"SPRING", season_summer:"SUMMER", season_autumn:"AUTUMN", season_winter:"WINTER",
       quest_label:"Quest:", q_none:"Talk around", q_find:"Find Micio", q_return:"Bring Micio back", q_done:"Done!",
       hud_find_red:"Look for the red (!) to keep investigating the case.",
+      hud_report_clue:"Return to the red (!) to report what you found.",
       new_quest:"NEW QUEST!", quest_done:"QUEST COMPLETE!", found_cat:"You found the cat. He stares at you, then the sea.",
       hint_lang:"START: Menu",
       nonna:"Granny Rosa", vito:"Vito", lena:"Lena", marinaio:"Sailor", ciclista:"Cyclist", pino:"Pino",
@@ -930,18 +932,18 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
     "..................b.b.....II............I...",
     "T..........................................T"
   ];
-  const AREA_forestNW=[
+  const AREA_forestNW = [
     "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
     "T.....................b........b.........I..",
     "T.XXXX...XXXX...XXXX.bb..I...XXXX...XXXX....",
     "T.ZZZZ.Y.ZZZZ.Y.ZZZZ.YI.....YZZZZ..YZZZZ....",
-    "T.ZZ7Z.Y.ZZDZ.Y.ZZDZ.Y......YZZDZ..YZZDZ....",
+    "T.ZZDZ.Y.ZZDZ.Y.ZZDZ.Y......YZZ7Z..YZZDZ....",
     "T......Y.b....Y......Y.b....Y.I....Y........",
     "TYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY.",
     "T......Y....b.Y......Y......Y.....IY........",
     "T.XXXX.YI.....Y......Y......YXXXX..YXXXX....",
     "T.ZZZZ.Y......Yb.....Y......YZZZZ.IYZZZZ....",
-    "T.ZZ8Z.Y......Y......Y......YZZDZ..YZZZZI...",
+    "T.ZZDZ.Y......Y......Y......YZZDZ..YZZZZI...",
     "T......Y......Y......Yb....IY......YZZDZ..I.",
     "TYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY.",
     "T......Y......Y......Y....b.Y......Y........",
@@ -957,13 +959,13 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
     "T......Y......Y......Y......Y.b.b.IY....b...",
     "T.XXXX.Y.XXXX.Y......Y......YXXXX..YXXXX....",
     "T.ZZZZ.Y.ZZZZ.Y......Y...I..YZZZZ..YZZZZ....",
-    "T.ZZ9Z.Y.ZZDZ.Y......Y......YZZDZ..YZZDZ....",
+    "T.ZZDZ.Y.ZZDZ.Y......Y......YZZ8Z..YZZDZ....",
     "T......Y......Y......Y..I..bY......Y........",
     "TYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY.",
     "T......Y......Y......Yb.....Y......Y........",
     "T.XXXX.Y......Y.XXXX.Y....b.Y..I...YXXXX....",
     "T.ZZZZ.Y......Y.ZZZZ.Y......Y....I.YZZZZ....",
-    "TIZZDZ.Y......Y.ZZDZ.Y......Y......YZZDZ....",
+    "TIZZDZ.Y......Y.ZZ9Z.Y......Y......YZZDZ....",
     "T......Y......Y......Y......Y......Y........",
     "TYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY.",
     "T......Y......Y......Y......Y......YI.......",
@@ -1014,31 +1016,31 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
     ".......T....T...I.I.I..........T...I..T....T",
     "T..........................................T"
   ];
-  const AREA_holiday=[
+  const AREA_holiday = [
     "T..........................................T",
     "T.................................'....'....",
     "T.......Y.......Y.......Yp...'..Y.......Y...",
     "T.'RRR'.Y.pRRR..Y..RRR..Y.pRRR.pY..RRR..Y...",
     "T..HHH'.Y..HHH..Y..HHH..Y..HHH..Y..HHH..Y...",
-    "T..H7H..Y..HDH..Y..HDH..Y..HDH..Y..HDH..Y...",
+    "T..HDH..Y..HDH..Y..HDH..Y..HDH..Y..HDH..Y...",
     "TYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY.",
     "Tp......Y.....p.Y.......Y.......Y.......Y...",
     "T..p..ppYp......Y.....'.Y.......Y.......Y...",
     "T...RRR.Y...RRR.Y...RRRpY...RRR.Y..'RRR.Y...",
     "T...HHH.Yp..HHH.Y...HHH.Y...HHH.Y...HHH.Y...",
-    "T...H8H.Y...HDH.Y...HDH.Y...HDH.Y...HDH.Y...",
+    "T...HDH.Y...HDH.Y...H8H.Y...HDH.Y...HDH.Y...",
     "TYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY.",
     "T.......Y...pp..Y..'..p.Y.......Y.......Y.p.",
     "T....'..Y.....p.Y...p...Y....p..Y.......Y...",
     "T...RRR.Yp..RRR.Y...YYYYY...RRR.Y..pRRR.Y...",
     "T...HHH.Y...HHH.Y...YOOYY...HHH.Y...HHHpY...",
-    "T.p.H9H.Y'..HDH.Y...YYYYY...HDH.Y...HDH.Y...",
+    "T.p.HDH.Y'..HDH.Y...YYYYY...HDH.Y...H9H.Y...",
     "TYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY.",
     "T.......Y....p.'Y.......Y.......Y.....'.Y...",
     "T.......Y.'..p..Y..p...pY...p...Y.......Y...",
     "T...RRR'Y.....p.Y...RRR.YYYY..RRR.......Y...",
     "T...HHH.Y....pp.Yp.pHHH.YOOY..HHH'......Y...",
-    "T...HDH.Y.......Y...HDH.YYYY..HDH.p.....Y...",
+    "T...HDH.Y.......Y...H7H.YYYY..HDH.p.....Y...",
     "TYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY.",
     "T.......Y.......Y.......Y....p..Y.......Y...",
     "T.p....pY.......Y.......Y....p..Yp...p..Y...",
@@ -3819,26 +3821,26 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
   function activeQuestText(){
     const q=firstActiveQuest();
     if(q){
-      let base=t(q.steps[q.step]);
-      // For a red case quest whose clue isn't collected yet, add rich guidance:
-      // destination area (with an arrow if you're elsewhere) + the pickup's location hint.
+      // ---- RED CASE QUEST: show the NEXT step based on progress, never a stale one ----
       if(q.type==="case" && typeof CASE_QUESTS!=="undefined" && CASE_QUESTS.has(q.id) && window.CASE_REF){
         const cq=window.CASE_REF.byId[q.id];
         const clue=window.CASE_REF.clues[q.id];
-        const needClue = cq && cq.pickup && clue && !clue.taken;
-        if(needClue){
+        const ready = (typeof caseClueReady==="function") ? caseClueReady(q.id) : true;
+        // 1) clue/beat still to do -> guide to FIND it (step s1) + area + location hint
+        if(!ready && cq && cq.pickup && clue && !clue.taken){
+          const parts=[ t(q.steps[1]) || t(q.steps[q.step]) ];   // "find the ..." step
           const destArea=cq.pickup.area;
-          const hintKey="cs_"+q.id+"_hint"; const hint=t(hintKey);
-          const parts=[base];
-          if(destArea && destArea!==areaKey && !insideKey){
-            const an=(t("area_"+destArea)||destArea);
-            parts.push("\u25B6 "+an);   // ▶ go to this area
-          }
-          if(hint && hint!==hintKey) parts.push("("+hint+")");
+          if(destArea && destArea!==areaKey && !insideKey){ parts.push("\u25B6 "+(t("area_"+destArea)||destArea)); }
+          const hint=t("cs_"+q.id+"_hint"); if(hint && hint!=="cs_"+q.id+"_hint") parts.push("("+hint+")");
           return parts.join("  ");
         }
+        // 2) clue collected (or beat done) but quest not completed yet -> go report it
+        if(ready){ return t("hud_report_clue"); }
+        // fallback: current step
+        return t(q.steps[q.step]);
       }
-      return base;
+      // non-case active quest: show its current step
+      return t(q.steps[q.step]);
     }
     // No quest currently ACTIVE. If the central story isn't finished and a red case is waiting to be
     // started (available), guide the player to look for the red "!" instead of showing a stale step.
