@@ -4006,15 +4006,17 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
   }
   // ---- RULES: paginated rules screen (localized) ----
   function drawRules(){
-    ctx.fillStyle="#0e0e18"; ctx.fillRect(8,14,W-16,H-28);
-    ctx.strokeStyle="#f0f0e0"; ctx.lineWidth=1; ctx.strokeRect(9.5,15.5,W-19,H-31);
-    textCenter(t("menu_rules"), W/2, 18, "#f0d840");
+    // slightly taller box for the rules screen so the footer legend fits fully inside
+    const bx=6, by=12, bw=W-12, bh=H-16;   // reaches closer to the screen bottom
+    ctx.fillStyle="#0e0e18"; ctx.fillRect(bx,by,bw,bh);
+    ctx.strokeStyle="#f0f0e0"; ctx.lineWidth=1; ctx.strokeRect(bx+1.5,by+1.5,bw-3,bh-3);
+    textCenter(t("menu_rules"), W/2, 16, "#f0d840");
     const p=RULES_PAGES[menu.rulesPage]; const loc=p[lang]||p.it;
-    let y=34; text(loc.h, 14, y, pal().accent); y+=13;
+    let y=32; text(loc.h, 12, y, pal().accent); y+=13;
     ctx.font="8px monospace";
-    loc.lines.forEach(l=>{ wrapLines(l,28).forEach(w=>{ text(w,14,y,"#dfe8f2"); y+=10; }); });
-    textCenter((menu.rulesPage+1)+"/"+RULES_PAGES.length+"  \u25C0 \u25B6", W/2, H-30, "#7a7a88");
-    textCenter(t("menu_hint"), W/2, H-18, "#c8c8d0");
+    loc.lines.forEach(l=>{ wrapLines(l,28).forEach(w=>{ text(w,12,y,"#dfe8f2"); y+=10; }); });
+    textCenter((menu.rulesPage+1)+"/"+RULES_PAGES.length+"  \u25C0 \u25B6", W/2, by+bh-22, "#7a7a88");
+    textCenter(t("menu_hint"), W/2, by+bh-11, "#c8c8d0");
   }
   // ---- DETECTIVE NOTEBOOK: list of clues collected in the central story ----
   function drawNotebook(){
