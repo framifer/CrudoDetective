@@ -142,7 +142,7 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
       j_status:"Stato:", j_status_done:"completata", j_status_active:"in corso", j_status_open:"disponibile", j_completed:"Missione completata.",
       j_tag_red:"[STORIA - rossa]", j_tag_yellow:"[EXTRA - gialla]",
       j_completed_title:"MISSIONI COMPLETATE", j_done_red:"CENTRALI COMPLETATE", j_done_yellow:"MICRO COMPLETATE",
-      j_none_active:"(nessuna al momento)", j_none_done:"(nessuna ancora)",
+      j_none_active:"(nessuna al momento)", j_none_done:"(nessuna ancora)", j_recap:"Cosa hai fatto:",
       scooter_on:"Sali sul motorino. Rombo acceso!", scooter_off:"Scendi dal motorino.", scooter_water:"Non puoi andare in motorino in acqua!", scooter_boat:"Non in barca! Prima attracca a terra.",
       scooter_locked:"Non hai (ancora) un motorino.",
       scooter_reward0:"Il sindaco: 'Ti serve un mezzo.'", scooter_reward1:"Ti presta un motorino rosso.", scooter_reward2:"Premi SELECT per salire e scendere.",
@@ -306,7 +306,7 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
       j_status:"Status:", j_status_done:"completed", j_status_active:"in progress", j_status_open:"available", j_completed:"Quest completed.",
       j_tag_red:"[STORY - red]", j_tag_yellow:"[EXTRA - yellow]",
       j_completed_title:"COMPLETED QUESTS", j_done_red:"CENTRAL COMPLETED", j_done_yellow:"MICRO COMPLETED",
-      j_none_active:"(none right now)", j_none_done:"(none yet)",
+      j_none_active:"(none right now)", j_none_done:"(none yet)", j_recap:"What you did:",
       scooter_on:"You hop on the scooter. Vroom!", scooter_off:"You get off the scooter.", scooter_water:"You can't ride a scooter in the water!", scooter_boat:"Not in the boat! Dock on land first.",
       scooter_locked:"You don't have a scooter (yet).",
       scooter_reward0:"The mayor: 'You need a ride.'", scooter_reward1:"He lends you a red scooter.", scooter_reward2:"Press SELECT to hop on and off.",
@@ -500,7 +500,8 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
       confirm:()=>seq([[659,0.05],[988,0.09]],"square",0.12), cancel:()=>seq([[440,0.05],[294,0.08]],"square",0.11),
       talk:()=>blip(600,0.03,"square",0.06), quest:()=>seq([[659,0.07],[784,0.07],[988,0.14]],"square",0.13),
       questDone:()=>seq([[784,0.08],[988,0.08],[1319,0.08],[1047,0.16]],"square",0.14),
-      pickup:()=>seq([[988,0.05],[1319,0.10]],"square",0.12), meow:()=>seq([[880,0.08],[660,0.10],[990,0.06]],"sawtooth",0.10),
+      miniWin:()=>seq([[880,0.06],[1175,0.12]],"square",0.13),
+      pickup:function(){ seq([[988,0.05],[1319,0.10]],"square",0.12); try{ if(navigator.vibrate) navigator.vibrate(20);}catch(e){} }, meow:()=>seq([[880,0.08],[660,0.10],[990,0.06]],"sawtooth",0.10),
       season:()=>seq([[523,0.06],[659,0.06],[784,0.06],[1047,0.12]],"triangle",0.12), door:()=>seq([[392,0.06],[262,0.10]],"square",0.12),
       step:()=>blip(150,0.02,"square",0.03), vibrate:(p)=>{ try{ if(navigator.vibrate) navigator.vibrate(p);}catch(e){} },
       _musicOn:false,_musicTimer:null,_track:"spring",_tempoScale:1.0,
@@ -849,7 +850,8 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
   const BOAT_SPEED=100;      // boat cruises the open sea
   const SNEAK_SPEED=34;      // hold A: slow, stealthy walk
   const RUN_SPEED=92;        // hold B: run (faster than walk, slower than scooter)
-  const cam={ x:0, y:0 };
+  const cam={ x:0, y:0, shake:0 };
+  function triggerShake(amount, vibeMs){ cam.shake=Math.max(cam.shake, amount||3); if(vibeMs && SFX.vibrate) SFX.vibrate(vibeMs); }
 
   // ================= TOWN MAP (44x40, sea to the south) =================
   const TOWN = [
@@ -1384,7 +1386,7 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
     saveGame();
   }
   function qComplete(id){ const q=QUESTS[id]; if(!q||q.status==="done") return;
-    q.status="done"; q.step=q.steps.length-1; SFX.questDone(); questPopup(t("quest_done")+" "+t(q.nameK));
+    q.status="done"; q.step=q.steps.length-1; (SFX.miniWin?SFX.miniWin():SFX.questDone()); if(SFX.vibrate) SFX.vibrate([30,40,30]); questPopup(t("quest_done")+" "+t(q.nameK));
     // unlock next main quest that needs this one
     QORDER.forEach(k=>{ const nq=QUESTS[k]; if(nq && nq.needs===id && nq.status==="locked"){ nq.status="available"; } });
     checkChapterComplete(); saveGame();
@@ -1886,7 +1888,7 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
     if(consumePress("down")){ confront.sel=(confront.sel+1)%confront.options.length; SFX.down&&SFX.down(); }
     if(consumePress("a")){
       const opt=confront.options[confront.sel];
-      if(opt.good){ confront.res=Math.max(0, confront.res-35); confront.msg=csvar(confront.caseId,"confront_hit")||vpick("confront_hit")[0]||"..."; confront.msgT=1.8; SFX.confirm();
+      if(opt.good){ confront.res=Math.max(0, confront.res-35); confront.msg=csvar(confront.caseId,"confront_hit")||vpick("confront_hit")[0]||"..."; confront.msgT=1.8; SFX.confirm(); triggerShake(2,20);
         if(confront.res<=0){ confront.msg=csvar(confront.caseId,"confront_win")||t("confront_win"); confront.msgT=1.6; confront.ended="win"; confront.endT=1.6; SFX.questDone&&SFX.questDone(); }
       } else { confront.comp=Math.max(0, confront.comp-25); confront.res=Math.min(100, confront.res+8); confront.msg=csvar(confront.caseId,"confront_miss")||vpick("confront_miss")[0]||"..."; confront.msgT=1.8; SFX.cancel();
         if(confront.comp<=0){ confront.msg=t("confront_lose"); confront.msgT=1.6; confront.ended="lose"; confront.endT=1.6; }
@@ -1945,7 +1947,8 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
       const range=16; let ax=fight.px, ay=fight.py;
       if(fight.pdir==="left")ax-=range; else if(fight.pdir==="right")ax+=range; else if(fight.pdir==="up")ay-=range; else ay+=range;
       if(Math.abs(ax-fight.ex)<12 && Math.abs(ay-fight.ey)<12){ fight.ehp=Math.max(0,fight.ehp-18); fight.ehit=0.2;
-        if(fight.ehp<=0){ fight.msg=csvar(fight.id,"fight_win")||t("fight_win"); fight.msgT=1.6; fight.ended="win"; fight.endT=1.6; SFX.questDone&&SFX.questDone(); }
+        triggerShake(3, 25);   // small shake + short vibration on a landed hit
+        if(fight.ehp<=0){ fight.msg=csvar(fight.id,"fight_win")||t("fight_win"); fight.msgT=1.6; fight.ended="win"; fight.endT=1.6; SFX.questDone&&SFX.questDone(); triggerShake(5,60); }
       }
     }
     // dodge (B)
@@ -1965,6 +1968,7 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
     // enemy hits player on contact (unless dodging/invulnerable)
     if(Math.abs(fight.px-fight.ex)<10 && Math.abs(fight.py-fight.ey)<10 && fight.pinv<=0 && fight.phit<=0){
       fight.php=Math.max(0, fight.php-12); fight.phit=0.6; fight.pinv=0.4; SFX.cancel();
+      triggerShake(4, 40);   // taking a hit shakes a bit more + vibrates
       if(fight.php<=0){ fight.msg=t("fight_lose"); fight.msgT=1.6; fight.ended="lose"; fight.endT=1.6; }
     }
   }
@@ -2150,6 +2154,7 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
 
   // ================= UPDATE =================
   function update(dt){
+    if(cam.shake>0){ cam.shake=Math.max(0, cam.shake - dt*22); }   // shake decays quickly
     if(screen==="title") updateTitle(dt);
     else if(screen==="overworld"){ if(menu.open) updateMenu(dt); else updateWorld(dt); }
     if(seasonPopup>0) seasonPopup-=dt;
@@ -2428,6 +2433,13 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
   function updateNpcs(dt){
     for(const n of currentNpcs()){
       if(n.fishing){ n.animT=(n.animT||0)+dt; continue; }
+      // freeze an NPC while it's the one you're talking to (or being asked/choosing about it)
+      if((dialog.active && dialog.npc===n) || (prompt2.active && dialog.npc===n)){
+        n.moving=false; n.tgt=null; n.path=null;
+        n.px=Math.round(n.px/TILE)*TILE; n.py=Math.round(n.py/TILE)*TILE;   // snap to tile, stand still
+        if(typeof player!=="undefined"){ n.dir=opposite(player.dir); }       // face the player
+        continue;
+      }
       if(!n.routine && !n.home) continue;
       const sp=(n.speed||22)*dt;
       const cx=Math.round(n.px/TILE), cy=Math.round(n.py/TILE);
@@ -2473,6 +2485,10 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
   // ================= DRAW =================
   function draw(){
     if(screen==="title"){ drawTitle(); return; }
+    // screen shake offset (decays in update); applied to the whole scene
+    const _shk = cam.shake>0.2 ? cam.shake : 0;
+    let _sx=0,_sy=0;
+    if(_shk){ _sx=Math.round((Math.random()*2-1)*_shk); _sy=Math.round((Math.random()*2-1)*_shk); ctx.save(); ctx.translate(_sx,_sy); }
     if(insideKey) drawInterior(); else drawWorld();
     if(screen==="overworld" && !insideKey && !menu.open) drawWeather();
     if(!insideKey){ const nf=nightFactor(); if(nf>0){ ctx.fillStyle="rgba(20,26,60,"+(0.55*nf).toFixed(3)+")"; ctx.fillRect(0,0,W,H); drawNightLights(nf); } }
@@ -2505,6 +2521,7 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
     // mauling fade-to-attack overlay
     if(mauling.active){ const k=Math.min(1,mauling.t/1.2); ctx.fillStyle="rgba(40,0,0,"+(0.85*k).toFixed(3)+")"; ctx.fillRect(0,0,W,H);
       if(mauling.t>0.5){ textCenter(t("mauled_msg"), W/2, H/2-4, "#ffb0a0"); } }
+    if(_shk){ ctx.restore(); }
   }
   function drawPrompt(){
     const bx=6,by=H-40,bw=W-12,bh=34; panelBox(bx,by,bw,bh);
@@ -3978,11 +3995,65 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
     if(!msg) return;
     panelBox(6,H-16,W-12,13); textCenter(msg, W/2, H-12, pal().accent);
   }
+  // Pixel portrait for dialogue, characterized by the SPECIFIC NPC: sex/age (kind), hair, shirt, outfit.
+  function drawPortrait(x,y,npc){
+    const kind = npc.kind || "ym";
+    const female = (kind==="ow"||kind==="yw"||kind==="girl");
+    const old = (kind==="ow"||kind==="om");
+    const child = (kind==="girl"||kind==="boy");
+    const skin = "#f0c890";
+    let hair = npc.hairCol || npc.colorDk || "#3a2a1a";
+    if(old && !npc.hairCol) hair = "#d8d8dc";        // grey hair for elders by default
+    const shirt = npc.color || "#7a8290", shirtDk = npc.colorDk || "#4a5058";
+    const outfit = npc.outfitBase || "";
+    // frame + background
+    ctx.fillStyle="#0a0a12"; ctx.fillRect(x-1,y-1,22,22);
+    ctx.fillStyle="#20222e"; ctx.fillRect(x,y,20,20);
+    // shoulders / clothing
+    ctx.fillStyle=shirt; ctx.fillRect(x+2,y+15,16,5); ctx.fillStyle=shirtDk; ctx.fillRect(x+2,y+18,16,2);
+    // head (children have a slightly smaller/higher head)
+    const hy = child ? y+6 : y+5;
+    ctx.fillStyle=skin; ctx.fillRect(x+5,hy,10,10);
+    // ---- HAIR by sex/age ----
+    ctx.fillStyle=hair;
+    ctx.fillRect(x+4,hy-2,12,4);                       // top
+    if(female){
+      ctx.fillRect(x+3,hy-1,2,11); ctx.fillRect(x+15,hy-1,2,11);   // long hair down the sides
+    } else {
+      ctx.fillRect(x+4,hy-1,2,4); ctx.fillRect(x+14,hy-1,2,4);     // short sides
+    }
+    // elder man: white beard; elder woman: a small bun hint (already grey top)
+    if(old && !female){ ctx.fillStyle="#e2e2e6"; ctx.fillRect(x+5,hy+9,10,3); ctx.fillRect(x+6,hy+11,8,1); }
+    // ---- OUTFIT accents ----
+    if(outfit==="sailor"){ ctx.fillStyle="#c83a30"; ctx.fillRect(x+4,hy-3,12,2); }   // red sailor cap band
+    if(outfit==="worker"||npc.id==="guardia"){ ctx.fillStyle="#2c5aa0"; ctx.fillRect(x+4,hy-3,12,2); } // work cap
+    // eyes
+    ctx.fillStyle="#0a0a12"; ctx.fillRect(x+7,hy+4,2,2); ctx.fillRect(x+11,hy+4,2,2);
+    // mouth (elders a touch lower/thinner)
+    ctx.fillStyle="#8a5a4a"; ctx.fillRect(x+8,hy+7,4,1);
+    // subtle blush for young/children
+    if(child||kind==="yw"){ ctx.fillStyle="rgba(230,120,120,0.35)"; ctx.fillRect(x+5,hy+5,2,1); ctx.fillRect(x+13,hy+5,2,1); }
+    // frame outline
+    ctx.strokeStyle="#c8b070"; ctx.lineWidth=1; ctx.strokeRect(x-0.5,y-0.5,21,21);
+  }
+  // Is this NPC part of the RED story (start/complete of a case quest, or a story NPC)?
+  function isStoryNpc(npc){
+    if(!npc||!npc.id) return false;
+    if(npc.caseNpc) return true;
+    if(window.CASE_REF && window.CASE_REF.byId){
+      for(const id in window.CASE_REF.byId){ const q=window.CASE_REF.byId[id]; if(q.start_npc===npc.id||q.complete_npc===npc.id) return true; }
+    }
+    return false;
+  }
   function drawDialog(){ const bx=6,by=H-46,bw=W-12,bh=40; panelBox(bx,by,bw,bh);
-    if(dialog.npc) text(t(dialog.npc.nameKey),bx+6,by+3,pal().accent);
+    // portrait for story (red-quest) NPCs, shown at the left; text shifts right
+    const showPortrait = dialog.npc && dialog.npc.id && (typeof isStoryNpc==="function") && isStoryNpc(dialog.npc) && (typeof introActiveFor!=="function" || true);
+    const tx0 = showPortrait ? bx+30 : bx+6;   // text left margin
+    if(showPortrait) drawPortrait(bx+5, by+8, dialog.npc);
+    if(dialog.npc) text(t(dialog.npc.nameKey), tx0, by+3, pal().accent);
     const full=dialog.lines[dialog.idx]||"";
     const shown=full.substring(0,Math.floor(dialog.reveal));
-    ctx.font="8px monospace"; const maxW=bw-16;   // safe inner width
+    ctx.font="8px monospace"; const maxW=(bx+bw-8)-tx0;   // safe inner width (accounts for portrait)
     // word-wrap; if a single word is still too wide, break it by characters
     function fitWords(str){
       const out=[]; let line="";
@@ -3999,7 +4070,7 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
     }
     const lines=fitWords(shown);
     const maxRows=3; let ly=by+15;
-    lines.slice(0,maxRows).forEach(l=>{ text(l,bx+6,ly,"#f0f0e0"); ly+=10; });
+    lines.slice(0,maxRows).forEach(l=>{ text(l,tx0,ly,"#f0f0e0"); ly+=10; });
     if(dialog.reveal>=full.length && Math.floor(performance.now()/400)%2===0) text((dialog.idx<dialog.lines.length-1)?"\u25BC":"\u25A0",bx+bw-14,by+bh-12,pal().accent); }
   function drawSeasonPopup(){ ctx.globalAlpha=Math.min(1,seasonPopup); panelBox(W/2-46,58,92,24); textCenter("~ "+seasonLabel()+" ~",W/2,66,pal().accent); ctx.globalAlpha=1; }
 
@@ -4026,11 +4097,30 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
       y+=4;
       const st = e.status==="done"? t("j_status_done") : (e.status==="active"? t("j_status_active") : t("j_status_open"));
       text(t("j_status")+" "+st, 12, y, "#c8c8d0"); y+=12;
-      const desc = e.status==="done" ? t("j_completed") : (e.step||"");
-      wrapLines(desc,28).forEach(l=>{ text(l,12,y,"#dfe8f2"); y+=10; });
+      // description: for a COMPLETED quest, recap what was done (done-banner + objective);
+      // for an active one, the current step.
+      let descLines=[];
+      if(e.status==="done"){
+        text(t("j_recap"), 12, y, "#c8b070"); y+=11;
+        if(e.kind==="red"){
+          const db=t("cs_"+e.id+"_doneb"); if(db && db!=="cs_"+e.id+"_doneb") descLines.push(db);
+          const s0=t("cs_"+e.id+"_s0"), s1=t("cs_"+e.id+"_s1");
+          if(s0 && s0!=="cs_"+e.id+"_s0") descLines.push(s0);
+          if(s1 && s1!=="cs_"+e.id+"_s1") descLines.push(s1);
+        } else {
+          // micro/SQ: use its step/giver text if available, else generic
+          if(e.step) descLines.push(e.step);
+        }
+        if(descLines.length===0) descLines.push(t("j_completed"));
+      } else {
+        descLines=[ e.step || "" ];
+      }
+      descLines.forEach(d=>{ wrapLines(d,28).forEach(l=>{ if(y<JCOUNT-4){ text(l,12,y,"#dfe8f2"); y+=10; } }); y+=2; });
       textCenter(t("menu_hint"), W/2, JFOOT, "#c8c8d0");
       return;
     }
+    // (old single-line desc path removed)
+
     // ---- SUBMENU: COMPLETED (two entries) ----
     if(menu.jView==="done_menu"){
       textCenter(t("j_completed_title"), W/2, 18, "#f0d840");
@@ -4317,8 +4407,17 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
       if(!pos) return;
       const [area,tx,ty]=pos;
       const lk = n.look || {};
+      // distinctive default colors per story NPC (used when the look has no explicit shirt/hair),
+      // so each dialogue portrait looks unique.
+      const NPC_LOOK = {
+        vedova:{shirt:"#3a3a44",shirtDk:"#24242c",hair:"#c8c8cc"},   // grey shawl, black dress, grey hair
+        guardia:{shirt:"#2c5aa0",shirtDk:"#1e3e70",hair:"#3a2a1a"},  // blue work suit
+        eremita:{shirt:"#6a4a2a",shirtDk:"#4a3018",hair:"#e2e2e6"},  // brown coat, white beard/hair
+        custode:{shirt:"#3a3050",shirtDk:"#241e38",hair:"#2a2038"},  // dark hooded tunic
+      };
+      const dl = NPC_LOOK[n.id] || {};
       const npc = { id:n.id, tx:tx, ty:ty, dir:"down",
-        color: lk.shirt || "#7a8290", colorDk: lk.shirtDk || "#4a5058", kind:NPC_KIND(lk), hairCol: lk.hair || "#3a2a1a",
+        color: lk.shirt || dl.shirt || "#7a8290", colorDk: lk.shirtDk || dl.shirtDk || "#4a5058", kind:NPC_KIND(lk), hairCol: lk.hair || dl.hair || "#3a2a1a",
         pants: lk.pants || "#3a3a44", outfitBase: lk.outfit || undefined, nameKey:"cs_name_"+n.id, caseNpc:true,
         lines:()=>{ const cl=caseLines(n.id); return cl || t("passerby_l"); }, onTalk:()=>caseOnTalk(n.id) };
       npc.px=npc.tx*TILE; npc.py=npc.ty*TILE;
