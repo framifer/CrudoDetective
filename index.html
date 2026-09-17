@@ -115,6 +115,7 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
       continue:"CONTINUA", newgame:"NUOVA PARTITA", press_ab:"A / START",
       season_spring:"PRIMAVERA", season_summer:"ESTATE", season_autumn:"AUTUNNO", season_winter:"INVERNO",
       quest_label:"Missione:", q_none:"Parla in giro", q_find:"Trova Micio", q_return:"Riporta Micio", q_done:"Fatto!",
+      hud_find_red:"Cerca il (!) rosso per continuare a indagare sul caso.",
       new_quest:"NUOVA MISSIONE!", quest_done:"MISSIONE COMPLETATA!", found_cat:"Hai ritrovato il gatto. Ti fissa, poi il mare.",
       hint_lang:"START: Menu",
       nonna:"Nonna Rosa", vito:"Vito", lena:"Lena", marinaio:"Marinaio", ciclista:"Ciclista", pino:"Pino",
@@ -134,8 +135,11 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
       found_shell:"Hai trovato la conchiglia, mezza sepolta nella sabbia.",
       in_nonna:["Benvenuto in casa mia!","Mettiti comodo,","c'e' il camino acceso."],
       in_store:["Benvenuto all'emporio!","Presto potrai comprare","esche e provviste."],
-      in_mayor:["Sono il sindaco.","La nostra cittadina","cambia con le stagioni:","ne sono orgoglioso!"],
+      in_mayor:["Sono il sindaco.","Presta attenzione alle","stagioni: cambiano il","volto della citta' e","delle zone vicine."],
       menu_title:"MENU", menu_map:"MAPPA", menu_lang:"LINGUA", menu_season:"STAGIONE", menu_close:"CHIUDI", menu_journal:"DIARIO", menu_notebook:"TACCUINO", menu_scooter:"MOTORINO",
+      menu_rules:"REGOLE DI GIOCO", menu_exit:"ESCI DAL GIOCO",
+      j_status:"Stato:", j_status_done:"completata", j_status_active:"in corso", j_status_open:"disponibile", j_completed:"Missione completata.",
+      j_tag_red:"[STORIA - rossa]", j_tag_yellow:"[EXTRA - gialla]",
       scooter_on:"Sali sul motorino. Rombo acceso!", scooter_off:"Scendi dal motorino.", scooter_water:"Non puoi andare in motorino in acqua!", scooter_boat:"Non in barca! Prima attracca a terra.",
       scooter_locked:"Non hai (ancora) un motorino.",
       scooter_reward0:"Il sindaco: 'Ti serve un mezzo.'", scooter_reward1:"Ti presta un motorino rosso.", scooter_reward2:"Premi SELECT per salire e scendere.",
@@ -170,7 +174,11 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
       passerby:"Passante", passerby_l:["Buongiorno!"],
       journal_title:"DIARIO", journal_main:"Principali:", journal_side:"Secondarie:", chapter:"Capitolo", chapter_done:"CAPITOLO COMPLETATO!",
       q_intro_t:"L'arrivo a Crudo", q_intro_s0:"Chiedi in giro di chi ti ha convocato", q_intro_s1:"Presentati alla committente",
-      intro_start:["Lei dev'essere","l'investigatore.","La aspettano. La trova","al vicolo dietro","la piazza. Vada."],
+      intro_start:["Lei dev'essere","l'investigatore.","Prima che inizi,","le spiego una cosa","importante."],
+      intro_marks:["Sopra le teste vedra'","dei punti esclamativi.","ROSSO (!): la storia","del caso. GIALLO (!):","aiuti extra, facoltativi."],
+      intro_marks2:["Segua i ROSSI per","risolvere il caso.","I GIALLI, se le va,","per aiutare la gente.","Uno alla volta, pero'."],
+      intro_understood_q:"Ha capito la differenza?",
+      intro_go_widow:["Bene. Allora vada","dalla madre di Renzo,","dietro la piazza.","Non la faccia aspettare."],
       intro_wait:["La committente e'","dietro la piazza.","Non la faccia","aspettare."],
       intro_end:["E' arrivato, detective.","La polizia ha chiuso","il caso in fretta.","Io no. Cominci pure","a fare domande."],
       intro_done:"Il caso e' riaperto. La citta' e' tutta da interrogare.",
@@ -268,6 +276,7 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
       continue:"CONTINUE", newgame:"NEW GAME", press_ab:"A / START",
       season_spring:"SPRING", season_summer:"SUMMER", season_autumn:"AUTUMN", season_winter:"WINTER",
       quest_label:"Quest:", q_none:"Talk around", q_find:"Find Micio", q_return:"Bring Micio back", q_done:"Done!",
+      hud_find_red:"Look for the red (!) to keep investigating the case.",
       new_quest:"NEW QUEST!", quest_done:"QUEST COMPLETE!", found_cat:"You found the cat. He stares at you, then the sea.",
       hint_lang:"START: Menu",
       nonna:"Granny Rosa", vito:"Vito", lena:"Lena", marinaio:"Sailor", ciclista:"Cyclist", pino:"Pino",
@@ -287,8 +296,11 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
       found_shell:"You found the seashell, half-buried in the sand.",
       in_nonna:["Welcome to my home!","Make yourself comfy,","the fire is lit."],
       in_store:["Welcome to the store!","Soon you'll be able to buy","bait and supplies."],
-      in_mayor:["I'm the mayor.","Our little town","changes with the seasons:","I'm proud of it!"],
+      in_mayor:["I'm the mayor.","Mind the seasons:","they change the face","of the town and the","lands around it."],
       menu_title:"MENU", menu_map:"MAP", menu_lang:"LANGUAGE", menu_season:"SEASON", menu_close:"CLOSE", menu_journal:"JOURNAL", menu_notebook:"NOTEBOOK", menu_scooter:"SCOOTER",
+      menu_rules:"GAME RULES", menu_exit:"EXIT GAME",
+      j_status:"Status:", j_status_done:"completed", j_status_active:"in progress", j_status_open:"available", j_completed:"Quest completed.",
+      j_tag_red:"[STORY - red]", j_tag_yellow:"[EXTRA - yellow]",
       scooter_on:"You hop on the scooter. Vroom!", scooter_off:"You get off the scooter.", scooter_water:"You can't ride a scooter in the water!", scooter_boat:"Not in the boat! Dock on land first.",
       scooter_locked:"You don't have a scooter (yet).",
       scooter_reward0:"The mayor: 'You need a ride.'", scooter_reward1:"He lends you a red scooter.", scooter_reward2:"Press SELECT to hop on and off.",
@@ -323,7 +335,11 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
       passerby:"Passer-by", passerby_l:["Hello there!"],
       journal_title:"JOURNAL", journal_main:"Main:", journal_side:"Side:", chapter:"Chapter", chapter_done:"CHAPTER COMPLETE!",
       q_intro_t:"Arrival in Crudo", q_intro_s0:"Ask around for who summoned you", q_intro_s1:"Introduce yourself to the client",
-      intro_start:["You must be the","investigator.","She's expecting you.","In the alley behind","the square. Go."],
+      intro_start:["You must be the","investigator.","Before you begin,","let me explain","something important."],
+      intro_marks:["Above people's heads","you'll see exclamation","marks. RED (!): the case","story. YELLOW (!):","extra, optional help."],
+      intro_marks2:["Follow the RED ones to","solve the case.","The YELLOW ones, if you","like, to help folks.","One at a time, though."],
+      intro_understood_q:"Got the difference?",
+      intro_go_widow:["Good. Then go to","Renzo's mother,","behind the square.","Don't keep her waiting."],
       intro_wait:["The client is behind","the square.","Don't keep her","waiting."],
       intro_end:["You're here, detective.","The police closed the","case in a hurry.","I didn't. Go ahead,","start asking."],
       intro_done:"The case is reopened. The whole town is to be questioned.",
@@ -1811,8 +1827,8 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
     dialog.idx++; dialog.reveal=0; if(dialog.idx>=dialog.lines.length){ dialog.active=false; const cb=dialog.npc&&dialog.npc.onTalk; const n=dialog.npc; dialog.npc=null; if(cb) cb(n); } else SFX.talk(); }
 
   // ---- yes/no prompt ----
-  const prompt2={ active:false, text:"", yes:null, sel:0 };
-  function askYesNo(text, onYes){ prompt2.active=true; prompt2.text=text; prompt2.yes=onYes; prompt2.sel=0; SFX.talk(); }
+  const prompt2={ active:false, text:"", yes:null, no:null, sel:0 };
+  function askYesNo(text, onYes, onNo){ prompt2.active=true; prompt2.text=text; prompt2.yes=onYes; prompt2.no=onNo||null; prompt2.sel=0; SFX.talk(); }
 
   // ---- multiple-choice prompt (used for interrogations) ----
   // choice = { active, title, options:[{label, correct}], sel, onPick(idx,opt) }
@@ -1995,11 +2011,36 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
     season="spring"; dayCount=0; scooterUnlocked=false; islandUnlocked=false; discovered.clear(); discovered.add("town"); player.scooter=false; player.boat=false; if(typeof seaDone!=="undefined"){ for(const k in seaDone) delete seaDone[k]; } questState=0; cat.found=false; shellQuest=0; shell.found=false; bike.taken=false; ball.taken=false; keyring.taken=false; photos.forEach(p=>p.taken=false); insideKey=null; if(window.CASE_REF){ window.CASE_REF.closedUntil={}; window.CASE_REF.deduced={}; window.CASE_REF.reconstructed={}; window.CASE_REF.morals={}; window.CASE_REF.fought={}; window.CASE_REF.chaseCaught={}; } if(window.SQ_REF){ SQ.done={}; SQ_KINDS.forEach(k=>SQ.queueIdx[k]=0); } resetQuests(); resetWeather(); sqInit(); saveGame(); }
 
   // ================= MENU =================
-  const menu = { open:false, index:0, showMap:false, showJournal:false, showNotebook:false };
+  const menu = { open:false, index:0, showMap:false, showJournal:false, showNotebook:false, showRules:false, rulesPage:0, journalSel:0, journalDetail:null };
   const mapNav = { zoom:null, col:1, row:1 };   // zoom=null -> grid view; else zoomed area key
-  const MENU_KEYS = ["menu_journal","menu_notebook","menu_map","menu_lang","menu_close"];
-  function openMenu(){ menu.open=true; menu.index=0; menu.showMap=false; menu.showJournal=false; menu.showNotebook=false; SFX.confirm(); }
-  function closeMenu(){ menu.open=false; menu.showMap=false; menu.showJournal=false; menu.showNotebook=false; SFX.cancel(); }
+  const MENU_KEYS = ["menu_map","menu_journal","menu_notebook","menu_lang","menu_rules","menu_exit"];
+  // Build a flat, navigable list of quests for the Journal: central story (red) + side/micro (yellow).
+  function journalEntries(){
+    const out=[];
+    // red story quests (case)
+    QORDER.forEach(k=>{ const q=QUESTS[k]; if(q.type==="case" && q.status!=="locked"){
+      out.push({ kind:"red", id:k, title:t(q.nameK), status:q.status, step:q.steps[q.step] }); } });
+    // yellow: main-type + side-type micro-quests that are visible
+    QORDER.forEach(k=>{ const q=QUESTS[k]; if((q.type==="main"||q.type==="side"||q.type==="intro") && q.status!=="locked"){
+      out.push({ kind:"yellow", id:k, title:t(q.nameK), status:q.status, step:q.steps[q.step] }); } });
+    return out;
+  }
+  // Rules pages (localized): each page = {h, lines}. Mirrors game_rules.json (inlined for offline play).
+  const RULES_PAGES_DATA=[
+    { it:{h:"Comandi",lines:["D-pad: muovi il detective.","A: parla, conferma, raccogli.","B: annulla / indietro.","START: apre il menu.","SELECT: sali/scendi dal motorino."]},
+      en:{h:"Controls",lines:["D-pad: move the detective.","A: talk, confirm, pick up.","B: cancel / go back.","START: open the menu.","SELECT: get on/off the scooter."]} },
+    { it:{h:"Punti esclamativi",lines:["(!) ROSSO: la storia del caso.","Seguilo per indagare.","(!) GIALLO: missioni extra,","facoltative, per aiutare la gente.","Una gialla alla volta."]},
+      en:{h:"Exclamation marks",lines:["RED (!): the case story.","Follow it to investigate.","YELLOW (!): extra, optional","quests to help the townsfolk.","One yellow at a time."]} },
+    { it:{h:"Indagine",lines:["Raccogli indizi con A.","Mostrali ai testimoni per","farli parlare. Se sbagli,","tornano il giorno dopo.","Il box in alto a destra guida."]},
+      en:{h:"Investigation",lines:["Collect clues with A.","Show them to witnesses to","make them talk. If you err,","they return the next day.","The top-right box guides you."]} },
+    { it:{h:"Mondo e stagioni",lines:["Le stagioni cambiano il volto","della citta' e delle zone vicine.","Ciclo giorno/notte.","9 aree: alcune via barca o","motorino. La mappa svela le aree."]},
+      en:{h:"World & seasons",lines:["Seasons change the face of the","town and nearby lands.","Day/night cycle.","9 areas: some by boat or","scooter. The map reveals areas."]} },
+    { it:{h:"Salvataggio",lines:["Il gioco si salva da solo,","di continuo. Non fai nulla.","'ESCI DAL GIOCO' salva e","torna al menu principale."]},
+      en:{h:"Saving",lines:["The game saves itself,","all the time.","'EXIT GAME' saves and","returns to the main menu."]} },
+  ];
+  const RULES_PAGES = RULES_PAGES_DATA;   // alias used by updateMenu
+  function openMenu(){ menu.open=true; menu.index=0; menu.showMap=false; menu.showJournal=false; menu.showNotebook=false; menu.showRules=false; menu.rulesPage=0; menu.journalSel=0; menu.journalDetail=null; SFX.confirm(); }
+  function closeMenu(){ menu.open=false; menu.showMap=false; menu.showJournal=false; menu.showNotebook=false; menu.showRules=false; menu.journalDetail=null; SFX.cancel(); }
   function updateMenu(dt){
     if(menu.showMap){
       if(mapNav.zoom){
@@ -2016,18 +2057,38 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
       if(consumePress("b")||consumePress("start")){ menu.showMap=false; SFX.cancel(); }
       return;
     }
-    if(menu.showJournal){ if(consumePress("b")||consumePress("start")){ menu.showJournal=false; SFX.cancel(); } return; }
+    if(menu.showJournal){
+      const entries=journalEntries();
+      if(menu.journalDetail!==null){
+        // detail view: B goes back to the list
+        if(consumePress("b")||consumePress("start")){ menu.journalDetail=null; SFX.cancel(); }
+        return;
+      }
+      if(consumePress("up")){ if(entries.length){ menu.journalSel=(menu.journalSel-1+entries.length)%entries.length; SFX.up&&SFX.up(); } }
+      if(consumePress("down")){ if(entries.length){ menu.journalSel=(menu.journalSel+1)%entries.length; SFX.down&&SFX.down(); } }
+      if(consumePress("a")){ if(entries.length){ menu.journalDetail=menu.journalSel; SFX.confirm(); } }
+      if(consumePress("b")||consumePress("start")){ menu.showJournal=false; menu.journalDetail=null; SFX.cancel(); }
+      return;
+    }
     if(menu.showNotebook){ if(consumePress("b")||consumePress("start")){ menu.showNotebook=false; SFX.cancel(); } return; }
+    if(menu.showRules){
+      const n=RULES_PAGES.length;
+      if(consumePress("left")||consumePress("up")){ menu.rulesPage=(menu.rulesPage-1+n)%n; SFX.up&&SFX.up(); }
+      if(consumePress("right")||consumePress("down")){ menu.rulesPage=(menu.rulesPage+1)%n; SFX.down&&SFX.down(); }
+      if(consumePress("b")||consumePress("start")){ menu.showRules=false; SFX.cancel(); }
+      return;
+    }
     if(consumePress("up")) { menu.index=(menu.index-1+MENU_KEYS.length)%MENU_KEYS.length; SFX.up&&SFX.up(); }
     if(consumePress("down")) { menu.index=(menu.index+1)%MENU_KEYS.length; SFX.down&&SFX.down(); }
     if(consumePress("b")||consumePress("start")){ closeMenu(); return; }
     if(consumePress("a")){
       const k=MENU_KEYS[menu.index];
-      if(k==="menu_journal"){ menu.showJournal=true; SFX.confirm(); }
+      if(k==="menu_journal"){ menu.showJournal=true; menu.journalSel=0; menu.journalDetail=null; SFX.confirm(); }
       else if(k==="menu_notebook"){ menu.showNotebook=true; SFX.confirm(); }
       else if(k==="menu_map"){ menu.showMap=true; mapNav.zoom=null; const gp=gridPosOf(areaKey); mapNav.col=gp[0]; mapNav.row=gp[1]; SFX.confirm(); }
       else if(k==="menu_lang"){ toggleLang(); }
-      else { closeMenu(); }
+      else if(k==="menu_rules"){ menu.showRules=true; menu.rulesPage=0; SFX.confirm(); }
+      else if(k==="menu_exit"){ saveGame(); closeMenu(); screen="title"; titleIndex=0; SFX.confirm(); }
     }
   }
 
@@ -2097,8 +2158,8 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
     // yes/no prompt
     if(prompt2.active){
       if(consumePress("left")||consumePress("right")||consumePress("up")||consumePress("down")) prompt2.sel=prompt2.sel?0:1;
-      if(consumePress("a")){ const y=prompt2.sel===0; prompt2.active=false; SFX.confirm(); if(y && prompt2.yes) prompt2.yes(); }
-      else if(consumePress("b")){ prompt2.active=false; SFX.cancel(); }
+      if(consumePress("a")){ const y=prompt2.sel===0; prompt2.active=false; SFX.confirm(); if(y){ if(prompt2.yes) prompt2.yes(); } else { if(prompt2.no) prompt2.no(); } }
+      else if(consumePress("b")){ prompt2.active=false; SFX.cancel(); if(prompt2.no) prompt2.no(); }
       return;
     }
 
@@ -2370,7 +2431,7 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
     if(seasonPopup>0) drawSeasonPopup();
     if(bannerT>0) drawBanner(bannerMsg, (questState>=3||shellQuest>=3)?"#7ae06a":pal().accent);
     else if(questPopT>0) drawBanner(questPop, "#f0d840");
-    if(menu.open){ if(menu.showMap) drawMinimap(); else if(menu.showJournal) drawJournal(); else if(menu.showNotebook) drawNotebook(); else drawMenu(); }
+    if(menu.open){ if(menu.showMap) drawMinimap(); else if(menu.showJournal) drawJournal(); else if(menu.showNotebook) drawNotebook(); else if(menu.showRules) drawRules(); else drawMenu(); }
     if(prompt2.active) drawPrompt();
     if(choice.active) drawChoice();
     if(confront.active) drawConfront();
@@ -3779,6 +3840,13 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
       }
       return base;
     }
+    // No quest currently ACTIVE. If the central story isn't finished and a red case is waiting to be
+    // started (available), guide the player to look for the red "!" instead of showing a stale step.
+    if(typeof CASE_QUESTS!=="undefined" && window.CASE_REF){
+      const anyCaseAvailable = CASE.order.some(id=> QUESTS[id] && QUESTS[id].status==="available");
+      const storyDone = (typeof caseAllDone==="function" && caseAllDone());
+      if(anyCaseAvailable && !storyDone) return t("hud_find_red");
+    }
     // any available (not yet started) main quest?
     for(const k of QORDER){ const qq=QUESTS[k]; if(qq.status==="available"&&qq.type==="main") return t(qq.nameK); }
     return t("q_none");
@@ -3798,7 +3866,7 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
     const qbh=6+shown.length*10;
     panelBox(qbx,2,qbw,qbh);
     shown.forEach((l,i)=> text(l, qbx+4, 5+i*10, "#f0f0e0"));
-    if(!insideKey) drawCompass(W-13, qbh+13);   // small wind rose top-right, under the quest box
+    if(!insideKey) drawCompass(12, 26);   // wind rose under the season/clock box (top-left)
   }
   // Small compass / wind rose (N up). Purely atmospheric orientation aid.
   function drawCompass(cx,cy){
@@ -3883,27 +3951,58 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
   function drawJournal(){
     ctx.fillStyle="#0e0e18"; ctx.fillRect(8,14,W-16,H-28);
     ctx.strokeStyle="#f0f0e0"; ctx.lineWidth=1; ctx.strokeRect(9.5,15.5,W-19,H-31);
-    textCenter(t("journal_title")+"  "+t("chapter")+" "+chapter,W/2,18,"#f0d840");
-    let y=30;
-    const draw1=(q)=>{
-      let mark = q.status==="done"?"[x]":(q.status==="active"?"[>]":"[ ]");
-      let col = q.status==="done"?"#7ae06a":(q.status==="active"?"#f0f0e0":"#7a7a88");
-      const tag = q.type==="main"?"*":" ";
-      text(tag+mark+" "+t(q.nameK), 14, y, col); y+=9;
-      if(q.status==="active"){ text("    "+t(q.steps[q.step]), 14, y, "#c8c8d0"); y+=9; }
-    };
-    text(t("journal_main"),14,y,"#f0d840"); y+=10;
-    QORDER.forEach(k=>{ const q=QUESTS[k]; if(q.type==="main" && q.status!=="locked") draw1(q); });
-    // central story (the case): show current investigation step
-    const caseVisible = QORDER.filter(k=>QUESTS[k].type==="case" && QUESTS[k].status!=="locked");
-    if(caseVisible.length){ y+=4; text(t("journal_case"),14,y,"#ff6a5a"); y+=10;
-      caseVisible.forEach(k=>{ const q=QUESTS[k];
-        let mark=q.status==="done"?"[x]":"[>]"; let col=q.status==="done"?"#7ae06a":"#f0f0e0";
-        text(mark+" "+t(q.nameK),14,y,col); y+=9;
-        if(q.status==="active"){ text("    "+t(q.steps[q.step]),14,y,"#c8c8d0"); y+=9; } }); }
-    y+=4; text(t("journal_side"),14,y,"#f0d840"); y+=10;
-    QORDER.forEach(k=>{ const q=QUESTS[k]; if(q.type==="side" && q.status!=="locked") draw1(q); });
-    textCenter(t("map_hint"),W/2,H-18,"#c8c8d0");
+    const entries=journalEntries();
+    // ---- DETAIL VIEW: explain the selected quest ----
+    if(menu.journalDetail!==null && entries[menu.journalDetail]){
+      const e=entries[menu.journalDetail];
+      const q=QUESTS[e.id];
+      textCenter(t("journal_title"), W/2, 18, "#f0d840");
+      const col = e.kind==="red" ? "#ff6a5a" : "#f0d840";
+      // title (wrapped)
+      ctx.font="8px monospace";
+      let y=32;
+      text((e.kind==="red"? t("j_tag_red") : t("j_tag_yellow")), 14, y, col); y+=10;
+      wrapLines(e.title,26).forEach(l=>{ text(l,14,y,"#f0f0e0"); y+=10; });
+      y+=4;
+      // status line
+      const st = e.status==="done"? t("j_status_done") : (e.status==="active"? t("j_status_active") : t("j_status_open"));
+      text(t("j_status")+" "+st, 14, y, "#c8c8d0"); y+=12;
+      // description: current step (or done note) wrapped
+      const desc = e.status==="done" ? t("j_completed") : (e.step||"");
+      wrapLines(desc,26).forEach(l=>{ text(l,14,y,"#dfe8f2"); y+=10; });
+      textCenter(t("menu_hint"), W/2, H-18, "#c8c8d0");
+      return;
+    }
+    // ---- LIST VIEW: navigable ----
+    textCenter(t("journal_title")+"  "+t("chapter")+" "+chapter, W/2, 18, "#f0d840");
+    if(entries.length===0){ text(t("q_none"),14,34,"#7a7a88"); textCenter(t("menu_hint"),W/2,H-18,"#c8c8d0"); return; }
+    const rowH=11, top=30, maxRows=Math.floor((H-30-22-top+30)/rowH);
+    const visRows=9;
+    // scroll so the selection stays visible
+    let start=0; if(menu.journalSel>=visRows) start=menu.journalSel-visRows+1;
+    for(let i=0;i<visRows && (start+i)<entries.length;i++){
+      const e=entries[start+i]; const sel=(start+i)===menu.journalSel;
+      const y=top+i*rowH;
+      const dot = e.kind==="red" ? "#ff5040" : "#ffd020";
+      const mark = e.status==="done"?"[x]":(e.status==="active"?"[>]":"[ ]");
+      ctx.fillStyle=dot; ctx.fillRect(12,y+1,3,3);
+      const label=(sel?"> ":"  ")+mark+" "+e.title;
+      text(label.length>26?label.slice(0,25)+"\u2026":label, 18, y, sel?"#fff":"#a8b0bc");
+    }
+    if(entries.length>visRows){ textCenter((menu.journalSel+1)+"/"+entries.length, W/2, H-30, "#7a7a88"); }
+    textCenter(t("menu_hint"), W/2, H-18, "#c8c8d0");
+  }
+  // ---- RULES: paginated rules screen (localized) ----
+  function drawRules(){
+    ctx.fillStyle="#0e0e18"; ctx.fillRect(8,14,W-16,H-28);
+    ctx.strokeStyle="#f0f0e0"; ctx.lineWidth=1; ctx.strokeRect(9.5,15.5,W-19,H-31);
+    textCenter(t("menu_rules"), W/2, 18, "#f0d840");
+    const p=RULES_PAGES[menu.rulesPage]; const loc=p[lang]||p.it;
+    let y=34; text(loc.h, 14, y, pal().accent); y+=13;
+    ctx.font="8px monospace";
+    loc.lines.forEach(l=>{ wrapLines(l,28).forEach(w=>{ text(w,14,y,"#dfe8f2"); y+=10; }); });
+    textCenter((menu.rulesPage+1)+"/"+RULES_PAGES.length+"  \u25C0 \u25B6", W/2, H-30, "#7a7a88");
+    textCenter(t("menu_hint"), W/2, H-18, "#c8c8d0");
   }
   // ---- DETECTIVE NOTEBOOK: list of clues collected in the central story ----
   function drawNotebook(){
@@ -4477,7 +4576,21 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
   }
   function introOnTalk(npcId){
     const m=introActiveFor(npcId); if(!m) return false;
-    if(m==="start"){ qStart("intro"); saveGame(); return true; }
+    if(m==="start"){
+      qStart("intro"); saveGame();
+      // explain the marker system, then ask if understood; "no" repeats the explanation.
+      const explainThenAsk=()=>{
+        showExamine([].concat(t("intro_marks"), t("intro_marks2")), ()=>{
+          askYesNo(t("intro_understood_q"), ()=>{
+            showExamine(t("intro_go_widow"));   // YES -> go to the widow
+          }, ()=>{
+            explainThenAsk();                    // NO -> explain again + ask again
+          });
+        });
+      };
+      explainThenAsk();
+      return true;
+    }
     if(m==="end"){ qComplete("intro"); unlockCasualQuests(); unlockAfterIntro(); banner(t("intro_done")); saveGame(); return true; }
     return true; // "active": marinaio just repeats, no state change
   }
