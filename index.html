@@ -3591,8 +3591,8 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
     const bob=Math.floor(performance.now()/300)%2;
     const mx=x+6, my=y-9-bob;
     const isCase=(kind==="case");
-    const body=isCase?"#ff2a2a":"#ffd020";        // vibrant red for the case, yellow for casual
-    const hi=isCase?"#ff9a8a":"#fff2a0";
+    const body=isCase?"#e00010":"#ffd020";        // deep vivid red for the case, yellow for casual
+    const hi=isCase?"#ff5a4a":"#fff2a0";           // red highlight (not orange) for the case marker
     ctx.fillStyle="#0a0a12"; ctx.fillRect(mx-1,my-1,5,9);          // outline
     ctx.fillStyle=body; ctx.fillRect(mx,my,3,5); ctx.fillRect(mx,my+6,3,2);  // ! body + dot
     ctx.fillStyle=hi; ctx.fillRect(mx,my,1,4);             // highlight
@@ -4277,11 +4277,16 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
       const list = areaKey2==="town" ? npcs : (AREA_NPCS[areaKey2]||[]);
       list.forEach(n=>{ const qk=npcQuestKind(n); if(!qk) return;
         const qx=px0+Math.round(n.px/TILE)*sx, qy=py0+Math.round(n.py/TILE)*sy;
-        const core=(qk==="case")?"#ff5040":"#ffe040", glow=(qk==="case")?"#ff2a2a":"#ffd020";
-        ctx.fillStyle="rgba("+(qk==="case"?"255,60,50":"255,220,60")+","+(0.35*pulse).toFixed(2)+")"; ctx.fillRect(qx-3,qy-3,7,7);  // soft glow halo
+        const isCase=(qk==="case");
+        const core=isCase?"#ff6050":"#ffe040", glow=isCase?"#ff2a2a":"#ffd020";
+        // red markers: bigger halo + stronger pulse + extra outer ring for visibility
+        const haloR = isCase ? (0.55*pulse) : (0.35*pulse);
+        ctx.fillStyle="rgba("+(isCase?"255,60,50":"255,220,60")+","+haloR.toFixed(2)+")";
+        ctx.fillRect(qx-(isCase?4:3),qy-(isCase?4:3),isCase?9:7,isCase?9:7);  // soft glow halo (bigger for red)
+        if(isCase){ ctx.fillStyle="rgba(255,100,80,"+(0.7*pulse).toFixed(2)+")"; ctx.fillRect(qx-3,qy-3,7,7); }  // extra bright ring (red only)
         ctx.fillStyle=glow; ctx.fillRect(qx-2,qy-2,5,5);      // outer
         ctx.fillStyle=core; ctx.fillRect(qx-1,qy-1,3,3);      // bright core
-        ctx.fillStyle="#ffffff"; ctx.globalAlpha=pulse; ctx.fillRect(qx,qy,1,1); ctx.globalAlpha=1;   // white hot center
+        ctx.fillStyle="#ffffff"; ctx.globalAlpha=Math.min(1, isCase?pulse*1.3:pulse); ctx.fillRect(qx,qy,1,1); ctx.globalAlpha=1;   // white hot center (brighter for red)
       });
       if(areaKey2===areaKey){ const pp=0.6+0.4*Math.sin(performance.now()/180); ctx.fillStyle="rgba(255,255,255,"+(0.5*pp).toFixed(2)+")"; ctx.fillRect(px0+player.tx*sx-2,py0+player.ty*sy-2,5,5); ctx.fillStyle="#fff"; ctx.fillRect(px0+player.tx*sx-1,py0+player.ty*sy-1,3,3); ctx.fillStyle="#3aa0ff"; ctx.fillRect(px0+player.tx*sx,py0+player.ty*sy,1,1); }
     }
@@ -4309,10 +4314,13 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
       (function(){ const sx=dw/mw, sy=dh/mh; const pulse=0.6+0.4*Math.sin(performance.now()/220);
         const list=mapNav.zoom==="town"?npcs:(AREA_NPCS[mapNav.zoom]||[]);
         list.forEach(n=>{ const qk=npcQuestKind(n); if(!qk) return; const mx=ox+Math.round(n.px/TILE)*sx, my=oy+Math.round(n.py/TILE)*sy;
-          const core=(qk==="case")?"#ff5040":"#ffe040", glow=(qk==="case")?"#ff2a2a":"#ffd020";
-          ctx.fillStyle="rgba("+(qk==="case"?"255,60,50":"255,220,60")+","+(0.35*pulse).toFixed(2)+")"; ctx.fillRect(mx-4,my-4,9,9);
+          const isCase=(qk==="case");
+          const core=isCase?"#ff6050":"#ffe040", glow=isCase?"#ff2a2a":"#ffd020";
+          const haloA=(isCase?0.55:0.35)*pulse;
+          ctx.fillStyle="rgba("+(isCase?"255,60,50":"255,220,60")+","+haloA.toFixed(2)+")"; ctx.fillRect(mx-(isCase?6:4),my-(isCase?6:4),isCase?13:9,isCase?13:9);
+          if(isCase){ ctx.fillStyle="rgba(255,100,80,"+(0.7*pulse).toFixed(2)+")"; ctx.fillRect(mx-4,my-4,9,9); }
           ctx.fillStyle=glow; ctx.fillRect(mx-2,my-2,5,5); ctx.fillStyle=core; ctx.fillRect(mx-1,my-1,3,3);
-          ctx.fillStyle="#ffffff"; ctx.globalAlpha=pulse; ctx.fillRect(mx,my,1,1); ctx.globalAlpha=1; });
+          ctx.fillStyle="#ffffff"; ctx.globalAlpha=Math.min(1,isCase?pulse*1.3:pulse); ctx.fillRect(mx,my,1,1); ctx.globalAlpha=1; });
         if(mapNav.zoom===areaKey){ const pp=0.6+0.4*Math.sin(performance.now()/180); ctx.fillStyle="rgba(255,255,255,"+(0.5*pp).toFixed(2)+")"; ctx.fillRect(ox+player.tx*sx-2,oy+player.ty*sy-2,5,5); ctx.fillStyle="#fff"; ctx.fillRect(ox+player.tx*sx-1,oy+player.ty*sy-1,3,3); ctx.fillStyle="#3aa0ff"; ctx.fillRect(ox+player.tx*sx,oy+player.ty*sy,1,1); }
       })();
       ctx.strokeStyle="#4a4a58"; ctx.lineWidth=1; ctx.strokeRect(ox-0.5,oy-0.5,dw+1,dh+1);
