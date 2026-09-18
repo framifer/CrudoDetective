@@ -144,7 +144,7 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
       j_completed_title:"MISSIONI COMPLETATE", j_done_red:"CENTRALI COMPLETATE", j_done_yellow:"MICRO COMPLETATE",
       j_none_active:"(nessuna al momento)", j_none_done:"(nessuna ancora)", j_recap:"Cosa hai fatto:",
       scooter_on:"Sali sul motorino. Rombo acceso!", scooter_off:"Scendi dal motorino.", scooter_water:"Non puoi andare in motorino in acqua!", scooter_boat:"Non in barca! Prima attracca a terra.",
-      scooter_locked:"Non hai (ancora) un motorino.",
+      scooter_locked:"Non hai (ancora) un motorino.", scooter_building:"Scendi dal motorino per entrare.", scooter_pier:"Niente motorino sul molo! Scendi prima.",
       scooter_reward0:"Il sindaco: 'Ti serve un mezzo.'", scooter_reward1:"Ti presta un motorino rosso.", scooter_reward2:"Premi SELECT per salire e scendere.",
       chase_intro:"Inseguilo! Raggiungilo a piedi.", chase_hint:"Corri e raggiungi il sospetto!", chase_caught:"Preso! L'hai bloccato.",
       chase_lost0:"Ti e' sfuggito.", chase_lost1:"Torna da Vito e riprova.",
@@ -310,7 +310,7 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
       j_completed_title:"COMPLETED QUESTS", j_done_red:"CENTRAL COMPLETED", j_done_yellow:"MICRO COMPLETED",
       j_none_active:"(none right now)", j_none_done:"(none yet)", j_recap:"What you did:",
       scooter_on:"You hop on the scooter. Vroom!", scooter_off:"You get off the scooter.", scooter_water:"You can't ride a scooter in the water!", scooter_boat:"Not in the boat! Dock on land first.",
-      scooter_locked:"You don't have a scooter (yet).",
+      scooter_locked:"You don't have a scooter (yet).", scooter_building:"Get off the scooter to go in.", scooter_pier:"No scooter on the pier! Get off first.",
       scooter_reward0:"The mayor: 'You need a ride.'", scooter_reward1:"He lends you a red scooter.", scooter_reward2:"Press SELECT to hop on and off.",
       chase_intro:"Chase him! Catch him on foot.", chase_hint:"Run and catch the suspect!", chase_caught:"Got him! You cornered him.",
       chase_lost0:"He slipped away.", chase_lost1:"Go back to Vito and retry.",
@@ -2385,11 +2385,11 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
         if(player.boat){ const d=adjacentDock(); if(d){ player.boat=false; player.tx=d.x; player.ty=d.y; player.px=d.x*TILE; player.py=d.y*TILE; SFX.door&&SFX.door(); banner(t("island_land")); saveGame(); return; } }
         if(!player.boat && tileAt(player.tx,player.ty)==="w" && fc==="~"){ player.boat=true; player.tx=fx; player.ty=fy; player.px=fx*TILE; player.py=fy*TILE; SFX.door&&SFX.door(); banner(t("island_board")); saveGame(); return; }
       }
-      if(!insideKey && inTown() && DOORS[fc]){ enterInterior(DOORS[fc].interior, DOORS[fc].outX, DOORS[fc].outY); return; }
+      if(!insideKey && inTown() && DOORS[fc]){ if(player.scooter){ banner(t("scooter_building")); return; } enterInterior(DOORS[fc].interior, DOORS[fc].outX, DOORS[fc].outY); return; }
       if(!insideKey && !inTown() && (/[1-9]/.test(fc)) && AREA_INTERIOR[areaKey]){
         const ai=AREA_INTERIOR[areaKey];
         const interior = (typeof ai==="string") ? ai : ai[fc];
-        if(interior){ enterInterior(interior, player.tx, player.ty); return; }
+        if(interior){ if(player.scooter){ banner(t("scooter_building")); return; } enterInterior(interior, player.tx, player.ty); return; }
       }
       if(insideKey && fc==="e"){ exitInterior(); return; }
       if(!insideKey && !cat.found && questState>=1 && fx===cat.tx && fy===cat.ty){ cat.found=true; questState=2; SFX.meow(); SFX.pickup(); banner(t("found_cat")); saveGame(); return; }
@@ -2470,6 +2470,13 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
   function tryMove(ntx,nty){
     const target=tileAt(ntx,nty);
     if(npcAt(ntx,nty) || (!insideKey && isCollectibleBlocking(ntx,nty))) return false;   // bump into pickups, don't walk over them
+
+    // ---- SCOOTER RESTRICTIONS: no sea, no piers/docks (get off first). ----
+    if(player.scooter && !insideKey){
+      const seaCh = (areaKey==="industrial") ? "q" : "~";
+      if(target===seaCh || target==="q" || target==="~"){ banner(t("scooter_water")); return false; }   // no riding into the water
+      if(target==="w" || isCentralPier(ntx,nty)){ banner(t("scooter_pier")); return false; }            // no riding onto docks/piers
+    }
 
     // ---- OPEN SEA: free boat navigation over water ----
     if(areaKey==="opensea" && !insideKey){
