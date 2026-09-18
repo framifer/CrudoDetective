@@ -1448,6 +1448,17 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
   // bumps into it (and presses A to board) instead of diving past it into the open water.
   function isShipBlock(tx,ty){ return inTown() && !insideKey && tx>=35 && tx<=39 && ty>=36 && ty<=37; }
   function currentInteriorNpc(){ return insideKey ? INTERIORS[insideKey].npc : null; }
+  // ---- ROBUST DISEMBARK: any dock tile 'w' adjacent to the player (or the one being faced).
+  // Used both for the "press A to land" hint and for the actual landing, so you can ALWAYS get off
+  // the boat onto the pier from any side, and never end up stuck standing in the sea. ----
+  function isDockTile(x,y){ return (areaKey==="island"||areaKey==="cape") && tileAt(x,y)==="w"; }
+  function adjacentDock(){
+    // prefer the tile we are facing, then N/S/W/E; return first walkable dock tile found
+    const f=facingTile();
+    const cand=[[f.fx,f.fy],[player.tx,player.ty-1],[player.tx,player.ty+1],[player.tx-1,player.ty],[player.tx+1,player.ty]];
+    for(const [x,y] of cand){ if(isDockTile(x,y)) return {x,y}; }
+    return null;
+  }
   function isSolid(tx,ty){ const c=tileAt(tx,ty);
     if(insideKey){ const inpc=currentInteriorNpc(); if(inpc && inpc.tx===tx && inpc.ty===ty) return true; return INSIDE_SOLID.has(c); }
     if(!insideKey && isCentralPier(tx,ty)) return false;   // walkable central pier
@@ -2366,12 +2377,12 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
       // island temple: enter through the door
       if(areaKey==="island" && !insideKey && !player.boat && fc==="D"){ enterInterior("temple", player.tx, player.ty); return; }
       if(areaKey==="island" && !insideKey){
-        if(player.boat && fc==="w"){ player.boat=false; player.tx=fx; player.ty=fy; player.px=fx*TILE; player.py=fy*TILE; SFX.door&&SFX.door(); banner(t("island_land")); saveGame(); return; }
+        if(player.boat){ const d=adjacentDock(); if(d){ player.boat=false; player.tx=d.x; player.ty=d.y; player.px=d.x*TILE; player.py=d.y*TILE; SFX.door&&SFX.door(); banner(t("island_land")); saveGame(); return; } }
         if(!player.boat && tileAt(player.tx,player.ty)==="w" && fc==="~"){ player.boat=true; player.tx=fx; player.ty=fy; player.px=fx*TILE; player.py=fy*TILE; SFX.door&&SFX.door(); banner(t("island_board")); saveGame(); return; }
       }
       // cape dock: same land/board logic as the island
       if(areaKey==="cape" && !insideKey){
-        if(player.boat && fc==="w"){ player.boat=false; player.tx=fx; player.ty=fy; player.px=fx*TILE; player.py=fy*TILE; SFX.door&&SFX.door(); banner(t("island_land")); saveGame(); return; }
+        if(player.boat){ const d=adjacentDock(); if(d){ player.boat=false; player.tx=d.x; player.ty=d.y; player.px=d.x*TILE; player.py=d.y*TILE; SFX.door&&SFX.door(); banner(t("island_land")); saveGame(); return; } }
         if(!player.boat && tileAt(player.tx,player.ty)==="w" && fc==="~"){ player.boat=true; player.tx=fx; player.ty=fy; player.px=fx*TILE; player.py=fy*TILE; SFX.door&&SFX.door(); banner(t("island_board")); saveGame(); return; }
       }
       if(!insideKey && inTown() && DOORS[fc]){ enterInterior(DOORS[fc].interior, DOORS[fc].outX, DOORS[fc].outY); return; }
@@ -4081,7 +4092,7 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
     if(dialog.active||confront.active||fight.active||choice.active||prompt2.active) return;
     const {fx,fy}=facingTile();
     let msg=null;
-    if(player.boat && tileAt(fx,fy)==="w") msg=t("hint_dock");                 // in boat, facing the dock
+    if(player.boat && adjacentDock()) msg=t("hint_dock");                      // in boat, next to the dock (any side)
     else if(player.boat) msg=t("hint_island_exits");                           // in boat: how to leave
     else if(!player.boat && tileAt(player.tx,player.ty)==="w" && tileAt(fx,fy)==="~") msg=t("hint_board");  // on dock, facing water
     if(!msg) return;
@@ -4109,7 +4120,7 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
     if(dialog.active||confront.active||fight.active||choice.active||prompt2.active) return;
     const {fx,fy}=facingTile();
     let msg=null;
-    if(player.boat && tileAt(fx,fy)==="w") msg=t("hint_dock");
+    if(player.boat && adjacentDock()) msg=t("hint_dock");
     else if(player.boat) msg=t("hint_cape_exits");
     else if(!player.boat && tileAt(player.tx,player.ty)==="w" && tileAt(fx,fy)==="~") msg=t("hint_board");
     if(!msg) return;
