@@ -3,6 +3,61 @@
 Documento leggibile da umani e AI. Descrive cos'è il gioco, com'è fatto tecnicamente,
 tutte le meccaniche e come sono strutturati i contenuti.
 
+---
+
+## 0. PROMPT DI RIPARTENZA (leggere per prima cosa se sei un'AI che riprende il progetto)
+
+Ciao. Questo è un gioco RPG investigativo noir completo e funzionante. Prima di modificare qualcosa,
+assimila questi punti — sono la sintesi di tutto quello che serve per lavorarci in sicurezza.
+
+**Cos'hai in mano (kit minimo):**
+- `index.html` — È IL GIOCO INTERO, in un unico file autoconsistente (HTML+CSS+JS vanilla, canvas
+  192x168, tile 16px, nessuna dipendenza esterna). Si apre in un browser e funziona da solo. TUTTO è
+  inline: storia, dialoghi, regole, mappe, meccaniche, i18n IT/EN, audio, grafica.
+- `PROJECT_OVERVIEW.md` — questo documento (architettura + meccaniche + registro modifiche).
+  Con questi due file puoi sia GIOCARE sia SVILUPPARE. Gli eventuali file `.json`/`.md` sorgente NON
+  sono letti a runtime (il gioco usa solo i dati inline in `index.html`).
+
+**Dove stanno le cose dentro `index.html` (cerca questi identificatori):**
+- Storia (37 missioni rosse + tutti i dialoghi): `window.STORY_DATA` (inline). Posizioni pickup/NPC:
+  `window.STORY_POS`. Il gioco a runtime legge SOLO questi, non i file .json sorgente.
+- Regole di gioco (menu): `RULES_PAGES_DATA`. Side-quest gialle: `window.SIDEQUESTS`. Missioni-mare:
+  `SEAQUESTS`. Mappe: `TOWN`/`AREA_<key>` + `AREAS`, `AREA_GRID`, `AREA_LABEL`. Motore quest: `QUESTS`,
+  `QORDER`, `CASE`/`window.CASE_REF`, `SQ`/`window.SQ_REF`. Testi: `STR.it`/`STR.en`, risolti con `t(key)`.
+- Snodi meccanici (id quest -> meccanica): `SCOUR_SNODI`, `PHOTO_SNODI`, `FIGHT_SNODI`,
+  `CONFRONT_SNODI`, `DEDUCTION_SNODI`, `RECON_SNODI`, `MORAL_SNODI`.
+
+**REGOLE DI SICUREZZA PER MODIFICARE (importantissime):**
+1. **Fai SEMPRE un backup di `index.html` prima di editare** (es. copia `index.backup-<data>.html`).
+   Il file è unico e grande: un errore di edit può fare danni.
+2. Il gioco gira in `"use strict"`. Alcuni bug reali trovati in passato (`chase`, `regatta`) erano
+   **oggetti di stato non dichiarati**: in strict mode leggerli lancia `ReferenceError` e il game loop
+   crasha (schermo nero / box "undefined"), MA il solo check di sintassi NON lo intercetta.
+3. Dopo OGNI modifica esegui DUE verifiche:
+   (a) **sintassi**: estrai i `<script>` e `new vm.Script(...)` / `node --check`;
+   (b) **caricamento runtime**: carica il file in una VM con stub di canvas/AudioContext e, se puoi,
+   esegui alcuni frame di `update()`+`draw()` in più aree (specie quelle di mare: opensea/island/cape,
+   dove `update` legge stati come `regatta.active`). Questo intercetta i ReferenceError a runtime.
+4. Nuove missioni rosse: aggiungile in `STORY_DATA.quests` con `order` DECIMALE (es. 7.2) per
+   inserirle tra le esistenti SENZA rinumerare (gli snodi sono cablati sugli id, non sull'ordine).
+   Aggiungi il pickup in `STORY_POS.pickups` e i 3 dialoghi (start/active/done) in `STORY_DATA.dialogues`.
+   Poi registra la meccanica nello SNODO giusto. Rispecchia le stesse modifiche in `gemini_story.json`
+   se presente (fonte sorgente, per coerenza).
+5. Mappe 44x40: mantieni la larghezza; verifica che pickup/NPC/punti-scour siano calpestabili o
+   affrontabili e raggiungibili (BFS con la logica reale `isSolid`).
+6. Tieni allineati marcatore "!" e interazione: la fonte di verità è `npcQuestKind()`. Non nominare il
+   colpevole nei testi prima del dialogo finale di `case14` (regola anti-spoiler).
+
+**Stato attuale:** giocabile e pubblicabile. ~125 missioni (37 rosse + ~72 gialle + ~10 mare + 6 micro),
+9 aree, ciclo giorno/notte, 4 stagioni. Testato a fondo (struttura, bilanciamento, fuzzing input,
+playthrough completo). I due bug noti (`chase`, `regatta`) sono corretti. Vedi la sezione 9 (TODO/note)
+per il registro completo delle modifiche.
+
+**Consiglio di flusso:** leggi la sezione 7 (Architettura tecnica) e "Come si modifica in sicurezza"
+prima di toccare il codice; poi lavora a piccoli passi facendo backup + doppia verifica ogni volta.
+
+---
+
 ## 1. Cos'è
 Gioco RPG 2D investigativo in stile Game Boy, atmosfera noir (True Detective S1).
 Il protagonista è il **Detective Crudo**, un investigatore privato che risolve un caso di
