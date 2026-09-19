@@ -112,7 +112,7 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
   const STR = {
     it: {
       title_sub:"Detective Crudo",
-      continue:"CONTINUA", newgame:"NUOVA PARTITA", press_ab:"A / START",
+      continue:"CONTINUA", newgame:"NUOVA PARTITA", press_ab:"Z o INVIO",
       season_spring:"PRIMAVERA", season_summer:"ESTATE", season_autumn:"AUTUNNO", season_winter:"INVERNO",
       quest_label:"Missione:", q_none:"Parla in giro", q_find:"Trova Micio", q_return:"Riporta Micio", q_done:"Fatto!",
       hud_find_red:"Cerca il (!) rosso per continuare a indagare sul caso.",
@@ -278,7 +278,7 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
     },
     en: {
       title_sub:"Detective Crudo",
-      continue:"CONTINUE", newgame:"NEW GAME", press_ab:"A / START",
+      continue:"CONTINUE", newgame:"NEW GAME", press_ab:"Z or ENTER",
       season_spring:"SPRING", season_summer:"SUMMER", season_autumn:"AUTUMN", season_winter:"WINTER",
       quest_label:"Quest:", q_none:"Talk around", q_find:"Find Micio", q_return:"Bring Micio back", q_done:"Done!",
       hud_find_red:"Look for the red (!) to keep investigating the case.",
@@ -2185,8 +2185,8 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
   }
   // Rules pages (localized): each page = {h, lines}. Mirrors game_rules.json (inlined for offline play).
   const RULES_PAGES_DATA=[
-    { it:{h:"Comandi",lines:["D-pad: muovi il detective.","A: parla, conferma, raccogli.","B: annulla / indietro.","START: apre il menu.","SELECT: sali/scendi dal motorino."]},
-      en:{h:"Controls",lines:["D-pad: move the detective.","A: talk, confirm, pick up.","B: cancel / go back.","START: open the menu.","SELECT: get on/off the scooter."]} },
+    { it:{h:"Comandi",lines:["Frecce/WASD: muovi.","A = tasto Z (conferma).","B = tasto X (indietro).","START = INVIO (menu).","SELECT = SHIFT (moto).","Tieni A: furtivo. B: corri."]},
+      en:{h:"Controls",lines:["Arrows/WASD: move.","A = Z key (confirm).","B = X key (back).","START = ENTER (menu).","SELECT = SHIFT (scooter).","Hold A: sneak. B: run."]} },
     { it:{h:"Punti esclamativi",lines:["(!) ROSSO: la storia del caso.","Seguilo per indagare.","(!) GIALLO: missioni extra,","facoltative, per aiutare la gente.","Una gialla alla volta."]},
       en:{h:"Exclamation marks",lines:["RED (!): the case story.","Follow it to investigate.","YELLOW (!): extra, optional","quests to help the townsfolk.","One yellow at a time."]} },
     { it:{h:"Indagine",lines:["Raccogli indizi con A.","Mostrali ai testimoni per","farli parlare. Se sbagli,","tornano il giorno dopo.","Il box in alto a destra guida."]},
