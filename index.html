@@ -4397,22 +4397,32 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
     ctx.fillStyle="#0e0e18"; ctx.fillRect(8,14,W-16,H-28);
     ctx.strokeStyle="#f0f0e0"; ctx.lineWidth=1; ctx.strokeRect(9.5,15.5,W-19,H-31);
     textCenter(t("notebook_title"),W/2,18,"#ff6a5a");
+    const footerY=H-24;          // keep the footer legend fully inside the box (box bottom = 154)
+    const maxY=footerY-9;        // clue lines must stop above the footer
     let y=30;
     // collect taken clues in story order
     const found=[];
     if(window.CASE_REF){ (window.CASE_REF.order||[]).forEach(id=>{ const c=window.CASE_REF.clues[id]; if(c&&c.taken){ const d=t("cs_"+id+"_clue"); found.push(d==="cs_"+id+"_clue"?"?":d); } }); }
-    if(found.length===0){ text(t("notebook_empty"),14,y,"#7a7a88"); textCenter(t("map_hint"),W/2,H-18,"#c8c8d0"); return; }
+    if(found.length===0){ text(t("notebook_empty"),14,y,"#7a7a88"); textCenter(t("map_hint"),W/2,footerY,"#c8c8d0"); return; }
     text(t("notebook_hint"),14,y,"#f0d840"); y+=11;
-    found.forEach((d,i)=>{
-      // wrap each clue to the panel width
-      ctx.font="8px monospace"; const words=String(d).split(" "); const maxW=W-34; let line="";
-      const push=(s)=>{ text("- "+s, 14, y, "#d8d0b0"); y+=9; };
-      let first=true;
-      words.forEach(w=>{ const test=line?line+" "+w:w; if(ctx.measureText((first?"- ":"  ")+test).width>maxW){ if(first){push(line);first=false;} else { text("  "+line,14,y,"#d8d0b0"); y+=9; } line=w; } else line=test; });
-      if(line){ if(first) push(line); else { text("  "+line,14,y,"#d8d0b0"); y+=9; } }
+    ctx.font="8px monospace"; const maxW=W-34;
+    let truncated=false;
+    outer:
+    for(const d of found){
+      const words=String(d).split(" "); let line=""; let first=true;
+      const flush=(prefix,s)=>{ text(prefix+s,14,y,"#d8d0b0"); y+=9; };
+      for(const w of words){
+        const test=line?line+" "+w:w;
+        if(ctx.measureText((first?"- ":"  ")+test).width>maxW){
+          if(y>maxY){ truncated=true; break outer; }
+          flush(first?"- ":"  ", line); first=false; line=w;
+        } else line=test;
+      }
+      if(line){ if(y>maxY){ truncated=true; break outer; } flush(first?"- ":"  ", line); }
       y+=2;
-    });
-    textCenter(t("map_hint"),W/2,H-18,"#c8c8d0");
+    }
+    if(truncated){ text("...",14,Math.min(y,maxY+8),"#7a7a88"); }
+    textCenter(t("map_hint"),W/2,footerY,"#c8c8d0");
   }
   function drawMenu(){
     panelBox(W/2-52,26,104,132);
