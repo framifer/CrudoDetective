@@ -2629,6 +2629,7 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
     if(!insideKey){ const nf=nightFactor(); if(nf>0){ ctx.fillStyle="rgba(20,26,60,"+(0.55*nf).toFixed(3)+")"; ctx.fillRect(0,0,W,H); drawNightLights(nf); } }
     if(screen==="overworld" && !insideKey && !menu.open) drawFog();
     if(screen==="overworld" && !insideKey && !menu.open) drawQuestMarksOverlay();   // markers stay bright over night/fog
+    if(screen==="overworld" && !insideKey && !menu.open) drawGuideArrow();          // yellow arrow toward the current objective
     drawHUD();
     if(screen==="overworld" && !insideKey && areaKey==="island" && !menu.open) drawIslandDockHint();
     if(screen==="overworld" && !insideKey && areaKey==="industrial" && !menu.open) drawRaftHint();
@@ -3737,6 +3738,76 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
   }
   // Redraw all quest "!" markers ON TOP of the night overlay + fog, so they stay bright/legible
   // at any time of day (they are UI guidance, not part of the lit scene).
+  // ---- YELLOW GUIDE ARROW: always points toward the current objective ----
+  // Resolve an NPC's location by id across town + all areas -> {area,tx,ty} or null.
+  function npcPosById(id){
+    if(!id) return null;
+    for(const n of npcs){ if(n && n.id===id) return {area:"town", tx:Math.round(n.px/TILE), ty:Math.round(n.py/TILE)}; }
+    for(const ak in AREA_NPCS){ for(const n of (AREA_NPCS[ak]||[])){ if(n && n.id===id) return {area:ak, tx:Math.round(n.px/TILE), ty:Math.round(n.py/TILE)}; } }
+    // new story NPCs are placed via STORY_POS
+    if(window.STORY_POS && window.STORY_POS.npc && window.STORY_POS.npc[id]){ const p=window.STORY_POS.npc[id]; return {area:p[0], tx:p[1], ty:p[2]}; }
+    return null;
+  }
+  // Where should the guide arrow point right now? Returns {area,tx,ty} or null.
+  function questGuideTarget(){
+    // 1) live field activities take priority (they define an exact spot to reach)
+    if(typeof courier!=="undefined" && courier.active) return {area:courier.area||areaKey, tx:courier.tx, ty:courier.ty};
+    if(typeof scDeliv!=="undefined" && scDeliv.active) return {area:areaKey, tx:scDeliv.tx, ty:scDeliv.ty};
+    if(typeof recovery!=="undefined" && recovery.active && recovery.obj) return {area:areaKey, tx:Math.round(recovery.obj.px/TILE), ty:Math.round(recovery.obj.py/TILE)};
+    if(typeof tail!=="undefined" && tail.active && tail.target) return {area:areaKey, tx:Math.round(tail.target.px/TILE), ty:Math.round(tail.target.py/TILE)};
+    if(typeof scour!=="undefined" && scour.active && scour.points){ for(let i=0;i<scour.points.length;i++){ if(!scour.found[i]) return {area:areaKey, tx:scour.points[i][0], ty:scour.points[i][1]}; } }
+    // 2) the current active quest
+    const q=firstActiveQuest();
+    if(q){
+      // red case quest
+      if(q.type==="case" && window.CASE_REF){
+        const clue=window.CASE_REF.clues[q.id];
+        const ready=(typeof caseClueReady==="function")?caseClueReady(q.id):true;
+        if(!ready && clue && !clue.taken && clue.area) return {area:clue.area, tx:clue.tx, ty:clue.ty};
+        // clue done -> go report to the completeNpc
+        const cq=window.CASE_REF.byId[q.id];
+        if(cq && cq.complete_npc){ const p=npcPosById(cq.complete_npc); if(p) return p; }
+      }
+      // micro-quests: point to the object while searching, else to the giver/finisher
+      if(q.id==="cat"   && !cat.found)     return {area:"town", tx:cat.tx, ty:cat.ty};
+      if(q.id==="shell" && !shell.found)   return {area:"town", tx:shell.tx, ty:shell.ty};
+      if(q.id==="kids"  && !ball.taken && q.step>=1)   return {area:"town", tx:ball.tx, ty:ball.ty};
+      if(q.id==="oldfriend" && !keyring.taken)         return {area:"town", tx:keyring.tx, ty:keyring.ty};
+      if(q.id==="photos"){ const ph=photos.find(p=>!p.taken); if(ph) return {area:"town", tx:ph.tx, ty:ph.ty}; }
+    }
+    // 3) side-quest (SQ) giver, if one is accepted/active in this area
+    if(typeof SQ!=="undefined" && SQ.acceptedNpc){ const p=npcPosById(SQ.acceptedNpc); if(p) return p; }
+    return null;
+  }
+  // grid direction (screen angle) from current area to a neighbor area, for cross-area guidance
+  function areaScreenAngle(fromArea, toArea){
+    if(typeof gridPosOf!=="function") return null;
+    const a=gridPosOf(fromArea), b=gridPosOf(toArea); if(!a||!b) return null;
+    const dc=b[0]-a[0], dr=b[1]-a[1]; if(dc===0&&dr===0) return null;
+    return Math.atan2(dr, dc);   // +x = east (right), +y = south (down)
+  }
+  function drawGuideArrow(){
+    if(insideKey || menu.open || dialog.active) return;
+    if(chase.active) return;                 // the chase already draws its own arrow
+    const tgt=questGuideTarget(); if(!tgt) return;
+    // Which way is the objective? A tile in this area -> real angle; another area -> that area's grid direction.
+    let ang;
+    if(tgt.area && tgt.area!==areaKey){
+      const aa=areaScreenAngle(areaKey, tgt.area); if(aa===null) return; ang=aa;
+    } else {
+      const gx=tgt.tx*TILE+8, gy=tgt.ty*TILE+8;              // world center of target tile
+      ang=Math.atan2(gy-(player.py+8), gx-(player.px+8));
+    }
+    // Single arrow anchored just ABOVE Crudo's head, rotating to point the exact direction.
+    const hx=player.px-cam.x+8;                              // head center x (sprite is 16 wide)
+    const hy=player.py-cam.y-4;                              // just above the head
+    const pulse=(Math.floor(performance.now()/300)%2===0);
+    ctx.save(); ctx.translate(hx,hy); ctx.rotate(ang);
+    // dark outline for contrast, then the yellow arrow
+    ctx.fillStyle="#3a2e00"; ctx.beginPath(); ctx.moveTo(7,0); ctx.lineTo(-4,-5); ctx.lineTo(-4,5); ctx.closePath(); ctx.fill();
+    ctx.fillStyle=pulse?"#ffd020":"#f0c010"; ctx.beginPath(); ctx.moveTo(5,0); ctx.lineTo(-3,-4); ctx.lineTo(-3,4); ctx.closePath(); ctx.fill();
+    ctx.restore();
+  }
   function drawQuestMarksOverlay(){
     if(insideKey) return;
     const list = currentNpcs();
