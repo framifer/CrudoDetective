@@ -5442,13 +5442,37 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
     if (isLandscapePhone()) activate(); else deactivate();
   }
 
-  // Visual press feedback on the overlay buttons (input itself is auto-wired by data-key).
+  // Overlay buttons drive the game by dispatching the SAME keyboard events the
+  // engine already listens for on window (mapped via its keyMap by e.code).
+  // The engine wires its own data-key buttons at startup, BEFORE this overlay
+  // exists in the DOM, so those wirings don't cover us -- we feed input here.
+  var KEYCODE = { up:"ArrowUp", down:"ArrowDown", left:"ArrowLeft", right:"ArrowRight",
+                  a:"KeyZ", b:"KeyX", start:"Enter", select:"ShiftLeft" };
+  function sendKey(type, code) {
+    var ev;
+    try { ev = new KeyboardEvent(type, { code: code, bubbles: true, cancelable: true }); }
+    catch (e) { ev = document.createEvent("Event"); ev.initEvent(type, true, true); ev.code = code; }
+    window.dispatchEvent(ev);
+  }
   Array.prototype.forEach.call(overlay.querySelectorAll("[data-key]"), function (btn) {
-    var press = function () { btn.classList.add("fs-pressed"); };
-    var release = function () { btn.classList.remove("fs-pressed"); };
-    btn.addEventListener("touchstart", press, { passive: true });
-    btn.addEventListener("touchend", release, { passive: true });
-    btn.addEventListener("touchcancel", release, { passive: true });
+    var k = btn.getAttribute("data-key");
+    var code = KEYCODE[k];
+    var isDown = false;
+    var press = function (e) {
+      if (e && e.preventDefault) e.preventDefault();
+      if (isDown) return; isDown = true;
+      btn.classList.add("fs-pressed");
+      if (code) sendKey("keydown", code);
+    };
+    var release = function (e) {
+      if (e && e.preventDefault) e.preventDefault();
+      if (!isDown) return; isDown = false;
+      btn.classList.remove("fs-pressed");
+      if (code) sendKey("keyup", code);
+    };
+    btn.addEventListener("touchstart", press, { passive: false });
+    btn.addEventListener("touchend", release, { passive: false });
+    btn.addEventListener("touchcancel", release, { passive: false });
     btn.addEventListener("mousedown", press);
     btn.addEventListener("mouseup", release);
     btn.addEventListener("mouseleave", release);
