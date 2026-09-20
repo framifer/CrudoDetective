@@ -39,6 +39,59 @@
   .pill:active { transform:translateY(1px); box-shadow:0 1px 0 #16161e; }
   .plabel { position:absolute; color:#5b6b8a; font-size:8px; top:16px; letter-spacing:1px; pointer-events:none; }
   #startsel div { position:relative; text-align:center; }
+
+  /* ===== FULLSCREEN-LANDSCAPE MODE (additive, phone-only) ===== */
+  #fs-overlay { display:none; }
+  #fs-overlay.fs-active {
+    display:block; position:fixed; inset:0; z-index:9999;
+    background:#000; overflow:hidden; touch-action:none;
+  }
+  #fs-canvas {
+    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    image-rendering:pixelated; image-rendering:crisp-edges; background:#000;
+  }
+  /* Control groups */
+  #fs-overlay .fs-group { position:absolute; z-index:10001; }
+  #fs-dpad-group { left:14px; bottom:52px; width:150px; height:186px; }
+  #fs-ab-group   { right:70px; bottom:52px; width:150px; height:156px; }
+  /* Directional buttons */
+  #fs-overlay .fs-dbtn {
+    position:absolute; width:50px; height:50px; border-radius:10px;
+    border:2px solid rgba(255,255,255,0.55); background:rgba(255,255,255,0.06);
+    color:rgba(255,255,255,0.75); font-size:22px; display:flex;
+    align-items:center; justify-content:center; padding:0;
+    -webkit-user-select:none; user-select:none;
+  }
+  #fs-overlay .fs-dbtn.fs-pressed { background:rgba(255,255,255,0.28); border-color:rgba(255,255,255,0.9); }
+  #fs-up    { left:50px; top:36px; }
+  #fs-down  { left:50px; top:136px; }
+  #fs-left  { left:0;    top:86px; }
+  #fs-right { left:100px;top:86px; }
+  /* Round A/B buttons */
+  #fs-overlay .fs-rbtn {
+    position:absolute; width:66px; height:66px; border-radius:50%;
+    border:2px solid rgba(120,190,255,0.6); background:rgba(120,190,255,0.08);
+    color:rgba(215,238,255,0.9); font-size:26px; font-weight:bold;
+    display:flex; align-items:center; justify-content:center; padding:0;
+    -webkit-user-select:none; user-select:none;
+  }
+  #fs-overlay .fs-rbtn.fs-pressed { background:rgba(120,190,255,0.32); border-color:rgba(160,210,255,0.95); }
+  #fs-a { right:0;  top:36px; }
+  #fs-b { right:76px; top:84px; }
+  /* Pills: SELECT (over d-pad) and START (over A/B) */
+  #fs-overlay .fs-pill {
+    position:absolute; top:0; width:74px; height:24px; border-radius:12px;
+    font-family:monospace; font-size:10px; letter-spacing:1px;
+    display:flex; align-items:center; justify-content:center; padding:0;
+    -webkit-user-select:none; user-select:none;
+  }
+  #fs-select { left:34px; border:2px solid rgba(255,255,255,0.5); background:rgba(255,255,255,0.05); color:rgba(255,255,255,0.7); }
+  #fs-start  { right:34px; border:2px solid rgba(120,190,255,0.55); background:rgba(120,190,255,0.06); color:rgba(215,238,255,0.85); }
+  #fs-overlay .fs-pill.fs-pressed { background:rgba(255,255,255,0.25); }
+  @media (orientation: landscape) and (max-height: 600px) {
+    body.fs-mode #device { display:none; }
+    body.fs-mode #fs-overlay { display:block; position:fixed; inset:0; z-index:9999; background:#000; overflow:hidden; touch-action:none; }
+  }
 </style>
 </head>
 <body>
@@ -5298,6 +5351,119 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
   let last=performance.now();
   function loop(now){ let dt=(now-last)/1000; last=now; if(dt>0.1) dt=0.1; SFX.setTempoScale(1.0); update(dt); draw(); requestAnimationFrame(loop); }
   requestAnimationFrame(loop);
+})();
+</script>
+
+<!-- ===== FULLSCREEN-LANDSCAPE OVERLAY (additive) ===== -->
+<div id="fs-overlay" aria-hidden="true">
+  <canvas id="fs-canvas"></canvas>
+  <div id="fs-dpad-group" class="fs-group">
+    <button class="fs-pill" id="fs-select" data-key="select">SELECT</button>
+    <button class="fs-dbtn" id="fs-up"    data-key="up">&#9650;</button>
+    <button class="fs-dbtn" id="fs-left"  data-key="left">&#9664;</button>
+    <button class="fs-dbtn" id="fs-right" data-key="right">&#9654;</button>
+    <button class="fs-dbtn" id="fs-down"  data-key="down">&#9660;</button>
+  </div>
+  <div id="fs-ab-group" class="fs-group">
+    <button class="fs-pill" id="fs-start" data-key="start">START</button>
+    <button class="fs-rbtn" id="fs-a" data-key="a">A</button>
+    <button class="fs-rbtn" id="fs-b" data-key="b">B</button>
+  </div>
+</div>
+
+<script>
+/* Independent fullscreen-landscape mirror. Purely additive:
+   - Does NOT touch the game engine, story, logic or mechanics.
+   - Shows an upscaled COPY of the #game canvas on #fs-canvas.
+   - Touch buttons reuse the existing data-key input (auto-wired elsewhere). */
+(function () {
+  "use strict";
+  var GAME_W = 192, GAME_H = 168;      // internal resolution of #game
+  var GUTTER_TARGET = 230;             // preferred side band for controls (px)
+  var GUTTER_MIN = 220;                // minimum side band (px): >= A/B footprint (150 group + 70 right offset)
+  var GUTTER_PCT = 0.18;               // ~18% of width
+
+  var overlay = document.getElementById("fs-overlay");
+  var fsCanvas = document.getElementById("fs-canvas");
+  var srcCanvas = document.getElementById("game");
+  if (!overlay || !fsCanvas || !srcCanvas) return;
+  var fsCtx = fsCanvas.getContext("2d");
+  fsCtx.imageSmoothingEnabled = false;
+
+  var rafId = null;
+
+  function isLandscapePhone() {
+    return window.matchMedia("(orientation: landscape) and (max-height: 600px)").matches;
+  }
+
+  function layout() {
+    var vw = window.innerWidth, vh = window.innerHeight;
+    // Reserve a control band on each side.
+    var gutter = Math.max(GUTTER_MIN, Math.min(GUTTER_TARGET, vw * GUTTER_PCT));
+    var availW = Math.max(1, vw - gutter * 2);
+    var availH = vh;
+    var scale = Math.min(availW / GAME_W, availH / GAME_H);
+    if (scale < 1) scale = Math.max(scale, 0.01);
+    var w = Math.round(GAME_W * scale);
+    var h = Math.round(GAME_H * scale);
+    // Backing store = internal resolution (crisp), CSS size = scaled.
+    fsCanvas.width = GAME_W;
+    fsCanvas.height = GAME_H;
+    fsCanvas.style.width = w + "px";
+    fsCanvas.style.height = h + "px";
+    fsCtx.imageSmoothingEnabled = false;
+  }
+
+  function frame() {
+    if (!overlay.classList.contains("fs-active")) { rafId = null; return; }
+    // Copy the game's current frame 1:1 (CSS handles the upscale, pixelated).
+    try {
+      fsCtx.clearRect(0, 0, GAME_W, GAME_H);
+      fsCtx.drawImage(srcCanvas, 0, 0, GAME_W, GAME_H);
+    } catch (e) { /* ignore transient draw errors */ }
+    rafId = requestAnimationFrame(frame);
+  }
+
+  function activate() {
+    document.body.classList.add("fs-mode");
+    overlay.classList.add("fs-active");
+    overlay.setAttribute("aria-hidden", "false");
+    layout();
+    if (rafId == null) rafId = requestAnimationFrame(frame);
+  }
+  function deactivate() {
+    overlay.classList.remove("fs-active");
+    document.body.classList.remove("fs-mode");
+    overlay.setAttribute("aria-hidden", "true");
+    if (rafId != null) { cancelAnimationFrame(rafId); rafId = null; }
+  }
+
+  function sync() {
+    if (isLandscapePhone()) activate(); else deactivate();
+  }
+
+  // Visual press feedback on the overlay buttons (input itself is auto-wired by data-key).
+  Array.prototype.forEach.call(overlay.querySelectorAll("[data-key]"), function (btn) {
+    var press = function () { btn.classList.add("fs-pressed"); };
+    var release = function () { btn.classList.remove("fs-pressed"); };
+    btn.addEventListener("touchstart", press, { passive: true });
+    btn.addEventListener("touchend", release, { passive: true });
+    btn.addEventListener("touchcancel", release, { passive: true });
+    btn.addEventListener("mousedown", press);
+    btn.addEventListener("mouseup", release);
+    btn.addEventListener("mouseleave", release);
+  });
+
+  window.addEventListener("resize", function () { sync(); if (overlay.classList.contains("fs-active")) layout(); });
+  window.addEventListener("orientationchange", function () { setTimeout(function () { sync(); layout(); }, 100); });
+  if (window.matchMedia) {
+    try {
+      window.matchMedia("(orientation: landscape) and (max-height: 600px)").addEventListener("change", sync);
+    } catch (e) {
+      try { window.matchMedia("(orientation: landscape) and (max-height: 600px)").addListener(sync); } catch (e2) {}
+    }
+  }
+  sync();
 })();
 </script>
 </body>
