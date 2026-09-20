@@ -5432,6 +5432,7 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
     if (rafId == null) rafId = requestAnimationFrame(frame);
   }
   function deactivate() {
+    if (typeof window.__fsReleaseAll === "function") window.__fsReleaseAll();
     overlay.classList.remove("fs-active");
     document.body.classList.remove("fs-mode");
     overlay.setAttribute("aria-hidden", "true");
@@ -5454,6 +5455,7 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
     catch (e) { ev = document.createEvent("Event"); ev.initEvent(type, true, true); ev.code = code; }
     window.dispatchEvent(ev);
   }
+  var releasers = [];
   Array.prototype.forEach.call(overlay.querySelectorAll("[data-key]"), function (btn) {
     var k = btn.getAttribute("data-key");
     var code = KEYCODE[k];
@@ -5470,6 +5472,7 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
       btn.classList.remove("fs-pressed");
       if (code) sendKey("keyup", code);
     };
+    releasers.push(release);
     btn.addEventListener("touchstart", press, { passive: false });
     btn.addEventListener("touchend", release, { passive: false });
     btn.addEventListener("touchcancel", release, { passive: false });
@@ -5477,6 +5480,9 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
     btn.addEventListener("mouseup", release);
     btn.addEventListener("mouseleave", release);
   });
+  // Expose so deactivate() can force-release any held button (avoids stuck keys
+  // if orientation flips while a button is pressed).
+  window.__fsReleaseAll = function () { for (var i = 0; i < releasers.length; i++) releasers[i](); };
 
   window.addEventListener("resize", function () { sync(); if (overlay.classList.contains("fs-active")) layout(); });
   window.addEventListener("orientationchange", function () { setTimeout(function () { sync(); layout(); }, 100); });
