@@ -2,15 +2,15 @@
  * Cache-first strategy so the game works fully offline once installed.
  * Bump CACHE_VERSION whenever you change index.html or assets to force an update.
  */
-const CACHE_VERSION = "crudo-detective-v1";
+const CACHE_VERSION = "crudo-detective-v2";
 const CORE_ASSETS = [
   "./",
   "./index.html",
   "./manifest.json",
-  "./icons/icon-192.png",
-  "./icons/icon-512.png",
-  "./icons/icon-maskable-192.png",
-  "./icons/icon-maskable-512.png"
+  "./icon-192.png",
+  "./icon-512.png",
+  "./icon-maskable-192.png",
+  "./icon-maskable-512.png"
 ];
 
 // Install: pre-cache the app shell.
