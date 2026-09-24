@@ -12,6 +12,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
+<link rel="apple-touch-icon" sizes="512x512" href="icon-512.png">
 <title>Crudo Detective</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -239,6 +240,7 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
       passerby:"Passante", passerby_l:["Buongiorno!"],
       journal_title:"DIARIO", journal_main:"Principali:", journal_side:"GIALLE - Extra:", chapter:"Capitolo", chapter_done:"CAPITOLO COMPLETATO!",
       q_intro_t:"L'arrivo a Crudo", q_intro_s0:"Chiedi in giro di chi ti ha convocato", q_intro_s1:"Presentati alla committente",
+      welcome:["Benvenuto a","Baia del Sud!","Tu sei Crudo, un","investigatore privato","e sei giunto in questa","contea per risolvere","un mistero.","","Muoviti in tutte le","direzioni con le frecce.","Premi A per interagire","e B per tornare","indietro di una scelta.","START apre il menu;","SELECT sara' utile piu'","avanti nel gioco.","","Se premi B mentre","cammini, Crudo correra';","se premi A mentre","cammini, rallentera' ed","entrera' in modalita'","stealth.","","Adesso cerca il","marinaio: lo riconoscerai","dal punto esclamativo","che sbuca dalla sua","testa!"],
       intro_start:["Lei dev'essere","l'investigatore.","Prima che inizi,","le spiego una cosa","importante."],
       intro_marks:["Sopra le teste vedra'","dei punti esclamativi.","ROSSO (!): la storia","del caso. GIALLO (!):","aiuti extra, facoltativi."],
       intro_marks2:["Segua i ROSSI per","risolvere il caso.","I GIALLI, se le va,","per aiutare la gente.","Uno alla volta, pero'."],
@@ -405,6 +407,7 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
       passerby:"Passer-by", passerby_l:["Hello there!"],
       journal_title:"JOURNAL", journal_main:"Main:", journal_side:"YELLOW - Extra:", chapter:"Chapter", chapter_done:"CHAPTER COMPLETE!",
       q_intro_t:"Arrival in Crudo", q_intro_s0:"Ask around for who summoned you", q_intro_s1:"Introduce yourself to the client",
+      welcome:["Welcome to","Southern Bay!","You are Crudo, a","private investigator,","and you've come to this","county to solve","a mystery.","","Move in every","direction with the arrows.","Press A to interact","and B to go back","one step in a choice.","START opens the menu;","SELECT will be useful","later in the game.","","If you press B while","walking, Crudo will run;","if you press A while","walking, he'll slow down","and enter stealth","mode.","","Now look for the","sailor: you'll know him","by the exclamation mark","popping out of his","head!"],
       intro_start:["You must be the","investigator.","Before you begin,","let me explain","something important."],
       intro_marks:["Above people's heads","you'll see exclamation","marks. RED (!): the case","story. YELLOW (!):","extra, optional help."],
       intro_marks2:["Follow the RED ones to","solve the case.","The YELLOW ones, if you","like, to help folks.","One at a time, though."],
@@ -2353,7 +2356,7 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
     if(consumePress("up")) titleIndex=(titleIndex-1+options)%options;
     if(consumePress("down")) titleIndex=(titleIndex+1)%options;
     if(consumePress("select")) toggleLang();
-    if(consumePress("a")){ SFX.confirm(); if(hasSave()&&titleIndex===0) loadGame(); else resetProgress(); SFX.setTrack("noir"); if(!SFX.musicPlaying()) SFX.startMusic("noir"); screen="overworld"; }
+    if(consumePress("a")){ SFX.confirm(); const _isNewGame=!(hasSave()&&titleIndex===0); if(!_isNewGame) loadGame(); else resetProgress(); SFX.setTrack("noir"); if(!SFX.musicPlaying()) SFX.startMusic("noir"); screen="overworld"; if(_isNewGame) showExamine(t("welcome")); }
     else if(consumePress("start")){ toggleLang(); }
   }
   function facingTile(){ let fx=player.tx,fy=player.ty; if(player.dir==="up")fy--; else if(player.dir==="down")fy++; else if(player.dir==="left")fx--; else if(player.dir==="right")fx++; return {fx,fy}; }
