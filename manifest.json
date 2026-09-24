@@ -1,6 +1,5 @@
 {
-  "id": "/CrudoDetective/",
-  "name": "CrudoDetective",
+  "name": "Crudo Detective",
   "short_name": "CrudoDetective",
   "description": "Un'avventura investigativa in stile Game Boy: risolvi il caso della scomparsa di Renzo nella cittadina di mare di Crudo.",
   "lang": "it",
@@ -10,50 +9,27 @@
   "display": "fullscreen",
   "display_override": ["fullscreen", "standalone"],
   "orientation": "any",
-  "background_color": "#15151e",
+  "background_color": "#15151f",
   "theme_color": "#1e1e2e",
   "categories": ["games", "entertainment"],
-  "prefer_related_applications": false,
   "icons": [
     {
       "src": "icon-192.png",
-      "sizes": "192x192",
       "type": "image/png",
+      "sizes": "192x192",
       "purpose": "any"
     },
     {
       "src": "icon-512.png",
-      "sizes": "512x512",
       "type": "image/png",
+      "sizes": "512x512",
       "purpose": "any"
     },
     {
-      "src": "icon-maskable-192.png",
-      "sizes": "192x192",
+      "src": "icon-512-maskable.png",
       "type": "image/png",
-      "purpose": "maskable"
-    },
-    {
-      "src": "icon-maskable-512.png",
       "sizes": "512x512",
-      "type": "image/png",
       "purpose": "maskable"
-    }
-  ],
-  "screenshots": [
-    {
-      "src": "screenshot-narrow.png",
-      "sizes": "540x720",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "Crudo Detective - schermata di gioco"
-    },
-    {
-      "src": "screenshot-wide.png",
-      "sizes": "1280x720",
-      "type": "image/png",
-      "form_factor": "wide",
-      "label": "Crudo Detective - schermata di gioco"
     }
   ]
 }
