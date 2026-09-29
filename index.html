@@ -151,7 +151,8 @@ window.SIDEQUESTS={"recon":[{"id":"rec_dockfire","kind":"recon","area":"town","t
   const keys = { up:false, down:false, left:false, right:false, a:false, b:false, start:false, select:false };
   const pressedEdge = {}; const heldSince = {};
   function setKey(k, val){ if(!(k in keys)) return;
-    if(val && !keys[k]){ pressedEdge[k]=true; heldSince[k]=performance.now(); SFX.unlock(); if(SFX[k]) SFX[k](); }
+    if(val && !keys[k]){ pressedEdge[k]=true; heldSince[k]=performance.now(); SFX.unlock(); if(SFX[k]) SFX[k]();
+      if((k==="a"||k==="b") && navigator.vibrate){ try{ navigator.vibrate(20); }catch(e){} } }
     keys[k]=val; }
   function consumePress(k){ if(pressedEdge[k]){ pressedEdge[k]=false; return true; } return false; }
   const keyMap = { ArrowUp:"up",ArrowDown:"down",ArrowLeft:"left",ArrowRight:"right",
